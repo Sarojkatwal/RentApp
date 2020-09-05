@@ -33,8 +33,8 @@ class LogIn extends React.Component {
     password: "",
     check_textInputChange: false,
     secureTextEntry: true,
-    isValidUser: true,
-    isValidPassword: true,
+    isValidUser: false,
+    isValidPassword: false,
   };
 
   textInputChange = (val) => {
@@ -92,7 +92,7 @@ class LogIn extends React.Component {
     });
   };
 
-  loginHandle = (userName, password) => {
+  loginHandle = () => {
     /*const foundUser = Users.filter((item) => {
       return userName == item.username && password == item.password;
     });
@@ -114,14 +114,14 @@ class LogIn extends React.Component {
     }
     //LogIn(foundUser);
     */
-    if (this.state.username.length == 0 || this.state.password.length == 0) {
-      Alert.alert(
-        "Wrong Input!",
-        "Username or password field cannot be empty.",
-        [{ text: "Okay" }]
-      );
-      return;
-    }
+   if(this.state.isValidPassword && this.state.isValidUser)
+   {
+     this.props.navigation.navigate('InsideApp')
+   }
+
+   else{
+     return;
+   }
 
   };
   render() {
@@ -133,7 +133,7 @@ class LogIn extends React.Component {
       <View style={styles.container}>
         <StatusBar backgroundColor="#009387" barStyle="light-content" />
         <View style={styles.header}>
-          <Text style={styles.text_header}>Welcome!</Text>
+          <Text style={styles.text_header}>Welcome</Text>
         </View>
         <Animatable.View
           animation="fadeInUpBig"
@@ -175,7 +175,7 @@ class LogIn extends React.Component {
               </Animatable.View>
             ) : null}
           </View>
-          {this.state.isValidUser ? null : (
+          {(this.state.isValidUser || this.state.username=='') ? null : (
             <Animatable.View animation="fadeInLeft" duration={500}>
               <Text style={styles.errorMsg}>
                 Username must be 4 characters long.
@@ -217,7 +217,7 @@ class LogIn extends React.Component {
                 )}
             </TouchableOpacity>
           </View>
-          {this.state.isValidPassword ? null : (
+          {(this.state.isValidPassword || this.state.password=='') ? null : (
             <Animatable.View animation="fadeInLeft" duration={500}>
               <Text style={styles.errorMsg}>
                 Password must be 8 characters long.
@@ -234,8 +234,9 @@ class LogIn extends React.Component {
             <TouchableOpacity
               style={styles.LogIn}
               onPress={() => {
-                this.props.navigation.navigate('InsideApp')
-                //this.loginHandle(this.state.username, this.state.password);
+
+                
+                this.loginHandle();
               }}
             >
               <LinearGradient
