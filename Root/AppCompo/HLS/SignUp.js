@@ -1,4 +1,5 @@
 import React from "react";
+import {onsignup} from '../../Firebase/signinup'
 import {
   View,
   Text,
@@ -168,7 +169,7 @@ class SignUp extends React.Component {
               </Text>
             </View>
             <View style={styles.button}>
-              <TouchableOpacity style={styles.signIn} onPress={() => { }}>
+              <TouchableOpacity style={styles.signIn} onPress={() => { onsignup(this.state.username,this.state.password,this.state.confirm_password,this.props.navigation)}}>
                 <LinearGradient
                   colors={["#08d4c4", "#01ab9d"]}
                   style={styles.signIn}

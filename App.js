@@ -1,4 +1,5 @@
 import React from 'react';
+import * as err from './Root/err'
 import { StyleSheet, Text, View, StatusBar } from 'react-native';
 import LogInSignUp from './Root/AppCompo/LogInSignUp'
 export default class App extends React.Component {

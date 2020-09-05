@@ -1,4 +1,5 @@
 import React from "react";
+import {onlogin} from '../../Firebase/signinup'
 import {
   View,
   Text,
@@ -92,38 +93,7 @@ class LogIn extends React.Component {
     });
   };
 
-  loginHandle = (userName, password) => {
-    /*const foundUser = Users.filter((item) => {
-      return userName == item.username && password == item.password;
-    });
-
-    if (this.state.username.length == 0 || this.state.password.length == 0) {
-      Alert.alert(
-        "Wrong Input!",
-        "Username or password field cannot be empty.",
-        [{ text: "Okay" }]
-      );
-      return;
-    }
-
-    if (foundUser.length == 0) {
-      Alert.alert("Invalid User!", "Username or password is incorrect.", [
-        { text: "Okay" },
-      ]);
-      return;
-    }
-    //LogIn(foundUser);
-    */
-    if (this.state.username.length == 0 || this.state.password.length == 0) {
-      Alert.alert(
-        "Wrong Input!",
-        "Username or password field cannot be empty.",
-        [{ text: "Okay" }]
-      );
-      return;
-    }
-
-  };
+  
   render() {
     const colors = {
       background: "white",
@@ -234,8 +204,9 @@ class LogIn extends React.Component {
             <TouchableOpacity
               style={styles.LogIn}
               onPress={() => {
-                this.props.navigation.navigate('InsideApp')
-                //this.loginHandle(this.state.username, this.state.password);
+                // this.props.navigation.navigate('InsideApp')
+                // //this.loginHandle(this.state.username, this.state.password);
+                onlogin(this.state.username,this.state.password,this.props.navigation)
               }}
             >
               <LinearGradient
