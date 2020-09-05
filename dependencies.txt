@@ -7,3 +7,9 @@ npm install @react-navigation/material-bottom-tabs react-native-paper
 npm install @react-navigation/material-top-tabs react-native-tab-view
 npm i react-native-animatable
 npm i react-native-vector-icons
+//npm i react-navigation-shared-element  react-native-shared-element
+expo install expo-linear-gradient
+npm install faker
+ 
+ 
+ 

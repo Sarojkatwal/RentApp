@@ -4,6 +4,7 @@ import { Appbar, Button, IconButton } from "react-native-paper";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import Icon from "react-native-vector-icons/FontAwesome5";
 import { TMode, OMode } from "../Comp/index";
+import App from '../../Component/Comp/src/App'
 
 const Stack2 = createBottomTabNavigator();
 
@@ -22,7 +23,7 @@ export default function Homescreen({ navigation }) {
           <Appbar.Action
             icon="magnify"
             color="white"
-            onPress={() => global.Show = !global.Show}
+          //onPress={() => global.Show = !global.Show}
           />
           <Appbar.Action
             icon="dots-vertical"

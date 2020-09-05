@@ -151,6 +151,8 @@ class SignUp extends React.Component {
                   )}
               </TouchableOpacity>
             </View>
+
+
             <View style={styles.textPrivate}>
               <Text style={styles.color_textPrivate}>
                 By signing up you agree to our
