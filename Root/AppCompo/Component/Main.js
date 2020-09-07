@@ -24,7 +24,10 @@ class CustomDrawerContent extends Component {
             <View style={{ flex: 1 }}>
                 <DrawerContentScrollView {...this.props}>
                     <View style={{ paddingLeft: 10 }}>
-                        <Avatar.Image size={80} source={require('../../../assets/messi.png')} />
+                        {!global.dp ?
+                            <Avatar.Image size={80} source={require('../../../assets/messi.png')} /> :
+                            <Avatar.Image size={80} source={{ uri: global.dp }} />
+                        }
                         <Paragraph style={{ fontWeight: "bold" }}>SAROJ KATWAL</Paragraph>
                         <Caption>@katwalsaroj11</Caption>
                         <Caption>54 Following</Caption>

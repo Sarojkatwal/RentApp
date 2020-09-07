@@ -1,19 +1,92 @@
 import React, { Component } from "react";
-import { View, Text, StatusBar, StyleSheet, Image, Button } from "react-native";
-import { List, Caption, Appbar } from "react-native-paper";
+import { Image, View, Platform, Text, StyleSheet } from 'react-native';
+import { List, Avatar, Appbar, Button } from "react-native-paper";
+import * as ImagePicker from 'expo-image-picker';
+import * as Permissions from 'expo-permissions';
 
 export class Setting extends Component {
+  state = {
+    image: null,
+    next: 'setting'
+  };
+  getPermissionAsync = async () => {
+    if (Platform.OS !== 'web') {
+      const { status } = await Permissions.askAsync(Permissions.CAMERA_ROLL);
+      if (status !== 'granted') {
+        alert('Sorry, we need camera roll permissions to make this work!');
+      }
+    }
+  };
+  _pickImage = async () => {
+    try {
+      let result = await ImagePicker.launchImageLibraryAsync({
+        mediaTypes: ImagePicker.MediaTypeOptions.All,
+        //allowsEditing: true,
+        //aspect: [4, 3],
+        quality: 1,
+      });
+      if (!result.cancelled) {
+        this.setState({ image: result.uri });
+      }
+
+      console.log(result);
+    } catch (E) {
+      console.log(E);
+    }
+  };
+  changedp = () => {
+    this.getPermissionAsync();
+    this.setState({
+      next: 'changedp'
+    })
+  }
+  savedp = () => {
+    //write code to save image to database
+    global.dp = this.state.image
+    this.setState({
+      ...this.state,
+      next: 'setting'
+    })
+  }
   render() {
     return (
       <>
-        <View>
+        <View style={styles.container}>
           <Appbar>
             <Appbar.BackAction onPress={() => this.props.navigation.goBack()} />
-            <Appbar.Content title="Title" subtitle="Subtitle" />
-            <Appbar.Action icon="magnify" />
-            <Appbar.Action icon="dots-vertical" />
+            <Appbar.Content title="Setting" />
           </Appbar>
-          <Button title="Sign Out" />
+          {(this.state.next == 'setting') &&
+            <>
+              <Button onPress={this.changedp}>Change DP</Button>
+              <Button >Change password</Button>
+            </>
+          }
+          {(this.state.next == 'changedp') &&
+            <>
+              <View>
+                <Button onPress={this._pickImage}>Pick an image</Button>
+                {this.state.image && <Avatar.Image size={180}
+                  source={{ uri: this.state.image }} style={styles.image} />}
+              </View>
+              {this.state.image != null &&
+                <View style={styles.a1}>
+                  <View style={styles.a2}>
+                    <Button style={styles.button}
+                      mode='contained'
+                      onPress={this._pickImage}
+                    > Choose Other</Button>
+                    <Button style={styles.button}
+                      mode='contained'
+                      onPress={this.savedp}
+                    > Ok</Button>
+                  </View>
+                </View>
+              }
+
+            </>
+          }
+
         </View>
       </>
     );
@@ -21,3 +94,26 @@ export class Setting extends Component {
 }
 
 export default Setting;
+const styles = StyleSheet.create({
+  container: {
+    flex: 1
+  },
+  image: {
+    alignSelf: 'center',
+    justifyContent: 'center'
+  },
+  a1: {
+    marginTop: 30,
+    marginHorizontal: 10,
+    flexDirection: "column",
+    justifyContent: "flex-end",
+  },
+  a2: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+  },
+  button: {
+    backgroundColor: 'green',
+    borderRadius: 20
+  }
+})
