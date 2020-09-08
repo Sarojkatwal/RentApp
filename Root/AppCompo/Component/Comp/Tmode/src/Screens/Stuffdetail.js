@@ -61,7 +61,7 @@ class Stuffdetail extends Component {
                     <Card>
                         <Avatar.Image size={50}
                             style={styles.profile}
-                            source={require('../../../../../../assets/messi.png')}
+                            source={require('../../../../../../../assets/messi.png')}
                             onPress={() => alert('')}
                         />
                         <Card.Cover source={{ uri: "https://picsum.photos/" + this.state.a }} style={styles.images} />
@@ -127,7 +127,6 @@ class Stuffdetail extends Component {
                                     left: -15,
                                     fontWeight: 'bold'
                                 }}
-
                             >
                                 <Text style={styles.textfordesc}>
                                     {stuff.description}
@@ -137,7 +136,6 @@ class Stuffdetail extends Component {
                             <View style={styles.a1}>
                                 <View style={styles.a2}>
                                     <Button mode='contained'
-
                                     > Call</Button>
                                 </View>
                             </View>

@@ -10,6 +10,8 @@ npm i react-native-vector-icons
 //npm i react-navigation-shared-element  react-native-shared-element
 expo install expo-linear-gradient
 npm install faker
+expo install expo-image-picker
+expo install expo-permissions
  
  
  

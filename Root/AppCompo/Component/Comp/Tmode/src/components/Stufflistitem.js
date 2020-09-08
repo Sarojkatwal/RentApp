@@ -8,15 +8,16 @@ import {
     TouchableOpacity,
 } from 'react-native';
 import Feather from "react-native-vector-icons/Feather";
-import { IconButton } from 'react-native-paper'
+import { Badge, IconButton, Avatar } from 'react-native-paper'
 
 const windowWidth = Dimensions.get('window').width;
 class Stufflistitem extends Component {
     state = {
         clicked: false
     }
+    componentDidMount = () => console.log()
     render() {
-        const { item, onPress } = this.props;
+        const { item, onPress, recomm } = this.props;
         return (
             <View style={styles.stuff}>
                 <TouchableOpacity
@@ -42,7 +43,12 @@ class Stufflistitem extends Component {
                     })}
                     style={styles.heart}
                 />
-
+                {recomm && <Badge style={styles.reco}>Recommended</Badge>}
+                <Avatar.Image size={70}
+                    style={styles.profile}
+                    source={require('../../../../../../../assets/messi.png')}
+                    onPress={() => alert('')}
+                />
             </View >
 
         );
@@ -52,13 +58,14 @@ class Stufflistitem extends Component {
 export default Stufflistitem;
 const styles = StyleSheet.create({
     image: {
-        width: windowWidth / 2 - 50,
-        height: 140,
-        borderRadius: 20,
+        width: windowWidth,
+        height: 240,
+        borderRadius: 30,
+        marginTop: 20
     },
     text: {
         margin: 3,
-        //textAlign: 'center',
+        textAlign: 'center',
     },
     stuff: {
         borderColor: 'pink',
@@ -67,10 +74,25 @@ const styles = StyleSheet.create({
         borderWidth: 3,
         justifyContent: 'center',
         alignItems: 'center',
-        width: windowWidth / 2 - 4,
-        margin: 2,
+        width: windowWidth - 10,
+        margin: 4,
     },
     heart: {
         position: 'absolute',
-    }
+    },
+    reco: {
+        position: 'absolute',
+        top: 0,
+        left: 2,
+    },
+    profile: {
+        position: 'absolute',
+        zIndex: 1,
+        right: 15,
+        bottom: 42,
+        margin: 10,
+        backgroundColor: 'white',
+        borderColor: 'grey',
+        borderWidth: 2
+    },
 });

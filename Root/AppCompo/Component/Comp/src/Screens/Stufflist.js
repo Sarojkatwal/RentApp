@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { View, FlatList, StyleSheet } from 'react-native';
+import { View, FlatList, StyleSheet, Button } from 'react-native';
 import { getStuff } from '../api';
 import Stufflistitem from '../components/Stufflistitem';
 
@@ -39,6 +39,8 @@ class Stufflist extends Component {
     render() {
         return (
             <View style={styles.container}>
+                <Button title='Press'
+                    onPress={() => console.log(this.props.route)} />
                 <FlatList
                     data={this.state.stuff}
                     renderItem={this.renderItem}
@@ -46,7 +48,7 @@ class Stufflist extends Component {
                     keyExtractor={(stuff, index) => `${stuff.key}${index}`}
                     refreshing={false}
                     onRefresh={this.updateStuff}
-                    ItemSeparatorComponent={this.renderSeparator}
+                //ItemSeparatorComponent={this.renderSeparator}
                 />
             </View>
         );
