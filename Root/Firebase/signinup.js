@@ -1,4 +1,5 @@
-import {signIn,signUp,saveUsersData,getUsersData} from  './api'
+import {signIn,signUp,saveUsersData,saveRoom} from  './api'
+import {uploadProfile} from './storage'
 
 const onlogin=(username,password,navigationState)=>
 {
@@ -8,16 +9,21 @@ const onlogin=(username,password,navigationState)=>
             const response=await signIn(username,password)
             const loginUser=response.user
             console.log('signed in with user ' + loginUser.email)
-            try{
-                const res=await getUsersData(loginUser.uid)
-                console.log(res.data())
-
-            }
-            catch(err)
+            
+            fetch('https://github.githubassets.com/images/icons/emoji/unicode/1f4af.png?v8').then((res)=>
+            
+                res.blob()
+                
+            ).then((blob)=>
             {
-alert(err)
-            }
+                uploadProfile(blob,loginUser.uid)
+
+                
+            }).catch((err)=>{console.log(err)})
             navigationState.navigate('InsideApp')
+            
+                
+
             
 
             }
@@ -35,9 +41,15 @@ const onsignup=(username,password,confirmpassword,navigationState)=>
     {
         try {
             const response = await signUp(username,password)
+            var today = new Date();
+            
             const userData={
                 id:response.user.uid,
-                email:response.user.email
+                email:response.user.email,
+                created_at:today,
+                name:'kundan',
+                profile_pic:'pic1',
+                
             }
 
             console.log('signed up new user ' + userData.email)
