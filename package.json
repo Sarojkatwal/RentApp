@@ -18,6 +18,7 @@
     "expo": "~38.0.8",
     "expo-image-picker": "~8.3.0",
     "expo-linear-gradient": "~8.2.1",
+    "expo-permissions": "~9.0.1",
     "expo-status-bar": "^1.0.2",
     "faker": "^5.1.0",
     "firebase": "^7.19.1",
@@ -33,11 +34,11 @@
     "react-native-safe-area-context": "~3.0.7",
     "react-native-screens": "~2.9.0",
     "react-native-shared-element": "^0.7.0",
+    "react-native-star-rating": "^1.1.0",
     "react-native-tab-view": "^2.15.1",
     "react-native-vector-icons": "^7.0.0",
     "react-native-web": "~0.11.7",
-    "react-navigation-shared-element": "^5.0.0-alpha1",
-    "expo-permissions": "~9.0.1"
+    "react-navigation-shared-element": "^5.0.0-alpha1"
   },
   "devDependencies": {
     "@babel/core": "^7.8.6",

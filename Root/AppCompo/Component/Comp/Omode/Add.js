@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import { View, Text, StyleSheet } from "react-native";
 import { Button, TextInput, Dialog, Portal, RadioButton, Title, Provider } from 'react-native-paper'
+import Feather from "react-native-vector-icons/Feather";
 class Add extends Component {
     state = {
         visiblefortype: false, //whether room type dialog is visible
@@ -10,11 +11,10 @@ class Add extends Component {
         value: 0,
         valuefortype: 0,
         valueforneg: 0,
-        valuefordesc: 0
+        valuefordesc: ""
     }
     showDialogfortype = () => this.setState({
         visiblefortype: true,
-        valuefortype: 0
     })
 
     hideDialogfortype = () => this.setState({
@@ -23,7 +23,6 @@ class Add extends Component {
     })
     showDialog = () => this.setState({
         visible: true,
-        value: 0
     })
 
     hideDialog = () => this.setState({
@@ -32,7 +31,7 @@ class Add extends Component {
     })
     showDialogforneg = () => this.setState({
         visibleforneg: true,
-        valueforneg: 0
+
     })
 
     hideDialogforneg = () => this.setState({
@@ -41,7 +40,6 @@ class Add extends Component {
     })
     showDialogfordesc = () => this.setState({
         visiblefordesc: true,
-        valuefordesc: 0
     })
 
     hideDialogfordesc = () => this.setState({
@@ -64,7 +62,7 @@ class Add extends Component {
                             marginBottom: 20
                         }}
                     >Select Area</Button>
-                    <Button mode='contained' icon='home'
+                    <Button mode='contained' icon={this.state.valuefortype == 0 ? 'home' : 'check-circle'}
                         style={{
                             borderRadius: 30,
                             width: "45%",
@@ -96,7 +94,7 @@ class Add extends Component {
                             </Dialog.Actions>
                         </Dialog>
                     </Portal>
-                    <Button mode='contained' icon='cash-usd' onPress={this.showDialog}
+                    <Button mode='contained' icon={this.state.value == 0 ? 'cash-usd' : 'check-circle'} onPress={this.showDialog}
                         style={{
 
                             borderRadius: 30,
@@ -118,6 +116,7 @@ class Add extends Component {
                             <Dialog.Content>
                                 <TextInput
                                     mode='outlined'
+                                    keyboardType='number-pad'
                                     placeholder="5000"
                                     value={this.state.value}
                                     onChangeText={value => this.setState({ value })}
@@ -131,7 +130,7 @@ class Add extends Component {
                             </Dialog.Actions>
                         </Dialog>
                     </Portal>
-                    <Button mode='contained' icon='account-question' onPress={this.showDialogforneg}
+                    <Button mode='contained' icon={this.state.valueforneg == 0 ? 'account-question' : 'check-circle'} onPress={this.showDialogforneg}
                         style={{
 
                             borderRadius: 30,
@@ -163,7 +162,7 @@ class Add extends Component {
                             </Dialog.Actions>
                         </Dialog>
                     </Portal>
-                    <Button mode='contained' icon='account-details' onPress={this.showDialogfordesc}
+                    <Button mode='contained' icon={!(this.state.valuefordesc.trim().length) ? 'account-details' : 'check-circle'} onPress={this.showDialogfordesc}
                         style={{
 
                             borderRadius: 30,
@@ -207,7 +206,7 @@ class Add extends Component {
                             width: "45%",
                             marginBottom: 20
                         }}
-                        onPress={() => alert(this.state.value + ' ' + this.state.valuefortype)}
+                        onPress={() => alert(this.state.value + ' ' + this.state.valuefordesc.trim().length)}
                     >Add Room</Button>
                 </View>
 

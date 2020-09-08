@@ -12,7 +12,6 @@ class Search extends Component {
     }
     showDialogfortype = () => this.setState({
         visiblefortype: true,
-        valuefortype: 0
     })
 
     hideDialogfortype = () => this.setState({
@@ -21,7 +20,6 @@ class Search extends Component {
     })
     showDialog = () => this.setState({
         visible: true,
-        value: 0
     })
 
     hideDialog = () => this.setState({
@@ -45,7 +43,7 @@ class Search extends Component {
                             marginBottom: 20
                         }}
                     >Select Area</Button>
-                    <Button mode='contained' icon='home'
+                    <Button mode='contained' icon={this.state.valuefortype == 0 ? 'home' : 'check-circle'}
                         style={{
                             borderRadius: 30,
                             width: "45%",
@@ -77,7 +75,7 @@ class Search extends Component {
                             </Dialog.Actions>
                         </Dialog>
                     </Portal>
-                    <Button mode='contained' icon='cash-usd' onPress={this.showDialog}
+                    <Button mode='contained' icon={this.state.value == 0 ? 'cash-usd' : 'check-circle'} onPress={this.showDialog}
                         style={{
 
                             borderRadius: 30,
@@ -100,6 +98,7 @@ class Search extends Component {
                                 <TextInput
                                     mode='outlined'
                                     placeholder="5000"
+                                    keyboardType='numeric'
                                     value={this.state.value}
                                     onChangeText={value => this.setState({ value })}
                                     style={{

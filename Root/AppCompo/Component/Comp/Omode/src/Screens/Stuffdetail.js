@@ -26,8 +26,7 @@ class Stuffdetail extends Component {
     state = {
         a: 700,
         visible: false,
-        rated: false,
-        rating: 0
+        starcount: 0
     }
     handleclick = (x) => {
         x ? (this.state.a != 700 &&
@@ -62,11 +61,6 @@ class Stuffdetail extends Component {
             <>
                 < ScrollView >
                     <Card>
-                        <Avatar.Image size={50}
-                            style={styles.profile}
-                            source={require('../../../../../../../assets/messi.png')}
-                            onPress={() => alert('')}
-                        />
                         <Card.Cover source={{ uri: "https://picsum.photos/" + this.state.a }} style={styles.images} />
                         <Card.Title
                             title="Some Photos"
@@ -124,28 +118,17 @@ class Stuffdetail extends Component {
                                 </View>
                             </View>
                             <View style={styles.a1}>
-                                {!this.state.rated ?
-                                    <View style={styles.a2}>
-                                        <Title>Rate:</Title>
-                                        <StarRating
-                                            disabled={false}
-                                            maxStars={5}
-                                            rating={this.state.rating}
-                                            selectedStar={(rating) => this.setState({
-                                                rating: rating,
-                                                rated: true
-                                            })}
-                                        />
-                                    </View> :
-                                    <View style={styles.a2}>
-                                        <Title>Rating:</Title>
-                                        <StarRating
-                                            disabled={true}
-                                            maxStars={5}
-                                            rating={this.state.rating}
-                                        />
-                                    </View>}
+                                <View style={styles.a2}>
+                                    <Title>Rating:</Title>
+                                    <StarRating
+                                        disabled={true}
+                                        maxStars={5}
+                                        rating={this.state.starcount}
+                                        selectedStar={(starcount) => this.setState({ starcount })}
+                                    />
+                                </View>
                             </View>
+
                             <List.Accordion title="Description"
                                 titleStyle={{
                                     fontSize: 20,
@@ -162,6 +145,9 @@ class Stuffdetail extends Component {
                                 <View style={styles.a2}>
                                     <Button mode='contained'
                                     > Call</Button>
+                                    <Button mode='contained'
+                                        onPress={() => this.props.navigation.navigate('editdetails')}
+                                    > Edit data</Button>
                                 </View>
                             </View>
                         </Card.Content>
@@ -185,16 +171,6 @@ const styles = StyleSheet.create({
     textfordesc: {
         margin: 12,
         fontSize: 16,
-    },
-    profile: {
-        position: 'absolute',
-        zIndex: 1,
-        right: 0,
-        bottom: 0,
-        margin: 10,
-        backgroundColor: 'transparent',
-        borderColor: 'grey',
-        borderWidth: 1
     },
     description: {
         margin: 10,

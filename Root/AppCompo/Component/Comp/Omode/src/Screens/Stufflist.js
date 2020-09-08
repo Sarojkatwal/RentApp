@@ -40,15 +40,14 @@ class Stufflist extends Component {
         return (
             <View style={styles.container}>
                 <Button title='Add Rooms'
-                    onPress={() => console.log(this.props.route)} />
+                    onPress={() => this.props.navigation.navigate('Add')} />
                 <FlatList
                     data={this.state.stuff}
                     renderItem={this.renderItem}
-                    numColumns={2}
+                    numColumns={1}
                     keyExtractor={(stuff, index) => `${stuff.key}${index}`}
                     refreshing={false}
                     onRefresh={this.updateStuff}
-                //ItemSeparatorComponent={this.renderSeparator}
                 />
             </View>
         );

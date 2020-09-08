@@ -1,11 +1,14 @@
 import React, { Component } from "react";
-import { View } from "react-native";
+import { View, TouchableOpacity } from "react-native";
 import {
-    Provider as PaperProider,
+    Provider,
+    Portal,
     Avatar,
     Divider,
     Paragraph,
     Caption,
+    Button,
+    Dialog
 } from "react-native-paper";
 import Icon from "react-native-vector-icons/FontAwesome5";
 import { Homescreen, Profilescreen, Setting, Exit, Feedback, Help, RateUs } from './Screen/index'
@@ -18,20 +21,26 @@ import {
 const Stack = createDrawerNavigator();
 
 class CustomDrawerContent extends Component {
-
+    changedp = () => {
+        this.props.navigation.navigate('Setting');
+    }
     render() {
         return (
             <View style={{ flex: 1 }}>
                 <DrawerContentScrollView {...this.props}>
                     <View style={{ paddingLeft: 10 }}>
-                        {!global.dp ?
-                            <Avatar.Image size={80} source={require('../../../assets/messi.png')} /> :
-                            <Avatar.Image size={80} source={{ uri: global.dp }} />
-                        }
-                        <Paragraph style={{ fontWeight: "bold" }}>SAROJ KATWAL</Paragraph>
-                        <Caption>@katwalsaroj11</Caption>
-                        <Caption>54 Following</Caption>
-                        <Caption>4 Followers</Caption>
+                        <TouchableOpacity
+                            onPress={this.changedp}>
+                            {!global.dp ?
+                                <Avatar.Image size={80} source={require('../../../assets/messi.png')} /> :
+                                <Avatar.Image size={80} source={{ uri: global.dp }} />
+                            }
+
+                            <Paragraph style={{ fontWeight: "bold" }}>SAROJ KATWAL</Paragraph>
+                            <Caption>@katwalsaroj11</Caption>
+                            <Caption>54 Following</Caption>
+                            <Caption>4 Followers</Caption>
+                        </TouchableOpacity>
                     </View>
                     <Divider
                         style={{ backgroundColor: "black", margin: 10, height: 1 }}
