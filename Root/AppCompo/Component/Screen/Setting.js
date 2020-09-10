@@ -4,6 +4,9 @@ import { List, Avatar, Appbar, Button } from "react-native-paper";
 import * as ImagePicker from 'expo-image-picker';
 import * as Permissions from 'expo-permissions';
 
+import {getLoggedUser} from '../../../Firebase/api'
+import { uploadProfile } from "../../../Firebase/storage";
+
 export class Setting extends Component {
   state = {
     image: null,
@@ -39,14 +42,24 @@ export class Setting extends Component {
     this.setState({
       next: 'changedp'
     })
+    
   }
-  savedp = () => {
+  savedp = async() => {
     //write code to save image to database
     global.dp = this.state.image
     this.setState({
       ...this.state,
       next: 'setting'
     })
+    
+    const response = await fetch(this.state.image);
+    const blob = await response.blob();
+    getLoggedUser((uid)=>
+    {
+      uploadProfile(blob,uid)
+
+    })
+    
   }
   render() {
     return (

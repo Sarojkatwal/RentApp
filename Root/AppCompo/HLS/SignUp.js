@@ -22,6 +22,18 @@ class SignUp extends React.Component {
     username: "",
     password: "",
     confirm_password: "",
+    firstName:'Kundan',
+    middleName:'-',
+    lastName:'Dahal',
+    gender:'M',
+    address:
+    {
+        province:'3',
+        district:'Chitwan',
+        city:'Bharatpur',
+    },
+    
+
     check_textInputChange: false,
     secureTextEntry: true,
     confirm_secureTextEntry: true,
@@ -49,6 +61,11 @@ class SignUp extends React.Component {
       password: val,
     });
   };
+  signup=()=>
+  {
+    const {check_textInputChange,secureTextEntry,confirm_secureTextEntry,...userState}=this.state
+    onsignup(userState,this.props.navigation)
+  }
 
   handleConfirmPasswordChange = (val) => {
     this.setState({
@@ -169,7 +186,7 @@ class SignUp extends React.Component {
               </Text>
             </View>
             <View style={styles.button}>
-              <TouchableOpacity style={styles.signIn} onPress={() => { onsignup(this.state.username,this.state.password,this.state.confirm_password,this.props.navigation)}}>
+              <TouchableOpacity style={styles.signIn} onPress={()=>{this.signup()} }>
                 <LinearGradient
                   colors={["#08d4c4", "#01ab9d"]}
                   style={styles.signIn}
