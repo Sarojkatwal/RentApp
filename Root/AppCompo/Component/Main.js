@@ -31,8 +31,8 @@ class CustomDrawerContent extends Component {
                         }
                         <Avatar.Image size={80} source={{uri:global.dp}} />
                         
-                        <Paragraph style={{ fontWeight: "bold" }}>Swastika Poudel</Paragraph>
-                        <Caption>@swastika87</Caption>
+                        <Paragraph style={{ fontWeight: "bold" }}>Saroj Katwal</Paragraph>
+                        <Caption>sarojdon</Caption>
                         <Caption>54 Following</Caption>
                         <Caption>4 Followers</Caption>
                     </View>
