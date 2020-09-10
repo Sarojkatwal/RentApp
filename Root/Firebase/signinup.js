@@ -1,8 +1,10 @@
-import {signIn,signUp,saveUsersData,saveRoom} from  './api'
-import {uploadProfile} from './storage'
+import {signIn,signUp,saveUsersData,getLoggedUser,signout,getUsersData} from  './api'
+import firebase from './config'
+
 
 const onlogin=(username,password,navigationState)=>
 {
+    
     const login=async ()=>
     {
         try{
@@ -10,18 +12,19 @@ const onlogin=(username,password,navigationState)=>
             const loginUser=response.user
             console.log('signed in with user ' + loginUser.email)
             
-            fetch('https://github.githubassets.com/images/icons/emoji/unicode/1f4af.png?v8').then((res)=>
             
-                res.blob()
-                
-            ).then((blob)=>
-            {
-                uploadProfile(blob,loginUser.uid)
-
-                
-            }).catch((err)=>{console.log(err)})
             navigationState.navigate('InsideApp')
             
+            try{
+                const res=await getUsersData(loginUser.uid)
+                console.log(res.data().profile_pic)
+                global.dp=res.data().profile_pic
+            }
+            catch(err)
+            {
+                alert(err)
+            }
+              
                 
 
             
@@ -35,33 +38,54 @@ const onlogin=(username,password,navigationState)=>
     login();
 }
 
-const onsignup=(username,password,confirmpassword,navigationState)=>
+const onsignup=(userState,navigationState)=>
 {
     const signup=async ()=>
     {
+        
         try {
-            const response = await signUp(username,password)
+            const response = await signUp(userState.username,userState.password)
             var today = new Date();
             
             const userData={
-                id:response.user.uid,
+                uid:response.user.uid,
                 email:response.user.email,
                 created_at:today,
-                name:'kundan',
-                profile_pic:'pic1',
+                firstName:userState.firstName,
+                middleName:userState.middleName,
+                lastName:userState.lastName,
+                gender:userState.gender,
+                address:
+                {
+                    province:userState.address.province,
+                    district:userState.address.district,
+                    city:userState.address.city
+                },
+                profile_pic:''
                 
             }
-
-            console.log('signed up new user ' + userData.email)
-            try{
-                saveUsersData(userData.id,userData)
-
-            }
-            catch(err)
+            firebase.storage().ref().child('images/profile/man-profile-cartoon_18591-58482.jpg').getDownloadURL().then((url)=>
             {
-                alert(err)
+                global.dp=url
+                userData.profile_pic=url
+                try{
+                    saveUsersData(userData.uid,userData)
+    
+                }
+                catch(err)
+                {
+                    alert(err)
+    
+                }
+                
+            }).catch((err)=>
+            {
+                alert(err);
+            })
+            
 
-            }
+            
+            
             
             navigationState.navigate('InsideApp')
 
@@ -71,7 +95,7 @@ const onsignup=(username,password,confirmpassword,navigationState)=>
             alert(err)
         }
     }
-    if(password==confirmpassword)
+    if(userState.password==userState.confirm_password)
     {
         signup();
     }

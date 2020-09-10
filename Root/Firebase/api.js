@@ -25,20 +25,12 @@ const getUsersData=async (uid)=>
     return response;
 
 }
-const onAuthstatechanged=(onAuthchange)=>
+const getLoggedUser=async (onValueGet)=>
 {
-    firebase.auth().onAuthStateChanged((user)=>
-    {
-        if(user)
-        {
-            onAuthchange(user)
-        }
-        else{
-            console.log('no users logged in ')
-        }
-        
-
+    firebase.auth().onAuthStateChanged(function(user){
+        onValueGet(user.uid)
     })
+    
 }
 const signout=(onsignout)=>
 {
@@ -47,37 +39,27 @@ const signout=(onsignout)=>
         onsignout();
     })
 }
-const getLoggedUser=async ()=>
-{
-const uid=firebase.auth().currentUser.uid
-    return uid;
-}
 
-const saveRoom=(roomData,find,onSave)=>
+
+const saveTenantRoom=(roomData,onSave)=>
 {
-    if(find)
-    {
-        firebase.firestore().collection('tenant').add(roomData).then(()=>
+    firebase.firestore().collection('tenantPost').add(roomData,{merge:true}).then(
+        ()=>
         {
             onSave();
-        }).catch((err)=>{throw err;})
-    }
-    else{
-        firebase.firestore().collection('owner').add(roomData).then(()=>
-            {
-                onSave();
-            }
-        ).catch((err)=>{throw err;})
-    }
-    
+        }
+    ).catch((err)=>{console.log(err)})
 }
-const getRoomData=async (uid,isOwner)=>
+
+
+
+const fetchRoomforloggedInUser=async (uid,isOwner)=>
 {
     const Rooms=[]
    
    if(isOwner)
    {
-       firebase.firestore().collection('owner').where('uid'==uid).get().then((querSnanpshot)=>
+       firebase.firestore().collection('ownerPost').where('authorId'==uid).get().then((querSnanpshot)=>
        {
            querSnanpshot.forEach((doc)=>
            {
@@ -93,4 +75,7 @@ const getRoomData=async (uid,isOwner)=>
 }
 
 
-export { saveUsersData,signIn,signUp,getUsersData,onAuthstatechanged,signout,getLoggedUser,saveRoom};
+
+
+export { saveUsersData,signIn,signUp,getUsersData,signout}
+export {getLoggedUser,saveTenantRoom,fetchRoomforloggedInUser}
