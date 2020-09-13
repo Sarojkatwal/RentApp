@@ -5,8 +5,9 @@ var storage = firebase.storage()
 
 
 const uploadProfile = (imageUri) => {
+    const uid = firebase.auth().currentUser.uid
     if (imageUri) {
-        var storageRef = storage.ref('images/profile/' + uid)
+        var storageRef = storage.ref('images/profile/' + uid);
         storageRef.put(imageUri).on(firebase.storage.TaskEvent.STATE_CHANGED,
             snapshot => {
                 console.log("snapshot: " + snapshot.state);
@@ -19,13 +20,10 @@ const uploadProfile = (imageUri) => {
                 console.log('Image upload error : ' + err.toString())
             }, () => {
                 storageRef.getDownloadURL().then((downloadURL) => {
-                    console.log('profile pic uploaded at ' + downloadURL);
-
-
+                    //console.log('profile pic uploaded at ' + downloadURL);
                     try {
-                        saveUsersData(uid, { profile_pic: downloadURL }, true)
+                        saveUsersData(uid, { profilePic: downloadURL }, true)
                     }
-
                     catch (err) {
                         console.log(err)
                     }
@@ -59,9 +57,10 @@ const uploadRoom = (roomData, imageUri, onUpload) => {
                 console.log('room uploaded at' + downloadURL);
 
                 firebase.firestore().collection('ownerPost').add(roomData).then((doc) => {
-                    firebase.firestore().collection('ownerPost').doc(doc.id).collection('images').add({ download_url: downloadURL }).then(() => {
-                        onUpload(doc.id);
-                    }).catch((err) => { console.log(err) })
+                    firebase.firestore().collection('ownerPost').doc(doc.id).collection('images')
+                        .add({ download_url: downloadURL }).then(() => {
+                            onUpload(doc.id);
+                        }).catch((err) => { console.log(err) })
 
                 }).catch((err) => { console.log(err); })
 

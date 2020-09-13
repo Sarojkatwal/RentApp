@@ -17,6 +17,7 @@ import {
     DrawerContentScrollView,
     DrawerItemList,
 } from "@react-navigation/drawer";
+import UserContext from '../../context'
 
 const Stack = createDrawerNavigator();
 
@@ -26,28 +27,35 @@ class CustomDrawerContent extends Component {
     }
     render() {
         return (
-            <View style={{ flex: 1 }}>
-                <DrawerContentScrollView {...this.props}>
-                    <View style={{ paddingLeft: 10 }}>
-                        <TouchableOpacity
-                            onPress={this.changedp}>
-                            {!global.dp ?
-                                <Avatar.Image size={80} source={require('../../../assets/messi.png')} /> :
-                                <Avatar.Image size={80} source={{ uri: global.dp }} />
-                            }
+            <UserContext.Consumer>
+                {data => {
+                    return (
+                        <View style={{ flex: 1 }}>
+                            <DrawerContentScrollView {...this.props}>
+                                <View style={{ paddingLeft: 10 }}>
+                                    <TouchableOpacity
+                                        onPress={this.changedp}>
+                                        {(data.profilePic == '') ?
+                                            <Avatar.Image size={80} source={require('../../../assets/messi.png')} /> :
+                                            <Avatar.Image size={80} source={{ uri: data.profilePic }} />
+                                        }
 
-                            <Paragraph style={{ fontWeight: "bold" }}>SAROJ KATWAL</Paragraph>
-                            <Caption>@katwalsaroj11</Caption>
-                            <Caption>54 Following</Caption>
-                            <Caption>4 Followers</Caption>
-                        </TouchableOpacity>
-                    </View>
-                    <Divider
-                        style={{ backgroundColor: "black", margin: 10, height: 1 }}
-                    />
-                    <DrawerItemList {...this.props} />
-                </DrawerContentScrollView>
-            </View>
+                                        <Paragraph style={{ fontWeight: "bold" }}>SAROJ KATWAL</Paragraph>
+                                        <Caption>@katwalsaroj11</Caption>
+                                        <Caption>54 Following</Caption>
+                                        <Caption>4 Followers</Caption>
+                                    </TouchableOpacity>
+                                    <Button onPress={() => console.log(data)}>Press</Button>
+                                </View>
+                                <Divider
+                                    style={{ backgroundColor: "black", margin: 10, height: 1 }}
+                                />
+                                <DrawerItemList {...this.props} />
+                            </DrawerContentScrollView>
+                        </View>
+                    )
+                }}
+            </UserContext.Consumer>
         );
     }
 }

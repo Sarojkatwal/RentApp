@@ -21,11 +21,6 @@ const onlogin = (username, password, navigationState) => {
             catch (err) {
                 alert(err)
             }
-
-
-
-
-
         }
         catch (err) {
             alert(err)
@@ -56,7 +51,6 @@ const onsignup = (userState, navigationState) => {
                     city: userState.address.city
                 },
                 profile_pic: ''
-
             }
             firebase.storage().ref().child('images/profile/man-profile-cartoon_18591-58482.jpg').getDownloadURL().then((url) => {
                 global.dp = url

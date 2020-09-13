@@ -1,10 +1,39 @@
 import firebase from './Firebase'
 import { firestore } from 'firebase';
 
+const saveUsersData = (uid, userData, ismerge = true) => {
+    firebase.firestore().collection('users').doc(uid).
+        set(userData, { merge: ismerge })
+        .catch((err) => console.log('Error is here'))
+}
+
 const signUp = async (username, password) => {
-    const response = firebase.auth()
+    const userData = {
+        email: username + '@rent.com',
+        createdAt: new Date(),
+        username: username,
+        noOfRoomsUploades: 0,
+        favRooms: [],
+        name: {
+            firstName: '',
+            lastName: '',
+        },
+        gender: '',
+        address:
+        {
+            province: '',
+            district: '',
+            city: ''
+        },
+        profilePic: ''
+
+    }
+    firebase.auth()
         .createUserWithEmailAndPassword(username + "@rent.com", password)
-        .then(console.log(response))
+        .then((res) => {
+            saveUsersData(res.user.uid, userData)
+            return res
+        })
         .catch(error => {
             if (error.code === 'auth/email-already-in-use') {
                 return ('That email address is already in use!');
@@ -17,7 +46,6 @@ const signUp = async (username, password) => {
             console.error(error);
             return null
         })
-    return response;
 }
 
 const signIn = async (username, password) => {
@@ -28,18 +56,14 @@ const signIn = async (username, password) => {
 
 }
 
-const saveUsersData = (uid, userData, ismerge = true) => {
-    firebase.firestore().collection('users').doc(uid).
-        set(userData, { merge: ismerge })
-        .catch((err) => console.log('Error is here'))
+
+const getUsersData = (uid, func) => {
+    firebase.firestore().collection('users').doc(uid)
+        .onSnapshot((doc) => {
+            func(doc.data())
+        })
 }
 
-const getUsersData = async (uid) => {
-    const response = firebase.firestore().collection('users')
-        .doc(uid).get().catch((err) => { throw err })
-    return response;
-
-}
 const signout = () => {
     firebase.auth().signOut().then((x) =>
         console.log(x)

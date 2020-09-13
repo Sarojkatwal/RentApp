@@ -3,7 +3,7 @@ import { Image, View, Platform, Text, StyleSheet } from 'react-native';
 import { List, Avatar, Appbar, Button } from "react-native-paper";
 import * as ImagePicker from 'expo-image-picker';
 import * as Permissions from 'expo-permissions';
-
+import { uploadProfile } from '../../../Firebase/storage';
 export class ChangeDp extends Component {
     state = {
         image: null,
@@ -40,9 +40,12 @@ export class ChangeDp extends Component {
             next: 'changedp'
         })
     }
-    savedp = () => {
+    savedp = async () => {
         //write code to save image to database
-        global.dp = this.state.image;
+        //global.dp = this.state.image;
+        const response = await fetch(this.state.image);
+        const blob = await response.blob();
+        uploadProfile(blob)
         this.props.navigation.goBack()
     }
     render() {
