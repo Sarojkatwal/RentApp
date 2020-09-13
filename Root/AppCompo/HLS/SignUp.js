@@ -10,11 +10,15 @@ import {
   StyleSheet,
   ScrollView,
   StatusBar,
+  Alert,
+  ActivityIndicator
 } from "react-native";
+import { Provider, Dialog, Portal } from 'react-native-paper'
 import * as Animatable from "react-native-animatable";
 import { LinearGradient } from "expo-linear-gradient";
 import FontAwesome from "react-native-vector-icons/FontAwesome";
 import Feather from "react-native-vector-icons/Feather";
+import { signUp } from '../../Firebase/api'
 
 class SignUp extends React.Component {
   state = {
@@ -24,31 +28,50 @@ class SignUp extends React.Component {
     check_textInputChange: false,
     secureTextEntry: true,
     confirm_secureTextEntry: true,
+    isValidUser: false,
+    isValidPassword: false,
+    isValidUserf: true,
+    isValidPasswordf: true,
+    visible: false
   };
 
+
   textInputChange = (val) => {
-    if (val.length !== 0) {
+    if (val.trim().length >= 4) {
       this.setState({
         ...this.state,
         username: val,
         check_textInputChange: true,
+        isValidUser: true,
+        isValidUserf: true,
       });
     } else {
       this.setState({
         ...this.state,
         username: val,
         check_textInputChange: false,
+        isValidUser: false,
+        isValidUserf: false,
       });
     }
   };
-
   handlePasswordChange = (val) => {
-    this.setState({
-      ...this.state,
-      password: val,
-    });
+    if (val.trim().length >= 8) {
+      this.setState({
+        ...this.state,
+        password: val,
+        isValidPassword: true,
+        isValidPasswordf: true
+      });
+    } else {
+      this.setState({
+        ...this.state,
+        password: val,
+        isValidPassword: false,
+        isValidPasswordf: false
+      });
+    }
   };
-
   handleConfirmPasswordChange = (val) => {
     this.setState({
       ...this.state,
@@ -69,149 +92,208 @@ class SignUp extends React.Component {
       confirm_secureTextEntry: !this.state.confirm_secureTextEntry,
     });
   };
+  signUpHandle = () => {
+    if (this.state.isValidUser && this.state.isValidPassword) {
+      if (this.state.password == this.state.confirm_password) {
+        this.setState({
+          ...this.state,
+          visible: true
+        })
+        signUp(this.state.username, this.state.password)
+          .then((res) => {
+            if (res) {
+              if (typeof (res) === 'string') {
+                //console.log('resup:', res)
+                this.setState({
+                  ...this.state,
+                  visible: false
+                })
+                Alert.alert(res)
+              }
+
+            }
+          })
+      }
+      else {
+        Alert.alert('Password didnot match')
+      }
+    }
+  }
   render() {
     return (
-      <View style={styles.container}>
-        <StatusBar backgroundColor="#009387" barStyle="light-content" />
-        <View style={styles.header}>
-          <Text style={styles.text_header}>Register Now!</Text>
-        </View>
-        <Animatable.View animation="fadeInUpBig" style={styles.footer}>
-          <ScrollView>
-            <Text style={styles.text_footer}>Username</Text>
-            <View style={styles.action}>
-              <FontAwesome name="user-o" color="#05375a" size={20} />
-              <TextInput
-                placeholder="Your Username"
-                style={styles.textInput}
-                autoCapitalize="none"
-                onChangeText={(val) => this.textInputChange(val)}
-              />
-              {this.state.check_textInputChange ? (
-                <Animatable.View animation="bounceIn">
-                  <Feather name="check-circle" color="green" size={20} />
-                </Animatable.View>
-              ) : null}
-            </View>
+      <Provider>
+        <View style={styles.container}>
+          <StatusBar backgroundColor="#009387" barStyle="light-content" />
+          <View style={styles.header}>
+            <Text style={styles.text_header}>Register Now!</Text>
+          </View>
+          <Animatable.View animation="fadeInUpBig" style={styles.footer}>
+            <ScrollView>
+              <Text style={styles.text_footer}>Username</Text>
+              <View style={styles.action}>
+                <FontAwesome name="user-o" color="#05375a" size={20} />
+                <TextInput
+                  placeholder="Your Username"
+                  style={styles.textInput}
+                  autoCapitalize="none"
+                  onChangeText={(val) => this.textInputChange(val)}
+                />
+                {this.state.check_textInputChange ? (
+                  <Animatable.View animation="bounceIn">
+                    <Feather name="check-circle" color="green" size={20} />
+                  </Animatable.View>
+                ) : null}
+              </View>
 
-            <Text
-              style={[
-                styles.text_footer,
-                {
-                  marginTop: 35,
-                },
-              ]}
-            >
-              Password
-            </Text>
-            <View style={styles.action}>
-              <Feather name="lock" color="#05375a" size={20} />
-              <TextInput
-                placeholder="Your Password"
-                secureTextEntry={this.state.secureTextEntry ? true : false}
-                style={styles.textInput}
-                autoCapitalize="none"
-                onChangeText={(val) => this.handlePasswordChange(val)}
-              />
-              <TouchableOpacity onPress={this.updateSecureTextEntry}>
-                {this.state.secureTextEntry ? (
-                  <Feather name="eye-off" color="grey" size={20} />
-                ) : (
-                    <Feather name="eye" color="grey" size={20} />
-                  )}
-              </TouchableOpacity>
-            </View>
-
-            <Text
-              style={[
-                styles.text_footer,
-                {
-                  marginTop: 35,
-                },
-              ]}
-            >
-              Confirm Password
-            </Text>
-            <View style={styles.action}>
-              <Feather name="lock" color="#05375a" size={20} />
-              <TextInput
-                placeholder="Confirm Your Password"
-                secureTextEntry={
-                  this.state.confirm_secureTextEntry ? true : false
-                }
-                style={styles.textInput}
-                autoCapitalize="none"
-                onChangeText={(val) => this.handleConfirmPasswordChange(val)}
-              />
-              <TouchableOpacity onPress={this.updateConfirmSecureTextEntry}>
-                {this.state.secureTextEntry ? (
-                  <Feather name="eye-off" color="grey" size={20} />
-                ) : (
-                    <Feather name="eye" color="grey" size={20} />
-                  )}
-              </TouchableOpacity>
-            </View>
-
-
-            <View style={styles.textPrivate}>
-              <Text style={styles.color_textPrivate}>
-                By signing up you agree to our
+              {this.state.isValidUserf ? null : (
+                <Animatable.View animation="fadeInLeft" duration={500}>
+                  <Text style={styles.errorMsg}>
+                    Username must be of at least 4 characters.
               </Text>
-              <Text style={[styles.color_textPrivate, { fontWeight: "bold" }]}>
-                {" "}
+                </Animatable.View>
+              )}
+
+              <Text
+                style={[
+                  styles.text_footer,
+                  {
+                    marginTop: 35,
+                  },
+                ]}
+              >
+                Password
+            </Text>
+              <View style={styles.action}>
+                <Feather name="lock" color="#05375a" size={20} />
+                <TextInput
+                  placeholder="Your Password"
+                  secureTextEntry={this.state.secureTextEntry ? true : false}
+                  style={styles.textInput}
+                  autoCapitalize="none"
+                  onChangeText={(val) => this.handlePasswordChange(val)}
+                />
+                <TouchableOpacity onPress={this.updateSecureTextEntry}>
+                  {this.state.secureTextEntry ? (
+                    <Feather name="eye-off" color="grey" size={20} />
+                  ) : (
+                      <Feather name="eye" color="green" size={20} />
+                    )}
+                </TouchableOpacity>
+              </View>
+              {this.state.isValidPasswordf ? null : (
+                <Animatable.View animation="fadeInLeft" duration={500}>
+                  <Text style={styles.errorMsg}>
+                    Password must be be of at least 8 characters.
+              </Text>
+                </Animatable.View>
+              )}
+              <Text
+                style={[
+                  styles.text_footer,
+                  {
+                    marginTop: 35,
+                  },
+                ]}
+              >
+                Confirm Password
+            </Text>
+              <View style={styles.action}>
+                <Feather name="lock" color="#05375a" size={20} />
+                <TextInput
+                  placeholder="Confirm Your Password"
+                  secureTextEntry={
+                    this.state.confirm_secureTextEntry ? true : false
+                  }
+                  style={styles.textInput}
+                  autoCapitalize="none"
+                  onChangeText={(val) => this.handleConfirmPasswordChange(val)}
+                />
+                <TouchableOpacity onPress={this.updateConfirmSecureTextEntry}>
+                  {this.state.confirm_secureTextEntry ? (
+                    <Feather name="eye-off" color="grey" size={20} />
+                  ) : (
+                      <Feather name="eye" color="green" size={20} />
+                    )}
+                </TouchableOpacity>
+              </View>
+
+              <View style={styles.textPrivate}>
+                <Text style={styles.color_textPrivate}>
+                  By signing up you agree to our
+              </Text>
+                <Text style={[styles.color_textPrivate, { fontWeight: "bold" }]}>
+                  {" "}
                 Terms of service
               </Text>
-              <Text style={styles.color_textPrivate}> and</Text>
-              <Text style={[styles.color_textPrivate, { fontWeight: "bold" }]}>
-                {" "}
+                <Text style={styles.color_textPrivate}> and</Text>
+                <Text style={[styles.color_textPrivate, { fontWeight: "bold" }]}>
+                  {" "}
                 Privacy policy
               </Text>
-            </View>
-            <View style={styles.button}>
-              <TouchableOpacity style={styles.signIn} onPress={() => { }}>
-                <LinearGradient
-                  colors={["#08d4c4", "#01ab9d"]}
-                  style={styles.signIn}
+              </View>
+              <View style={styles.button}>
+                <TouchableOpacity style={styles.signIn} onPress={this.signUpHandle}>
+                  <LinearGradient
+                    colors={["#08d4c4", "#01ab9d"]}
+                    style={styles.signIn}
+                  >
+                    <Text
+                      style={[
+                        styles.textSign,
+                        {
+                          color: "#fff",
+                        },
+                      ]}
+                    >
+                      Sign Up
+                  </Text>
+                  </LinearGradient>
+                </TouchableOpacity>
+
+                <TouchableOpacity
+                  onPress={() => this.props.navigation.goBack()}
+                  style={[
+                    styles.signIn,
+                    {
+                      borderColor: "#009387",
+                      borderWidth: 1,
+                      marginTop: 15,
+                    },
+                  ]}
                 >
                   <Text
                     style={[
                       styles.textSign,
                       {
-                        color: "#fff",
+                        color: "#009387",
                       },
                     ]}
                   >
-                    Sign Up
-                  </Text>
-                </LinearGradient>
-              </TouchableOpacity>
-
-              <TouchableOpacity
-                onPress={() => this.props.navigation.goBack()}
-                style={[
-                  styles.signIn,
-                  {
-                    borderColor: "#009387",
-                    borderWidth: 1,
-                    marginTop: 15,
-                  },
-                ]}
-              >
-                <Text
-                  style={[
-                    styles.textSign,
-                    {
-                      color: "#009387",
-                    },
-                  ]}
-                >
-                  Log In
+                    Log In
                 </Text>
-              </TouchableOpacity>
-            </View>
-          </ScrollView>
-        </Animatable.View>
-      </View>
+                </TouchableOpacity>
+              </View>
+            </ScrollView>
+          </Animatable.View>
+          <Portal>
+            <Dialog visible={this.state.visible} dismissable={false}
+              onDismiss={() => this.setState({
+                ...this.state,
+                visible: false
+              })}
+              style={{
+                backgroundColor: 'skyblue',
+                borderRadius: 30,
+              }}
+            >
+              <Dialog.Title>Loading</Dialog.Title>
+              <Dialog.Content>
+                <ActivityIndicator size='large' />
+              </Dialog.Content>
+            </Dialog>
+          </Portal>
+        </View >
+      </Provider>
     );
   }
 }
@@ -260,7 +342,7 @@ const styles = StyleSheet.create({
   },
   button: {
     alignItems: "center",
-    marginTop: 50,
+    marginTop: 30,
   },
   signIn: {
     width: "100%",
@@ -280,5 +362,9 @@ const styles = StyleSheet.create({
   },
   color_textPrivate: {
     color: "grey",
+  },
+  errorMsg: {
+    color: "#FF0000",
+    fontSize: 14,
   },
 });

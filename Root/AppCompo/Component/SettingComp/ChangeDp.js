@@ -29,8 +29,7 @@ export class ChangeDp extends Component {
             if (!result.cancelled) {
                 this.setState({ image: result.uri });
             }
-
-            console.log(result);
+            //console.log(result);
         } catch (E) {
             console.log(E);
         }

@@ -1,21 +1,23 @@
-import React from 'react';
-import { StyleSheet, Text, View, StatusBar } from 'react-native';
+import React from "react";
+import { AsyncStorage } from 'react-native'
+import { NavigationContainer } from "@react-navigation/native";
 import LogInSignUp from './Root/AppCompo/LogInSignUp'
-export default class App extends React.Component {
+import { getLoggedUser } from './Root/Firebase/api'
+
+class App extends React.Component {
+  state = {
+    user: null,
+  };
+  componentDidMount = () => {
+    getLoggedUser((user) => { this.setState({ user }) })
+  }
   render() {
     return (
-      <>
-        <LogInSignUp />
-      </>
+      <NavigationContainer>
+        <LogInSignUp user={this.state.user} />
+      </NavigationContainer>
     );
   }
 }
+export default App;
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
