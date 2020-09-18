@@ -5,9 +5,6 @@ import { getStuff } from '../api';
 import Stufflistitem from '../components/Stufflistitem';
 
 class Stufflist extends Component {
-    constructor(props) {
-        super(props)
-    }
     state = {
         stuff: [],
         visible: true,
@@ -15,7 +12,7 @@ class Stufflist extends Component {
     componentDidMount = () => {
         this.updateStuff()
     }
-    updateStuff = () => {
+    updateStuff = async () => {
         this.setState({
             stuff: getStuff()
         });

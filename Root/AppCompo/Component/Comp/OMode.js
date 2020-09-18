@@ -6,6 +6,7 @@ import {
     Button,
     ActivityIndicator,
     Alert,
+    TouchableOpacity,
 } from "react-native";
 import { createStackNavigator } from "@react-navigation/stack";
 import { Add, Main } from "./Omode";
@@ -15,15 +16,19 @@ const Stack = createStackNavigator();
 class OMode extends React.Component {
 
     render() {
+        const { navigation } = this.props
         return (
             <>
-                <Stack.Navigator
-                    screenOptions={{
+                <Stack.Navigator>
+                    <Stack.Screen name="Main" component={Main} options={{
                         headerShown: false,
-                    }}
-                >
-                    <Stack.Screen name="Main" component={Main} />
-                    <Stack.Screen name="Add" component={Add} />
+                    }} />
+                    <Stack.Screen name="Add" component={Add} options={{
+                        headerShown: false,
+                    }} />
+                    {/* <Stack.Screen name="SelImages" component={SelImages} options={{
+                        headerShown: false
+                    }} />*/}
                 </Stack.Navigator>
             </>
         );

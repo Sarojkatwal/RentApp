@@ -1,16 +1,15 @@
 import React, { Component } from "react";
-import { View, Text, StyleSheet } from "react-native";
-import { Button, TextInput, Dialog, Portal, RadioButton, Title, Provider } from 'react-native-paper'
+import { View, Text, StyleSheet, Images } from "react-native";
+import { Button, TextInput, Dialog, Portal, RadioButton, Title, Provider, ScrollView } from 'react-native-paper'
 import Feather from "react-native-vector-icons/Feather";
 class Add extends Component {
     state = {
         visiblefortype: false, //whether room type dialog is visible
         visible: false,//visible for maxprice dialog
-        visibleforneg: false,//whether visible for negotation on price
+        photos: [],//whether visible for negotation on price
         visiblefordesc: false, //whether visible for description
         value: 0,
         valuefortype: 0,
-        valueforneg: 0,
         valuefordesc: ""
     }
     showDialogfortype = () => this.setState({
@@ -27,15 +26,6 @@ class Add extends Component {
 
     hideDialog = () => this.setState({
         visible: false,
-
-    })
-    showDialogforneg = () => this.setState({
-        visibleforneg: true,
-
-    })
-
-    hideDialogforneg = () => this.setState({
-        visibleforneg: false,
 
     })
     showDialogfordesc = () => this.setState({
@@ -130,38 +120,16 @@ class Add extends Component {
                             </Dialog.Actions>
                         </Dialog>
                     </Portal>
-                    <Button mode='contained' icon={this.state.valueforneg == 0 ? 'account-question' : 'check-circle'} onPress={this.showDialogforneg}
+                    <Button mode='contained' icon={(this.state.photos.length == 0) ? 'image-plus' : 'check-circle'}
+                        onPress={() => this.props.navigation.push('SelImages')}
                         style={{
 
                             borderRadius: 30,
                             width: "45%",
                             marginBottom: 20
                         }}
-                    >Negotiable</Button>
-                    <Portal>
-                        <Dialog visible={this.state.visibleforneg} dismissable={false}
-                            onDismiss={this.hideDialogforneg}
-                            style={{
-                                backgroundColor: 'skyblue',
-                                borderRadius: 30,
-                            }}
-                        >
-                            <Dialog.Title>Is Price Negotiable?/</Dialog.Title>
-                            <Dialog.Content>
-                                <RadioButton.Group
-                                    onValueChange={(x) => this.setState({ valueforneg: x })}
-                                    value={this.state.valueforneg}
-                                >
-                                    <RadioButton.Item label="Yes" value={1} color='red' />
-                                    <RadioButton.Item label="No" value={2} color='red' />
+                    >RoomImages</Button>
 
-                                </RadioButton.Group>
-                            </Dialog.Content>
-                            <Dialog.Actions>
-                                <Button onPress={this.hideDialogforneg}>Done</Button>
-                            </Dialog.Actions>
-                        </Dialog>
-                    </Portal>
                     <Button mode='contained' icon={!(this.state.valuefordesc.trim().length) ? 'account-details' : 'check-circle'} onPress={this.showDialogfordesc}
                         style={{
 

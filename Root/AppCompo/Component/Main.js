@@ -17,10 +17,12 @@ import {
     DrawerContentScrollView,
     DrawerItemList,
 } from "@react-navigation/drawer";
+import { createStackNavigator } from '@react-navigation/stack'
 import UserContext from '../../context'
+import SelImages from './Comp/Omode/SelImages'
 
 const Stack = createDrawerNavigator();
-
+const Stack1 = createStackNavigator()
 class CustomDrawerContent extends Component {
     changedp = () => {
         this.props.navigation.navigate('Setting');
@@ -33,14 +35,14 @@ class CustomDrawerContent extends Component {
                         <View style={{ flex: 1 }}>
                             <DrawerContentScrollView {...this.props}>
                                 <View style={{ paddingLeft: 10 }}>
+
                                     <TouchableOpacity
                                         onPress={this.changedp}>
                                         {(data.profilePic == '') ?
                                             <Avatar.Image size={80} source={require('../../../assets/messi.png')} /> :
                                             <Avatar.Image size={80} source={{ uri: data.profilePic }} />
                                         }
-
-                                        <Paragraph style={{ fontWeight: "bold" }}>SAROJ KATWAL</Paragraph>
+                                        <Paragraph style={{ fontWeight: "bold" }}>{data.username}</Paragraph>
                                         <Caption>@katwalsaroj11</Caption>
                                         <Caption>54 Following</Caption>
                                         <Caption>4 Followers</Caption>
@@ -59,7 +61,7 @@ class CustomDrawerContent extends Component {
         );
     }
 }
-export default class Main extends Component {
+class Mains extends Component {
     constructor() {
         super()
         global.Show = true
@@ -136,3 +138,19 @@ export default class Main extends Component {
         );
     }
 }
+export default class Main extends React.Component {
+
+    render() {
+        return (
+            <>
+                <Stack1.Navigator screenOptions={{
+                    headerShown: false,
+                }} >
+                    <Stack1.Screen name="Mains" component={Mains} />
+                    <Stack1.Screen name="SelImages" component={SelImages} />
+                </Stack1.Navigator>
+            </>
+        );
+    }
+}
+

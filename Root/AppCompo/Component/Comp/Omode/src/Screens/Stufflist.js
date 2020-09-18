@@ -13,7 +13,7 @@ class Stufflist extends Component {
     componentDidMount = () => {
         this.updateStuff()
     }
-    updateStuff = () => {
+    updateStuff = async () => {
         this.setState({
             stuff: getStuff()
         });

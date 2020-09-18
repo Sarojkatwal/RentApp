@@ -28,7 +28,9 @@ class LogInSignUp extends React.Component {
             <Stack.Screen name="LogIn" component={LogIn} />
           </>
         ) : (
-            <Stack.Screen name="InsideApp" component={InsideApp} />
+            <>
+              <Stack.Screen name="InsideApp" component={InsideApp} />
+            </>
           )}
       </Stack.Navigator>
     );

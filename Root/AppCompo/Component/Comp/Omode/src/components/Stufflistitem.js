@@ -49,7 +49,7 @@ class Stufflistitem extends Component {
 export default Stufflistitem;
 const styles = StyleSheet.create({
     image: {
-        width: windowWidth,
+        width: windowWidth / 1.25,
         height: 240,
         borderRadius: 30,
         marginTop: 20
@@ -79,9 +79,8 @@ const styles = StyleSheet.create({
     profile: {
         position: 'absolute',
         zIndex: 1,
-        right: 15,
-        bottom: 42,
-        margin: 10,
+        right: 0,
+        bottom: 2,
         backgroundColor: 'white',
         borderColor: 'grey',
         borderWidth: 2
