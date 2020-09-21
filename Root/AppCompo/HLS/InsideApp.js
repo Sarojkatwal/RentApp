@@ -1,10 +1,10 @@
-import React, { Component } from 'react'
+import React, { PureComponent } from 'react'
 import { View, Text } from 'react-native'
 import UserContext from '../../context'
 import { getUsersData } from '../../Firebase/api'
 import firebase from '../../Firebase/Firebase'
 import Main from '../Component/Main'
-export class InsideApp extends Component {
+export class InsideApp extends PureComponent {
     state = {
         userData: {}
     }

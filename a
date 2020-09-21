@@ -1,6 +1,0 @@
-<TouchableOpacity
-                                        onPress={this.changedp}>
-                                        {(data.profilePic == '') ?
-                                            <Avatar.Image size={80} source={require('../../../assets/messi.png')} /> :
-                                            <Avatar.Image size={80} source={{ uri: data.profilePic }} />
-                                        }

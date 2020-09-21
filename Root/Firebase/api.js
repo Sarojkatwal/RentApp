@@ -12,8 +12,6 @@ const signUp = async (username, password) => {
         email: username + '@rent.com',
         createdAt: new Date(),
         username: username,
-        noOfRoomsUploades: 0,
-        favRooms: [],
         name: {
             firstName: '',
             lastName: '',
@@ -23,7 +21,8 @@ const signUp = async (username, password) => {
         {
             province: '',
             district: '',
-            city: ''
+            localLevel: '',
+            wardno: ''
         },
         profilePic: ''
 

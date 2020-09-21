@@ -10,13 +10,7 @@ export default class Main extends Component {
 
     render() {
         return (
-            <Stack3.Navigator screenOptions={{
-                headerShown: false
-            }}>
-                <Stack3.Screen name='stufflist' component={Stufflist} />
-                <Stack3.Screen name='stuffdetail' component={Stuffdetail}
-                />
-            </Stack3.Navigator>
+            <Stufflist {...this.props} />
         )
     }
 }

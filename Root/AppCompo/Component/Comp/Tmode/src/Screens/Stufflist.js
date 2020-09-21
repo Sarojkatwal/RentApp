@@ -7,7 +7,6 @@ import Stufflistitem from '../components/Stufflistitem';
 class Stufflist extends Component {
     state = {
         stuff: [],
-        visible: true,
     }
     componentDidMount = () => {
         this.updateStuff()
@@ -18,8 +17,7 @@ class Stufflist extends Component {
         });
     };
     onListItemPress = stuff => {
-        global.Show = false
-        this.props.navigation.navigate('stuffdetail', { stuff });
+        this.props.navigation.navigate('Details', { stuff, mode: 'T' });
     };
     renderItem = ({ item }) => (
         <Stufflistitem key={item.key} item={item} onPress={this.onListItemPress} recomm={(this.props.route.params == undefined) ? true : false} />

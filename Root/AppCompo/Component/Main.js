@@ -1,8 +1,7 @@
 import React, { Component } from "react";
 import { View, TouchableOpacity } from "react-native";
 import {
-    Provider,
-    Portal,
+    Headline,
     Avatar,
     Divider,
     Paragraph,
@@ -19,7 +18,10 @@ import {
 } from "@react-navigation/drawer";
 import { createStackNavigator } from '@react-navigation/stack'
 import UserContext from '../../context'
-import SelImages from './Comp/Omode/SelImages'
+import SelImages from './SelImages'
+import FillDetails from './FillDetails'
+import Details from './Details'
+import Editdetails from './EditDetails'
 
 const Stack = createDrawerNavigator();
 const Stack1 = createStackNavigator()
@@ -31,6 +33,11 @@ class CustomDrawerContent extends Component {
         return (
             <UserContext.Consumer>
                 {data => {
+                    const x = data.name
+                    const fullname = ''
+                    // const fullname = x.firstName + ' ' + x.lastName
+                    const address = {}
+                    //data.address
                     return (
                         <View style={{ flex: 1 }}>
                             <DrawerContentScrollView {...this.props}>
@@ -42,10 +49,10 @@ class CustomDrawerContent extends Component {
                                             <Avatar.Image size={80} source={require('../../../assets/messi.png')} /> :
                                             <Avatar.Image size={80} source={{ uri: data.profilePic }} />
                                         }
-                                        <Paragraph style={{ fontWeight: "bold" }}>{data.username}</Paragraph>
-                                        <Caption>@katwalsaroj11</Caption>
-                                        <Caption>54 Following</Caption>
-                                        <Caption>4 Followers</Caption>
+                                        <Paragraph style={{ fontWeight: "bold" }}>{fullname}</Paragraph>
+                                        <Caption>{data.email}</Caption>
+                                        <Caption>ChisankhuGadhi 4</Caption>
+                                        <Caption>{address.district}</Caption>
                                     </TouchableOpacity>
                                     <Button onPress={() => console.log(data)}>Press</Button>
                                 </View>
@@ -142,15 +149,27 @@ export default class Main extends React.Component {
 
     render() {
         return (
-            <>
-                <Stack1.Navigator screenOptions={{
-                    headerShown: false,
-                }} >
-                    <Stack1.Screen name="Mains" component={Mains} />
-                    <Stack1.Screen name="SelImages" component={SelImages} />
-                </Stack1.Navigator>
-            </>
-        );
+            <UserContext.Consumer>
+                {data => {
+                    return (
+                        <Stack1.Navigator screenOptions={{
+                            headerShown: false,
+                        }} >
+                            {(data.gender == '') ?
+                                <Stack1.Screen name='Filldetails' component={FillDetails} />
+                                :
+                                <>
+                                    <Stack1.Screen name="Mains" component={Mains} />
+                                    <Stack1.Screen name="SelImages" component={SelImages} />
+                                    <Stack1.Screen name="Details" component={Details} />
+                                    <Stack1.Screen name="Editdetails" component={Editdetails} />
+                                </>
+                            }
+                        </Stack1.Navigator>
+                    )
+                }}
+            </UserContext.Consumer>
+        )
     }
 }
 

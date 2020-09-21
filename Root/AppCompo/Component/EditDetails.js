@@ -1,6 +1,5 @@
 import React, { Component } from "react";
-import { Image, ScrollView, StyleSheet, Text, View } from 'react-native';
-import StarRating from 'react-native-star-rating';
+import { ScrollView, StyleSheet, Text, View, Picker } from 'react-native';
 import {
     Card,
     Title,
@@ -15,13 +14,21 @@ import {
     List,
     Provider,
     Portal,
-    Modal
+    Modal,
+    TextInput
 } from "react-native-paper";
 
-class Stuffdetail extends Component {
+class Editdetails extends Component {
     state = {
         a: 700,
-        starcount: 0
+        visible: false,
+        rated: false,
+        rating: 0,
+        roomtype: 1,
+        price: 4000,
+        negotiable: 1,
+        location: 'Bashundhara,Kathmandu',
+        description: ""
     }
     handleclick = (x) => {
         x ? (this.state.a != 700 &&
@@ -37,7 +44,6 @@ class Stuffdetail extends Component {
             )
     }
     render() {
-        const { stuff } = this.props;
         return (
             <>
                 < ScrollView >
@@ -77,19 +83,44 @@ class Stuffdetail extends Component {
                             <View style={styles.a1}>
                                 <View style={styles.a2}>
                                     <Title>Price:</Title>
-                                    <Caption>Rs5000</Caption>
+                                    <TextInput
+                                        style={styles.textInput}
+                                        mode="outlined"
+                                        keyboardType='numeric'
+                                        //label={this.state.price}
+                                        onChangeText={(price) => this.setState({ price })}
+                                        value={`${this.state.price}`}
+                                        maxLength={10}  //setting limit of input
+                                    />
                                 </View>
                             </View>
                             <View style={styles.a1}>
                                 <View style={styles.a2}>
                                     <Title>Type:</Title>
-                                    <Caption>Single</Caption>
+                                    <Picker style={styles.pickerStyle}
+                                        mode='dropdown'
+                                        selectedValue={this.state.roomtype}
+                                        onValueChange={(itemValue, itemPosition) =>
+                                            this.setState({ roomtype: itemValue })}
+                                    >
+                                        <Picker.Item label="Single" value={1} />
+                                        <Picker.Item label="Double" value={2} />
+                                        <Picker.Item label="Flat" value={3} />
+                                    </Picker>
                                 </View>
                             </View>
                             <View style={styles.a1}>
                                 <View style={styles.a2}>
                                     <Title>Negotiable:</Title>
-                                    <Caption>Yes</Caption>
+                                    <Picker style={styles.pickerStyle}
+                                        mode='dropdown'
+                                        selectedValue={this.state.negotiable}
+                                        onValueChange={(itemValue, itemPosition) =>
+                                            this.setState({ negotiable: itemValue })}
+                                    >
+                                        <Picker.Item label="Yes" value={1} />
+                                        <Picker.Item label="No" value={2} />
+                                    </Picker>
                                 </View>
                             </View>
                             <View style={styles.a1}>
@@ -98,18 +129,6 @@ class Stuffdetail extends Component {
                                     <Caption>Bashundhara,Kathmandu</Caption>
                                 </View>
                             </View>
-                            <View style={styles.a1}>
-                                <View style={styles.a2}>
-                                    <Title>Rating:</Title>
-                                    <StarRating
-                                        disabled={true}
-                                        maxStars={5}
-                                        rating={this.state.starcount}
-                                        selectedStar={(starcount) => this.setState({ starcount })}
-                                    />
-                                </View>
-                            </View>
-
                             <List.Accordion title="Description"
                                 titleStyle={{
                                     fontSize: 20,
@@ -117,18 +136,19 @@ class Stuffdetail extends Component {
                                     fontWeight: 'bold'
                                 }}
                             >
-                                <Text style={styles.textfordesc}>
-                                    {stuff.description}
-                                </Text>
-
+                                <TextInput
+                                    onChangeText={(description) => this.setState({ description })}
+                                    value={this.state.description}
+                                    multiline={true}
+                                    numberOfLines={5}
+                                />
                             </List.Accordion>
                             <View style={styles.a1}>
                                 <View style={styles.a2}>
                                     <Button mode='contained'
-                                    > Call</Button>
+                                    > Done</Button>
                                     <Button mode='contained'
-                                        onPress={() => this.props.navigation.navigate('Editdetails')}
-                                    > Edit data</Button>
+                                    > Delete</Button>
                                 </View>
                             </View>
                         </Card.Content>
@@ -139,7 +159,7 @@ class Stuffdetail extends Component {
     }
 }
 
-export default Stuffdetail;
+export default Editdetails;
 const styles = StyleSheet.create({
     container: {
         flex: 1,
@@ -153,6 +173,16 @@ const styles = StyleSheet.create({
         margin: 12,
         fontSize: 16,
     },
+    profile: {
+        position: 'absolute',
+        zIndex: 1,
+        right: 0,
+        bottom: 0,
+        margin: 10,
+        backgroundColor: 'transparent',
+        borderColor: 'grey',
+        borderWidth: 1
+    },
     description: {
         margin: 10,
     },
@@ -164,5 +194,14 @@ const styles = StyleSheet.create({
     a2: {
         flexDirection: "row",
         justifyContent: "space-between",
+    },
+    pickerStyle: {
+
+        width: "50%",
+        color: '#344953',
+    },
+    textInput: {
+        height: 40,
+        width: "50%",
     }
 });

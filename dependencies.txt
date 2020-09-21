@@ -13,6 +13,7 @@ npm install faker
 expo install expo-image-picker
 expo install expo-permissions
 npm install react-native-star-rating --save
+npm i react-native-customizable-radio-button
  
  
  

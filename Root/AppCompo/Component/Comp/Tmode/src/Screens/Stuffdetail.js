@@ -19,13 +19,8 @@ import {
 } from "react-native-paper";
 
 class Stuffdetail extends Component {
-    constructor(props) {
-        super(props);
-        global.Show = true
-    }
     state = {
         a: 700,
-        visible: false,
         rated: false,
         rating: 0
     }
@@ -42,22 +37,8 @@ class Stuffdetail extends Component {
                 })
             )
     }
-    componentDidMount = () => {
-        this.x = setInterval(this.visible, 100)
-    }
-    visible = () => {
-        if (!this.props.navigation.isFocused() && this.props.navigation.canGoBack()) {
-            clearInterval(this.x);
-            //console.log(this.props.navigation.isFocused())
-            //console.log(this.props.route)
-            //this.props.navigation.goBack()
-        }
-    }
-    componentWillUnmount = () => {
-        clearInterval(this.x)
-    }
     render() {
-        const { stuff } = this.props.route.params;
+        const { stuff } = this.props;
         return (
             <>
                 < ScrollView >

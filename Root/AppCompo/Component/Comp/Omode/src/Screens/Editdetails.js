@@ -21,8 +21,8 @@ import {
 
 class Editdetails extends Component {
     constructor(props) {
-        super(props);
-        global.Show = true
+        super(props)
+        global.show = false
     }
     state = {
         a: 700,
@@ -221,6 +221,6 @@ const styles = StyleSheet.create({
     },
     textInput: {
         height: 40,
-        width: "50%"
+        width: "50%",
     }
 });

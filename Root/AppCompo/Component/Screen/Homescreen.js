@@ -43,9 +43,6 @@ export default function Homescreen({ navigation }) {
           labelPosition: "below-icon",
           allowFontScaling: false,
         }}
-        screenOptions={{
-          tabBarVisible: global.Show
-        }}
       >
         <Stack2.Screen
           name="O-Mode"

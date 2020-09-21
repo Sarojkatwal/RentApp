@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import { View, FlatList, StyleSheet, Button } from 'react-native';
 import { getStuff } from '../api';
 import Stufflistitem from '../components/Stufflistitem';
+import Stuffdetail from './Stuffdetail'
 
 class Stufflist extends Component {
     constructor(props) {
@@ -20,7 +21,7 @@ class Stufflist extends Component {
     };
     onListItemPress = stuff => {
         global.Show = false
-        this.props.navigation.navigate('stuffdetail', { stuff });
+        this.props.navigation.navigate('Details', { stuff, mode: 'O' });
     };
     renderItem = ({ item }) => (
         <Stufflistitem key={item.key} item={item} onPress={this.onListItemPress} />
