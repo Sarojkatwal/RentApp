@@ -61,6 +61,7 @@ const getUsersData = (uid, func) => {
         .onSnapshot((doc) => {
             func(doc.data())
         })
+    return;
 }
 
 const signout = () => {
@@ -68,7 +69,7 @@ const signout = () => {
         console.log(x)
     )
 }
-const getLoggedUser = async (onValueGet) => {
+const getLoggedUser = (onValueGet) => {
     firebase.auth().onAuthStateChanged((user) => {
         if (user) {
             onValueGet(user)

@@ -21,7 +21,7 @@ class LogInSignUp extends React.Component {
           headerShown: false,
         }}
       >
-        {!user ? (
+        {user == null ? (
           <>
             <Stack.Screen name="Home" component={Home} />
             <Stack.Screen name="SignUp" component={SignUp} />

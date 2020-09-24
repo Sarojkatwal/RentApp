@@ -108,7 +108,6 @@ class LogIn extends React.Component {
       })
       signIn(this.state.username, this.state.password)
         .then((res) => {
-          console.log('res:', res)
           if (res == undefined) {
             this.setState({
               ...this.state,

@@ -5,9 +5,6 @@ import { getLoggedUser } from './Root/Firebase/api'
 import { YellowBox } from 'react-native';
 
 class App extends React.Component {
-  construct() {
-    YellowBox.ignoreWarnings(['Setting a timer']);
-  }
   state = {
     user: null,
   };

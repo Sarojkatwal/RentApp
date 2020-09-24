@@ -1,5 +1,5 @@
 import React, { PureComponent } from 'react'
-import { View, Text } from 'react-native'
+import { View, StyleSheet, ActivityIndicator } from 'react-native'
 import UserContext from '../../context'
 import { getUsersData } from '../../Firebase/api'
 import firebase from '../../Firebase/Firebase'
@@ -9,15 +9,30 @@ export class InsideApp extends PureComponent {
         userData: {}
     }
     componentDidMount = () => {
-        const userdata = getUsersData(firebase.auth().currentUser.uid, (data) => this.setState({ userData: data }));
+        getUsersData(firebase.auth().currentUser.uid, (data) => this.setState({ userData: data }));
     }
     render() {
         return (
-            <UserContext.Provider value={this.state.userData}>
-                <Main />
-            </UserContext.Provider>
+            (this.state.userData !== undefined &&
+                !(Object.keys(this.state.userData).length === 0 && this.state.userData.constructor === Object)) ?
+                <UserContext.Provider value={this.state.userData}>
+                    <Main />
+                </UserContext.Provider>
+                :
+                <View style={styles.indicators}>
+                    <ActivityIndicator size={100} />
+                </View>
+
         )
     }
 }
 
 export default InsideApp
+
+const styles = StyleSheet.create({
+    indicators: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center'
+    }
+})
