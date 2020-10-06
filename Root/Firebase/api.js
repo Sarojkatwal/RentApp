@@ -21,8 +21,10 @@ const saveUsersData= (uid,userData,ismerge=true)=>
 
 const getUsersData=async (uid)=>
 {
-    const response=firebase.firestore().collection('users').doc(uid).get().catch((err)=>{throw err})
+    const response=firebase.firestore().collection('users').doc(uid).get()
+    .catch((err)=>{throw err})
     return response;
+    
 
 }
 const getLoggedUser=async (onValueGet)=>
