@@ -16,18 +16,7 @@ const onlogin = (username, password, navigationState) => {
       const response = await signIn(username, password);
       const loginUser = response.user;
       console.log("signed in with user " + loginUser.email);
-      const roomInfo = {
-        authorId: loginUser.uid,
-        location:{
-            latitude:30.544,
-            longitude:31.222
-        }
-      };
-      firebase
-        .firestore()
-        .collection("ownerPost")
-        .add(roomInfo)
-        .then((doc) => {console.log("document written with id"+doc.id)})
+     
 
       navigationState.navigate("InsideApp");
 
