@@ -1,5 +1,4 @@
-import firebase from './config'
-import { firestore } from 'firebase';
+import firebase from './config';
 
 const signUp=async (username,password)=>
 {
@@ -43,9 +42,10 @@ const signout=(onsignout)=>
 }
 
 
-const saveTenantRoom=(roomData,onSave)=>
+const storeRoom=(roomData,istenant,onSave)=>
 {
-    firebase.firestore().collection('tenantPost').add(roomData,{merge:true}).then(
+    var post=istenant?'tenantPost':'ownerPost'
+    firebase.firestore().collection('tenantPost').add(roomData).then(
         ()=>
         {
             onSave();
@@ -80,4 +80,4 @@ const fetchRoomforloggedInUser=async (uid,isOwner)=>
 
 
 export { saveUsersData,signIn,signUp,getUsersData,signout}
-export {getLoggedUser,saveTenantRoom,fetchRoomforloggedInUser}
+export {getLoggedUser,storeRoom,fetchRoomforloggedInUser}

@@ -5,11 +5,10 @@ import {
   getLoggedUser,
   signout,
   getUsersData,
+  storeRoom
 } from "./api";
 import firebase from "./config";
-
-import { fetchRoom } from "./post";
-
+import {pushRoom} from './postmodify';
 const onlogin = (username, password, navigationState) => {
   const login = async () => {
     try {
@@ -24,13 +23,16 @@ const onlogin = (username, password, navigationState) => {
         const res = await getUsersData(loginUser.uid);
         // console.log(res.data().profile_pic)
         global.dp = res.data().profile_pic;
-        fetchRoom(loginUser.uid, true,(Rooms)=>
+        
+       pushRoom(loginUser.uid,false,()=>
         {
-            Rooms.forEach((Room)=>
-            {
-                console.log(Room.longitude)
-            })
-        });
+          console.log("the final rooms ",global.Room_priority1)
+          
+        })
+      
+       
+
+
       } catch (err) {
         alert(err);
       }
@@ -79,6 +81,16 @@ const onsignup = (userState, navigationState) => {
         .catch((err) => {
           alert(err);
         });
+        var RoomData={
+          
+          price:25000,
+          location:{
+            latitude:30.556,
+            longitude:30.224
+          }
+
+        }
+        storeRoom(RoomData,true,()=>{})
 
       navigationState.navigate("InsideApp");
     } catch (err) {
