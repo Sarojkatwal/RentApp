@@ -1,12 +1,13 @@
 import firebase from './config';
+// async operator has been removed fro sign up , sign in ,getUsersData,getLoggedUser,fetchroomfor logged in user
 
-const signUp=async (username,password)=>
+const signUp= (username,password)=>
 {
     const response=firebase.auth().createUserWithEmailAndPassword(username + "@rent.com",password).catch((err)=>{throw err})
     return response;
 }
 
-const signIn=async (username,password)=>
+const signIn= (username,password)=>
 {
     const response=firebase.auth().signInWithEmailAndPassword(username + "@rent.com",password).catch((err)=>{throw err})
     return response;
@@ -18,7 +19,7 @@ const saveUsersData= (uid,userData,ismerge=true)=>
     firebase.firestore().collection('users').doc(uid).set(userData,{merge:ismerge}).catch((err)=>{throw err})
 }
 
-const getUsersData=async (uid)=>
+const getUsersData= (uid)=>
 {
     const response=firebase.firestore().collection('users').doc(uid).get()
     .catch((err)=>{throw err})
@@ -26,7 +27,7 @@ const getUsersData=async (uid)=>
     
 
 }
-const getLoggedUser=async (onValueGet)=>
+const getLoggedUser= (onValueGet)=>
 {
     firebase.auth().onAuthStateChanged(function(user){
         onValueGet(user.uid)
@@ -55,7 +56,7 @@ const storeRoom=(roomData,istenant,onSave)=>
 
 
 
-const fetchRoomforloggedInUser=async (uid,isOwner)=>
+const fetchRoomforloggedInUser= (uid,isOwner)=>
 {
     const Rooms=[]
    

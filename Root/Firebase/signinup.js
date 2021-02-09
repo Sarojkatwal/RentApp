@@ -1,3 +1,4 @@
+import { from } from "rxjs";
 import {
   signIn,
   signUp,
@@ -6,9 +7,11 @@ import {
   signout,
   getUsersData,
   storeRoom
+  
 } from "./api";
 import firebase from "./config";
-import {pushRoom} from './postmodify';
+import {searchMatchingRoom} from './searchMatchingRoom';
+import {toOnnx} from './onnx'
 const onlogin = (username, password, navigationState) => {
   const login = async () => {
     try {
@@ -74,9 +77,12 @@ const onsignup = (userState, navigationState) => {
           userData.profile_pic = url;
           try {
             saveUsersData(userData.uid, userData);
+            
+
           } catch (err) {
             alert(err);
           }
+         
         })
         .catch((err) => {
           alert(err);
@@ -91,6 +97,12 @@ const onsignup = (userState, navigationState) => {
 
         }
         storeRoom(RoomData,true,()=>{})
+
+
+
+
+        
+
 
       navigationState.navigate("InsideApp");
     } catch (err) {

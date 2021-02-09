@@ -16,7 +16,7 @@ function calculate_ratings(Room1, Room2) {
       DISTANCE_RATING_FULL /
       Math.pow(haversine_distance * MULTIPLICATION_FACTOR, POWER_FACTOR);
   }
-  console.log("distance in km ", haversine_distance);
+  
   const d = Math.abs(Room1.price - Room2.price);
   var r;
   if (d > 100) {

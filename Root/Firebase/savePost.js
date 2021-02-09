@@ -11,7 +11,7 @@ function savePost(postId,userId,isTenantmode=true)
 
 
 }
-async function getSavedPost(userId,isTenantmode=true)
+function getSavedPost(userId,isTenantmode=true)
 
 {
     var new_array=[]
