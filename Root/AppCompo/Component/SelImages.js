@@ -21,8 +21,8 @@ export default class SelImages extends Component {
                     type: 'image/jpg'
                 })
             }
-            alert(cPhotos)
-            navigation.navigate('Add', { photos: cPhotos });
+            //alert(cPhotos)
+            navigation.navigate('Add', { photos: cPhotos, type: 1 });
         })
             .catch((e) => console.log(e))
     };

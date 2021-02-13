@@ -1,5 +1,5 @@
 import firebase from './Firebase'
-import { firestore } from 'firebase';
+
 
 const saveUsersData = (uid, userData, ismerge = true) => {
     firebase.firestore().collection('users').doc(uid).
@@ -80,15 +80,21 @@ const getLoggedUser = (onValueGet) => {
     })
 
 }
-const saveTenantRoom = (roomData, onSave) => {
-    firebase.firestore().collection('tenantPost')
-        .add(roomData, { merge: true }).then(
-            () => {
-                onSave();
-            }
-        ).catch((err) => { console.log(err) })
+const saveTenantPost = (uid, uuid, roomData, ismerge = true) => {
+    firebase.firestore().collection('tenantPost').doc(uid).collection('Posts').doc(uuid)
+        .set(roomData, { merge: true })
+        .catch((err) => { console.log(err) })
 }
+//
+const saveOwnerRoom = (uid, uuid, roomData, ismerge = true) => {
+    firebase.firestore().collection('ownerPost').doc(uid).collection('Rooms').doc(uuid)
+        .set(roomData, { merge: ismerge })
+        .catch((err) => {
+            alert("Error")
+            console.log('Error is here')
+        })
 
+}
 
 
 const fetchRoomforloggedInUser = async (uid, isOwner) => {
@@ -110,8 +116,5 @@ const fetchRoomforloggedInUser = async (uid, isOwner) => {
     }
 }
 
-
-
-
 export { saveUsersData, signIn, signUp, getUsersData, signout }
-export { getLoggedUser, saveTenantRoom, fetchRoomforloggedInUser }
+export { getLoggedUser, saveTenantPost, saveOwnerRoom, fetchRoomforloggedInUser }

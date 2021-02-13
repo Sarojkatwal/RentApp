@@ -6,6 +6,7 @@ import FillDetails from './FillDetails'
 import Details from './Details'
 import Editdetails from './EditDetails'
 import Mains from './Mains'
+import Mmapp from './map'
 
 const Stack1 = createStackNavigator()
 
@@ -24,6 +25,7 @@ class Main extends Component {
                         <Stack1.Screen name="SelImages" component={SelImages} />
                         <Stack1.Screen name="Details" component={Details} />
                         <Stack1.Screen name="Editdetails" component={Editdetails} />
+                        <Stack1.Screen name="Mmapp" component={Mmapp} />
                     </>
                 }
             </Stack1.Navigator>

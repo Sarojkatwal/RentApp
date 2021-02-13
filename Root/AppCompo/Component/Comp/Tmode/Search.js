@@ -1,14 +1,17 @@
 import React, { Component } from "react";
 import { View, Text, StyleSheet } from "react-native";
 import { Button, TextInput, Dialog, Portal, RadioButton, Title, Provider, Snackbar } from 'react-native-paper'
-
+import faker from 'faker'
+import firebase from '../../../../Firebase/Firebase'
+import { saveTenantPost } from '../../../../Firebase/api'
 
 class Search extends Component {
     state = {
         visiblefortype: false, //whether room type dialog is visible
         visible: false,//visible for maxprice dialog
         value: 0,
-        valuefortype: 0
+        valuefortype: 0,
+        location: {}
     }
     showDialogfortype = () => this.setState({
         visiblefortype: true,
@@ -26,7 +29,61 @@ class Search extends Component {
         visible: false,
 
     })
+
+
+    searchRooms = () => {
+        const { value, valuefortype, location, ...others } = this.state
+        //console.log(this.state);
+        //if found set true
+        if (false) {
+            this.props.navigation.push('Find', {
+                screen: 'stufflist',
+                params: { user: 'jane' }
+            })
+        }
+        //Saving tanant post
+        const tpost = {
+            price: value,
+            roomType: valuefortype,
+            location: location
+        }
+        if (value != 0 && valuefortype != 0 &&
+            !(Object.keys(location).length === 0 && location.constructor === Object)
+        ) {
+            var uid = firebase.auth().currentUser.uid
+            var tm1 = faker.random.uuid();
+            var tm2 = faker.address.zipCode();
+            var uuid = "Post " + tm1 + tm2;
+            saveTenantPost(uid, uuid, tpost);
+            this.clearData();
+        }
+        else {
+            alert('Fill all the data properly.See if all the fields are ticked')
+        }
+    }
+
+    clearData = () => {
+
+        this.setState({
+            visiblefortype: false, //whether room type dialog is visible
+            visible: false,//visible for maxprice dialog
+            value: 0,
+            valuefortype: 0,
+            location: {}
+        }, () => alert("Done"))
+    }
     render() {
+        if (this.props.route.params !== undefined) {
+            if (Object.keys(this.state.location).length === 0 && this.state.location.constructor === Object && this.props.route.params.type == 2) {
+                this.setState({
+                    ...this.state,
+                    location: this.props.route.params.loc
+                }, () => {
+                    this.props.route.params.type = 0
+                })
+            }
+        }
+        //console.log(this.state)
         return (
             <Provider>
                 <View style={styles.container}>
@@ -35,14 +92,17 @@ class Search extends Component {
                         fontSize: 30,
                         marginBottom: 60
                     }}>Tenant Mode</Title>
-                    <Button mode='contained' icon='map-marker-outline'
+
+                    <Button mode='contained' icon={((Object.keys(this.state.location).length === 0 && this.state.location.constructor === Object)) ? 'map-marker-outline' : 'check-circle'}
+                        onPress={() => this.props.navigation.push('Mmapp', { from: "Search" })}
                         style={{
                             borderRadius: 30,
-
                             width: "45%",
                             marginBottom: 20
                         }}
-                    >Select Area</Button>
+                    >Select area</Button>
+
+
                     <Button mode='contained' icon={this.state.valuefortype == 0 ? 'home' : 'check-circle'}
                         style={{
                             borderRadius: 30,
@@ -118,11 +178,8 @@ class Search extends Component {
                             width: "45%",
                             marginBottom: 20
                         }}
-                        onPress={() => this.props.navigation.push('Find', {
-                            screen: 'stufflist',
-                            params: { user: 'jane' }
-                        })
-                        }
+                        onPress={this.searchRooms}
+
                     >Find Room</Button>
                 </View>
 

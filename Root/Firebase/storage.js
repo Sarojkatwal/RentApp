@@ -28,48 +28,48 @@ const uploadProfile = (imageUri) => {
                         console.log(err)
                     }
 
-
-
                 })
             })
 
     }
 }
 
-const uploadRoom = (roomData, imageUri, onUpload) => {
+const uploadRoom = async (imageUris, uid, uuid) => {
+    var allimg = [];
+    for (var j = 0; j < imageUris.length; j++) {
+        const response = await fetch(imageUris[j]);
+        const blob = await response.blob();
+        var storageRef = storage.ref('images/rooms/' + uid + '/' + uuid + j)
+        storageRef.put(blob).on(firebase.storage.TaskEvent.STATE_CHANGED,
+            snapshot => {
+                console.log("snapshot: " + snapshot.state);
+                console.log("progress: " + (snapshot.bytesTransferred / snapshot.totalBytes) * 100);
 
-    const fileExtension = 'png'
+                if (snapshot.state === firebase.storage.TaskState.SUCCESS) {
+                    console.log("Success");
+                }
+            }, (err) => {
+                console.log('Image upload error : ' + err.toString())
+                alert("Error in image" + j)
+            }, () => {
+                storageRef.getDownloadURL().then((downloadURL) => {
+                    allimg.push(downloadURL)
+                    //console.log('room uploaded at' + downloadURL);
+                    //console.log("Hello")
+                    try {
+                        firebase.firestore().collection('ownerPost').doc(uid).collection('Rooms').doc(uuid)
+                            .set({
+                                rooming: allimg
+                            }, { merge: true })
+                    }
+                    catch (err) {
+                        console.log(err)
+                    }
 
-    const uuid = 'room1'
-    var storageRef = storage.ref('images/rooms/' + uuid + '.' + fileExtension)
-    storageRef.put(imageUri).on(firebase.storage.TaskEvent.STATE_CHANGED,
-        snapshot => {
-            console.log("snapshot: " + snapshot.state);
-            console.log("progress: " + (snapshot.bytesTransferred / snapshot.totalBytes) * 100);
-
-            if (snapshot.state === firebase.storage.TaskState.SUCCESS) {
-                console.log("Success");
-            }
-        }, (err) => {
-            console.log('Image upload error : ' + err.toString())
-        }, () => {
-            storageRef.getDownloadURL().then((downloadURL) => {
-                console.log('room uploaded at' + downloadURL);
-
-                firebase.firestore().collection('ownerPost').add(roomData).then((doc) => {
-                    firebase.firestore().collection('ownerPost').doc(doc.id).collection('images')
-                        .add({ download_url: downloadURL }).then(() => {
-                            onUpload(doc.id);
-                        }).catch((err) => { console.log(err) })
-
-                }).catch((err) => { console.log(err); })
-
-
-
+                })
             })
-        })
 
-
+    }
 }
 
 
