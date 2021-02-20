@@ -1,6 +1,6 @@
 import firebase from './Firebase'
 
-import { saveUsersData, saveOwnerRoom } from './api'
+import { saveUsersData } from './api'
 var storage = firebase.storage()
 
 
@@ -34,12 +34,13 @@ const uploadProfile = (imageUri) => {
     }
 }
 
-const uploadRoom = async (imageUris, uid, uuid) => {
-    var allimg = [];
+const uploadRoom = async (imageUris, postId) => {
+    console.log("congratulation i am inside uploadroom")
+
     for (var j = 0; j < imageUris.length; j++) {
         const response = await fetch(imageUris[j]);
         const blob = await response.blob();
-        var storageRef = storage.ref('images/rooms/' + uid + '/' + uuid + j)
+        var storageRef = storage.ref('images/rooms/' + postId+ j)
         storageRef.put(blob).on(firebase.storage.TaskEvent.STATE_CHANGED,
             snapshot => {
                 console.log("snapshot: " + snapshot.state);
@@ -53,14 +54,17 @@ const uploadRoom = async (imageUris, uid, uuid) => {
                 alert("Error in image" + j)
             }, () => {
                 storageRef.getDownloadURL().then((downloadURL) => {
-                    allimg.push(downloadURL)
+                   
                     //console.log('room uploaded at' + downloadURL);
                     //console.log("Hello")
                     try {
-                        firebase.firestore().collection('ownerPost').doc(uid).collection('Rooms').doc(uuid)
-                            .set({
-                                rooming: allimg
-                            }, { merge: true })
+                        firebase.firestore().collection('ownerPost').doc(postId).collection('roomImg')
+                            .add({
+                                roomimg: downloadURL
+                            }).then((doc)=>
+                            {
+                                console.log(doc.id)
+                            })
                     }
                     catch (err) {
                         console.log(err)
@@ -70,6 +74,7 @@ const uploadRoom = async (imageUris, uid, uuid) => {
             })
 
     }
+    
 }
 
 

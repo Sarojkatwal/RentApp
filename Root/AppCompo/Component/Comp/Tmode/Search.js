@@ -51,10 +51,10 @@ class Search extends Component {
             !(Object.keys(location).length === 0 && location.constructor === Object)
         ) {
             var uid = firebase.auth().currentUser.uid
-            var tm1 = faker.random.uuid();
-            var tm2 = faker.address.zipCode();
-            var uuid = "Post " + tm1 + tm2;
-            saveTenantPost(uid, uuid, tpost);
+            // var tm1 = faker.random.uuid();
+            // var tm2 = faker.address.zipCode();
+            // var uuid = "Post " + tm1 + tm2;
+            saveTenantPost(uid, tpost);
             this.clearData();
         }
         else {

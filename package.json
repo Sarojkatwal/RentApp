@@ -43,7 +43,7 @@
     "react-native-star-rating": "^1.1.0",
     "react-native-tab-view": "^2.15.1",
     "react-native-vector-icons": "^7.0.0",
-    "react-native-web": "~0.11.7",
+    "react-native-web": "^0.15.0",
     "react-navigation-shared-element": "^5.0.0-alpha1"
   },
   "devDependencies": {

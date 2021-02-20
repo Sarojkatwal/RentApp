@@ -49,7 +49,7 @@ class Add extends PureComponent {
 
     })
 
-    saveRoom = () => {
+    saveRoom =  () => {
         const { value, photos, location, valuefordesc, valuefortype, ...others } = this.state
         const userdata = {
             price: value,
@@ -60,18 +60,26 @@ class Add extends PureComponent {
         if (value != 0 && valuefortype != 0 && photos.length != 0 &&
             !(Object.keys(location).length === 0 && location.constructor === Object) &&
             valuefordesc.trim().length !== 0) {
-            var uid = firebase.auth().currentUser.uid
-            var tm1 = faker.random.uuid();
-            var tm2 = faker.address.zipCode();
-            var uuid = "Room " + tm1 + tm2;
-            saveOwnerRoom(uid, uuid, userdata);
+            
+            // var tm1 = faker.random.uuid();
+            // var tm2 = faker.address.zipCode();
+            // var uuid = "Room " + tm1 + tm2;
+            
             var mm = photos[0];
-            var temp = []
+            var images = []
             for (var y in mm) {
-                temp.push(mm[y].uri)
+                images.push(mm[y].uri)
             }
-            //console.log("Temp=", temp)
-            uploadRoom(temp, uid, uuid)
+           
+            
+                var uid = firebase.auth().currentUser.uid
+                
+                saveOwnerRoom(uid,images,userdata);
+            
+                
+
+            
+            
             this.clearData();
         }
         else {
