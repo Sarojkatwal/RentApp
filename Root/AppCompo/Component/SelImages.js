@@ -42,7 +42,7 @@ export default class SelImages extends Component {
             loading: false,
         })
         this.x = {}
-        if (count == 4) {
+        if (count >= 1) {
             this.setState({
                 heading: `Selected ${count} pictures`,
                 loading: true,
@@ -71,7 +71,7 @@ export default class SelImages extends Component {
                     }
                 </Appbar>
                 <ImageBrowser
-                    max={4}
+                    max={10}
                     onChange={this.updateHandler}
                     callback={this.imagesCallback}
                     renderSelectedComponent={this.renderSelectedComponent}

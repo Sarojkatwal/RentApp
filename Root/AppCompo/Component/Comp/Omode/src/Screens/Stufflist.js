@@ -3,6 +3,8 @@ import { View, FlatList, StyleSheet, Button } from 'react-native';
 import { getStuff } from '../api';
 import Stufflistitem from '../components/Stufflistitem';
 import Stuffdetail from './Stuffdetail'
+import { fetchRoomforloggedInUser } from '../../../../../../Firebase/api'
+import firebase from '../../../../../../Firebase/Firebase'
 
 class Stufflist extends Component {
     constructor(props) {
@@ -16,9 +18,21 @@ class Stufflist extends Component {
     }
     updateStuff = async () => {
         this.setState({
-            stuff: getStuff()
-        });
+            stuff: []
+        }, () => {
+            const uid = firebase.auth().currentUser.uid
+            fetchRoomforloggedInUser(uid, true, this.saveResult)
+                .then((data) => {
+                    //console.log(data)
+                })
+        })
     };
+    saveResult = (data) => {
+        this.setState({
+            ...this.state,
+            stuff: [...this.state.stuff, data]
+        })
+    }
     onListItemPress = stuff => {
         global.Show = false
         this.props.navigation.navigate('Details', { stuff, mode: 'O' });
@@ -38,6 +52,7 @@ class Stufflist extends Component {
         );
     };
     render() {
+        //  console.log(this.state.stuff.length)
         return (
             <View style={styles.container}>
                 <Button title='Add Rooms'

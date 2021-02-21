@@ -21,7 +21,27 @@ import {
 class Stuffdetail extends Component {
     state = {
         a: 700,
-        starcount: 0
+        starcount: 0,
+        price: "",
+        type: 0,
+        location: "",
+        description: "",
+        img: [],
+        noofpic: 0,
+    }
+    componentDidMount = () => {
+        //console.log(this.props.stuff)
+        if (this.props.stuff.roomData !== undefined) {
+            this.setState({
+                ...this.state,
+                price: this.props.stuff.roomData.price,
+                type: this.props.stuff.roomData.roomType,
+                location: this.props.stuff.roomData.location.name,
+                description: this.props.stuff.roomData.roomDescription,
+                img: this.props.stuff.roomimg,
+                noofpic: this.props.stuff.roomimg.length
+            })
+        }
     }
     handleclick = (x) => {
         x ? (this.state.a != 700 &&
@@ -30,7 +50,7 @@ class Stuffdetail extends Component {
             })
         )
             :
-            (this.state.a != 705 &&
+            (this.state.a != 700 + this.state.noofpic - 1 &&
                 this.setState({
                     a: this.state.a + 1
                 })
@@ -38,14 +58,24 @@ class Stuffdetail extends Component {
     }
     render() {
         const { stuff } = this.props;
+        var Rtype = ""
+        if (this.state.type == 1) {
+            Rtype = "Single Room"
+        }
+        else if (this.state.type == 2) {
+            Rtype = "Double Room"
+        }
+        else {
+            Rtype = "Flat"
+        }
         return (
             <>
                 < ScrollView >
                     <Card>
-                        <Card.Cover source={{ uri: "https://picsum.photos/" + this.state.a }} style={styles.images} />
+                        <Card.Cover source={{ uri: this.state.img[this.state.a - 700] }} style={styles.images} />
                         <Card.Title
                             title="Some Photos"
-                            subtitle={`PhotoNo ${this.state.a}`}
+                            subtitle={`PhotoNo ${this.state.a - 699}`}
                             titleStyle={{
                                 alignSelf: 'center'
                             }}
@@ -62,7 +92,7 @@ class Stuffdetail extends Component {
                                     onPress={() => this.handleclick(true)}
                                 />}
                             right={(props) =>
-                                <IconButton {...props} size={40} color={this.state.a == 705 ? 'grey' : 'white'} icon="skip-next-circle"
+                                <IconButton {...props} size={40} color={this.state.a == 700 + this.state.noofpic - 1 ? 'grey' : 'white'} icon="skip-next-circle"
                                     style={{
                                         top: -60,
                                         right: -5
@@ -77,13 +107,13 @@ class Stuffdetail extends Component {
                             <View style={styles.a1}>
                                 <View style={styles.a2}>
                                     <Title>Price:</Title>
-                                    <Caption>Rs5000</Caption>
+                                    <Caption>Rs. {this.state.price}</Caption>
                                 </View>
                             </View>
                             <View style={styles.a1}>
                                 <View style={styles.a2}>
                                     <Title>Type:</Title>
-                                    <Caption>Single</Caption>
+                                    <Caption>{Rtype}</Caption>
                                 </View>
                             </View>
                             <View style={styles.a1}>
@@ -95,7 +125,7 @@ class Stuffdetail extends Component {
                             <View style={styles.a1}>
                                 <View style={styles.a2}>
                                     <Title>Location:</Title>
-                                    <Caption>Bashundhara,Kathmandu</Caption>
+                                    <Caption>{this.state.location}</Caption>
                                 </View>
                             </View>
                             <View style={styles.a1}>
@@ -118,7 +148,7 @@ class Stuffdetail extends Component {
                                 }}
                             >
                                 <Text style={styles.textfordesc}>
-                                    {stuff.description}
+                                    {this.state.description}
                                 </Text>
 
                             </List.Accordion>

@@ -1,5 +1,5 @@
 import firebase from './Firebase'
-
+import { uploadRoom } from './storage'
 
 const saveUsersData = (uid, userData, ismerge = true) => {
     firebase.firestore().collection('users').doc(uid).
@@ -80,15 +80,18 @@ const getLoggedUser = (onValueGet) => {
     })
 
 }
-const saveTenantPost = (uid, uuid, roomData, ismerge = true) => {
-    firebase.firestore().collection('tenantPost').doc(uid).collection('Posts').doc(uuid)
-        .set(roomData, { merge: true })
+const saveTenantPost = async (uid, roomData, ismerge = true) => {
+    firebase.firestore().collection('tenantPost')
+        .add({ authorId: uid, roomData })
         .catch((err) => { console.log(err) })
 }
 //
-const saveOwnerRoom = (uid, uuid, roomData, ismerge = true) => {
-    firebase.firestore().collection('ownerPost').doc(uid).collection('Rooms').doc(uuid)
-        .set(roomData, { merge: ismerge })
+const saveOwnerRoom = async (uid, images, roomData, ismerge = true) => {
+    firebase.firestore().collection('ownerPost').
+        add({ authorId: uid, roomData }).then((document) => {
+
+            uploadRoom(images, document.id)
+        })
         .catch((err) => {
             alert("Error")
             console.log('Error is here')
@@ -97,23 +100,64 @@ const saveOwnerRoom = (uid, uuid, roomData, ismerge = true) => {
 }
 
 
-const fetchRoomforloggedInUser = async (uid, isOwner) => {
-    const Rooms = []
-
+const fetchRoomforloggedInUser = (uid, isOwner, saveResult) => {
+    var post;
     if (isOwner) {
-        firebase.firestore().collection('ownerPost')
-            .where('authorId' == uid).get()
+        post = 'ownerPost'
+    }
+    else {
+        post = 'tenantPost'
+    }
+    if (isOwner) {
+        const RoomData = [];
+        return firebase.firestore().collection(post)
+            .where('authorId', "==", uid).get()
             .then((querSnanpshot) => {
                 querSnanpshot.forEach((doc) => {
-                    Rooms.append(doc)
+                    if (doc.exists) {
+                        getRoomimg(post, doc.id).then((data) => {
+                            //console.log("DATA=", data)
+                            const roomData = {
+                                key: doc.id,
+                                roomimg: data,
+                                ...doc.data()
+                            }
+                            saveResult(roomData)
+                            //RoomData.push(roomData)
+                            //console.log("roomdata=", RoomData.length)
+                        })
+                    } else {
+                        console.log("No such document!");
+                    }
                 })
-                return Rooms;
+                //console.log("Rooms=", RoomData)
+                //return Rooms;
 
-            }).catch((err) => { throw err; })
-
-
+            })
+            .catch((err) => { throw err; })
 
     }
+}
+getRoomimg = async (post, iid) => {
+    const ImgRoom = [];
+    //console.log("Document data:", doc.id);
+    return firebase.firestore().collection(post).doc(iid).collection("roomImg").get()
+        .then((querSnanpshot) => {
+            querSnanpshot.forEach((doc1) => {
+                if (doc1.exists) {
+                    //console.log("Document data:", doc1.data().roomimg);
+                    ImgRoom.push(doc1.data().roomimg)
+                } else {
+                    // doc.data() will be undefined in this case
+                    console.log("No such document!");
+                }
+            })
+        }).then(() => {
+            //console.log("Return=", ImgRoom)
+            return ImgRoom
+        })
+        .catch((err) => { throw err; })
+
 }
 
 export { saveUsersData, signIn, signUp, getUsersData, signout }

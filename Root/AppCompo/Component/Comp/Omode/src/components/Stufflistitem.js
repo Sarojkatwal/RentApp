@@ -25,13 +25,13 @@ class Stufflistitem extends Component {
                         onPress(item);
                     }}>
                     <Image
-                        source={{ uri: item.image }}
+                        source={{ uri: item.roomimg[0] }}
                         style={styles.image}
                         resizeMode="contain"
                     />
                     <View >
-                        <Text style={styles.text} numberOfLines={1}>{item.name}</Text>
-                        <Text style={styles.text}>{`$ ${item.price}`}</Text>
+                        <Text style={styles.text} numberOfLines={1}>{item.roomData.location.name}</Text>
+                        <Text style={styles.text}>{`Rs. ${item.roomData.price}`}</Text>
                     </View>
                 </TouchableOpacity>
                 <Badge style={styles.reco}>My Rooms</Badge>

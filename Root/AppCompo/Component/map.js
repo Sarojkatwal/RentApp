@@ -58,10 +58,11 @@ export default class App extends Component {
     fetchr = async () => {
         var yy = [];
         const url = `https://api.mapbox.com/geocoding/v5/mapbox.places/${encodeURIComponent(
-            this.state.addr
+            this.state.addr + ' Nepal'
         )}.json?limit=2&access_token=${MAPBOX_API_KEY}`;
         fetch(url).then((response) => {
             response.json().then((data) => {
+                //console.log(data);
                 yy = data.features;
                 for (var i = 0; i < yy.length; i++) {
                     var obj = {
@@ -97,8 +98,8 @@ export default class App extends Component {
     goBack = () => {
         if (this.state.allresult.length != 0) {
             const cloc = {
-                long: this.state.allresult[this.state.inc].center[0],
-                lat: this.state.allresult[this.state.inc].center[1],
+                longitude: this.state.allresult[this.state.inc].center[0],
+                latitude: this.state.allresult[this.state.inc].center[1],
                 text: this.state.allresult[this.state.inc].text,
                 name: this.state.allresult[this.state.inc].place_name
             }
