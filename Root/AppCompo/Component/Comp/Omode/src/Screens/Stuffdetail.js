@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { Image, ScrollView, StyleSheet, Text, View } from 'react-native';
+import { Image, ScrollView, StyleSheet, Text, View, TouchableOpacity } from 'react-native';
 import StarRating from 'react-native-star-rating';
 import {
     Card,
@@ -72,7 +72,9 @@ class Stuffdetail extends Component {
             <>
                 < ScrollView >
                     <Card>
-                        <Card.Cover source={{ uri: this.state.img[this.state.a - 700] }} style={styles.images} />
+                        <TouchableOpacity onPress={() => this.props.navigation.push('ShowImage', { uri: this.state.img[this.state.a - 700] })}>
+                            <Card.Cover source={{ uri: this.state.img[this.state.a - 700] }} style={styles.images} />
+                        </TouchableOpacity>
                         <Card.Title
                             title="Some Photos"
                             subtitle={`PhotoNo ${this.state.a - 699}`}
@@ -87,6 +89,7 @@ class Stuffdetail extends Component {
                                     style={{
                                         top: -60,
                                         left: -20,
+                                        zIndex: 1
                                     }
                                     }
                                     onPress={() => this.handleclick(true)}
@@ -95,7 +98,8 @@ class Stuffdetail extends Component {
                                 <IconButton {...props} size={40} color={this.state.a == 700 + this.state.noofpic - 1 ? 'grey' : 'white'} icon="skip-next-circle"
                                     style={{
                                         top: -60,
-                                        right: -5
+                                        right: -5,
+                                        zIndex: 1
                                     }
                                     }
                                     onPress={() => this.handleclick(false)}

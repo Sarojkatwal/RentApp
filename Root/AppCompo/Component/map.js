@@ -17,7 +17,7 @@ import fetch from 'cross-fetch';
 const MAPBOX_API_KEY =
     'pk.eyJ1Ijoia2F0d2Fsc2Fyb2oiLCJhIjoiY2tsMHJvazloMG93MzJ3cGVuYWEwZXNtdSJ9.f3xyBiyuvkf5Q8yrmwZKPA';
 
-export default class App extends Component {
+export default class MMap extends Component {
     state = {
         location: null,
         errorMsg: null,

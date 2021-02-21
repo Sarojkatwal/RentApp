@@ -5,6 +5,7 @@ import SelImages from './SelImages'
 import FillDetails from './FillDetails'
 import Details from './Details'
 import Editdetails from './EditDetails'
+import ShowImage from './showImage'
 import Mains from './Mains'
 import Mmapp from './map'
 
@@ -26,6 +27,7 @@ class Main extends Component {
                         <Stack1.Screen name="Details" component={Details} />
                         <Stack1.Screen name="Editdetails" component={Editdetails} />
                         <Stack1.Screen name="Mmapp" component={Mmapp} />
+                        <Stack1.Screen name="ShowImage" component={ShowImage} />
                     </>
                 }
             </Stack1.Navigator>

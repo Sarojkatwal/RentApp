@@ -13,7 +13,7 @@ export default class Details extends Component {
                     backgroundColor: 'green'
                 }}>
                     <Appbar.BackAction onPress={() => this.props.navigation.goBack()} />
-                    <Appbar.Content title="Title" />
+                    <Appbar.Content title="Details" />
                     <Appbar.Action icon="dots-vertical" />
                 </Appbar>
                 {mode == 'O' ?
