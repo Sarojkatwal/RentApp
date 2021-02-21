@@ -7,7 +7,7 @@ function calculate_ratings(Room1, Room2) {
 
   var ratings = {};
 
-  const haversine_distance = haversine(Room1.location, Room2.location);
+  const haversine_distance = haversine(Room1 , Room2);
   const MULTIPLICATION_FACTOR = DISTANCE_RATING_FULL / 5;
   if (haversine_distance <= 1) {
     ratings.distance_rating = DISTANCE_RATING_FULL;

@@ -16,6 +16,7 @@ import { LinearGradient } from "expo-linear-gradient";
 import FontAwesome from "react-native-vector-icons/FontAwesome";
 import Feather from "react-native-vector-icons/Feather";
 import { signIn } from '../../Firebase/api'
+import {searchMatchingRoom} from '../../Firebase/searchMatchingRoom'
 
 class LogIn extends React.Component {
   state = {
@@ -106,8 +107,10 @@ class LogIn extends React.Component {
         ...this.state,
         visible: true
       })
+      
       signIn(this.state.username, this.state.password)
         .then((res) => {
+          
           if (res == undefined) {
             this.setState({
               ...this.state,
@@ -115,6 +118,16 @@ class LogIn extends React.Component {
             })
             Alert.alert('No such username and password found')
           }
+          // search mathcing room checking 
+          // searchMatchingRoom(res.user.uid,()=>
+          // {
+            
+             global.Room_priority1.forEach((item)=>
+             {
+               item.viewed=true
+             })
+
+          // },true)
         })
     }
   };

@@ -1,20 +1,22 @@
 import firebase from './Firebase'
 import { calculate_ratings, priority } from "./priority";
 import { FireSQL } from "firesql";
+import {isViewed} from './isViewed'
 
-const fireSQL = new FireSQL(firebase.firestore());
+const fireSQL = new FireSQL(firebase.firestore(),{includeId:true});
 global.Room_priority1 = [];
 global.Room_priority2 = [];
 
 //the three priorities are price_rating,distance_rating and .....
 
 last_fetched = new Date();
-async function searchMatchingRoom(uid, isSearchingForTenant = true, onPush) {
+async function searchMatchingRoom(uid,onPush,tmode = true) {
+    console.log('search matching room called ')
   var time_ref = new Date();
 
   var Post;
   var otherPost;
-  if (isSearchingForTenant) {
+  if (tmode) {
     Post = "tenantPost";
     otherPost = "ownerPost";
   } else {
@@ -56,15 +58,15 @@ async function searchMatchingRoom(uid, isSearchingForTenant = true, onPush) {
       var sql1 =
         "SELECT * FROM " +
         otherPost +
-        " WHERE (`location.latitude`<" +
+        " WHERE (`roomData.location.latitude`<" +
         latitude_threshold_for_T_greaterthan_O +
-        " AND `location.latitude`>" +
+        " AND `roomData.location.latitude`>" +
         Room_Location.latitude +
         ") OR ";
       var sql2 =
-        "(`location.latitude`<" +
+        "(`roomData.location.latitude`<" +
         Room_Location.latitude +
-        " AND `location.latitude`>" +
+        " AND `roomData.location.latitude`>" +
         latitude_threshold_for_T_lessthan_O +
         ") ";
 
@@ -74,18 +76,55 @@ async function searchMatchingRoom(uid, isSearchingForTenant = true, onPush) {
           return new Promise((resolve, reject) => {
             documents.forEach((T) => {
               if (
-                (T.location.longitude < Room_Location.longitude &&
-                  T.location.longitude >
+                (T.roomData.location.longitude < Room_Location.longitude &&
+                  T.roomData.location.longitude >
                     longitude_threshold_for_T_lessthan_O) ||
-                (T.location.longitude > Room_Location.longitude &&
-                  T.location.longitude <
+                (T.roomData.location.longitude > Room_Location.longitude &&
+                  T.roomData.location.longitude <
                     longitude_threshold_for_T_greaterthan_O)
                 // &&  T.createdAt > last_fetched
               ) {
                 
-                var T_rating=calculate_ratings(T,Room)
-                var full_room={
-                  Roominfo: T,
+                
+                var newFlag;
+                // Room_priority1.forEach((room)=>
+                // {
+                    
+                //         if (room.name==T.__name__)
+                //         {
+                //             newFlag=false
+                            
+                //         }
+                        
+                    
+                    
+                // })
+                const isAlreadyViewed=async ()=>
+                {
+
+                  var newFlag1=true;
+                   var newFlag2=!(await isViewed(T.__name__,uid,!tmode))//is already viewd 
+                   for (let ij=0;ij<global.Room_priority1.length;ij++){
+                    if (global.Room_priority1[ij].name==T.__name__)//if name is already present newflag=false 
+                    {
+                        
+                        newFlag1=false
+                        break
+                    }
+                    return newFlag2 && newFlag1
+                   
+                }
+                  
+                }
+                var newFlag=await isAlreadyViewed()
+                
+                
+                if(newFlag==true)
+                {
+                    var T_rating=calculate_ratings(T.roomData.location,Room.roomData.location)
+                   var full_room={
+                  name:T.__name__,
+                  Roominfo: T.roomData,
                   priority: T_rating,
                   viewed: false,
                 }
@@ -108,6 +147,7 @@ async function searchMatchingRoom(uid, isSearchingForTenant = true, onPush) {
                   new_array.push(full_room);
                 }
                 global.Room_priority1 = new_array;
+                }
                 
                 
               }

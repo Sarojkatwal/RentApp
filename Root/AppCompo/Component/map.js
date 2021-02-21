@@ -58,7 +58,7 @@ export default class App extends Component {
     fetchr = async () => {
         var yy = [];
         const url = `https://api.mapbox.com/geocoding/v5/mapbox.places/${encodeURIComponent(
-            this.state.addr+'nepal'
+            this.state.addr+' Nepal'
         )}.json?limit=2&access_token=${MAPBOX_API_KEY}`;
         fetch(url).then((response) => {
             response.json().then((data) => {
