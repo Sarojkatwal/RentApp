@@ -2,9 +2,9 @@ import Homescreen from "./Homescreen";
 import Profilescreen from "./Profilescreen";
 import Setting from "./Setting";
 import Exit from './Exit'
-import Feedback from './Feedback'
+import MyRooms from './myroom'
 import Help from './Help'
-import RateUs from './RateUs'
+import MyPosts from './mypost'
 
 
-export { Homescreen, Profilescreen, Setting, Exit, Feedback, Help, RateUs };
+export { Homescreen, Profilescreen, Setting, Exit, MyRooms, Help, MyPosts };

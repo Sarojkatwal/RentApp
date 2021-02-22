@@ -43,6 +43,7 @@ class Search extends Component {
         }
         //Saving tanant post
         const tpost = {
+            dateCreated: new Date().getTime(),
             price: value,
             roomType: valuefortype,
             location: location
@@ -72,6 +73,7 @@ class Search extends Component {
             location: {}
         }, () => alert("Done"))
     }
+
     render() {
         if (this.props.route.params !== undefined) {
             if (Object.keys(this.state.location).length === 0 && this.state.location.constructor === Object && this.props.route.params.type == 2) {

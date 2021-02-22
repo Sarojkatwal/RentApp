@@ -3,7 +3,6 @@ import { NavigationContainer } from "@react-navigation/native";
 import LogInSignUp from './Root/AppCompo/LogInSignUp'
 import { getLoggedUser } from './Root/Firebase/api'
 import './Root/Firebase/err'
-//import Mmapp from './Root/map'
 
 class App extends React.Component {
   state = {

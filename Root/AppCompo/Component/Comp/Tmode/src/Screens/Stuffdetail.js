@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { Image, ScrollView, StyleSheet, Text, View } from 'react-native';
+import { TouchableOpacity, ScrollView, StyleSheet, Text, View } from 'react-native';
 import StarRating from 'react-native-star-rating';
 import {
     Card,
@@ -46,9 +46,11 @@ class Stuffdetail extends Component {
                         <Avatar.Image size={50}
                             style={styles.profile}
                             source={require('../../../../../../../assets/messi.png')}
-                            onPress={() => alert('')}
                         />
-                        <Card.Cover source={{ uri: "https://picsum.photos/" + this.state.a }} style={styles.images} />
+
+                        <TouchableOpacity onPress={() => this.props.navigation.push('ShowImage', { uri: "https://picsum.photos/" + this.state.a })}>
+                            <Card.Cover source={{ uri: "https://picsum.photos/" + this.state.a }} style={styles.images} />
+                        </TouchableOpacity>
                         <Card.Title
                             title="Some Photos"
                             subtitle={`PhotoNo ${this.state.a}`}

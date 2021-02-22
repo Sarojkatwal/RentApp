@@ -82,7 +82,7 @@ const getLoggedUser = (onValueGet) => {
 }
 const saveTenantPost = async (uid, roomData, ismerge = true) => {
     firebase.firestore().collection('tenantPost')
-        .add({ authorId: uid, roomData })
+        .add({ authorId: uid, ...roomData })
         .catch((err) => { console.log(err) })
 }
 //
@@ -160,5 +160,40 @@ getRoomimg = async (post, iid) => {
 
 }
 
+
+const fetchPostforloggedInUser = (uid, saveResult) => {
+    return firebase.firestore().collection('tenantPost')
+        .where('authorId', "==", uid).get()
+        .then((querSnanpshot) => {
+            var i = 1;
+            querSnanpshot.forEach((doc) => {
+                if (doc.exists) {
+
+                    const postData = {
+                        sn: i,
+                        key: doc.id,
+                        ...doc.data()
+                    }
+                    i++;
+                    //console.log(postData)
+                    saveResult(postData)
+                } else {
+                    console.log("No such document!");
+                }
+            })
+        })
+        .catch((err) => { throw err; })
+
+}
+
+
+const deleteTenantPost = (id) => {
+    firebase.firestore().collection('tenantPost').doc(id).delete()
+        .then(() => {
+            alert("Done")
+        }).catch((err) => { throw err; })
+
+}
+
 export { saveUsersData, signIn, signUp, getUsersData, signout }
-export { getLoggedUser, saveTenantPost, saveOwnerRoom, fetchRoomforloggedInUser }
+export { getLoggedUser, saveTenantPost, saveOwnerRoom, fetchRoomforloggedInUser, fetchPostforloggedInUser, deleteTenantPost }

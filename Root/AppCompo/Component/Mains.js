@@ -10,7 +10,7 @@ import {
     Dialog
 } from "react-native-paper";
 import Icon from "react-native-vector-icons/FontAwesome5";
-import { Homescreen, Setting, Exit, Feedback, Help, RateUs } from './Screen/index'
+import { Homescreen, Setting, Exit, MyRooms, Help, MyPosts } from './Screen/index'
 import {
     createDrawerNavigator,
     DrawerContentScrollView,
@@ -21,8 +21,11 @@ const Stack = createDrawerNavigator();
 import UserContext from '../../context'
 
 class CustomDrawerContent extends Component {
-    changedp = () => {
-        this.props.navigation.navigate('Setting');
+    showdp = (uri) => {
+        if (uri.length === 0) {
+            uri = "https://www.kindpng.com/picc/m/130-1300217_user-icon-member-icon-png-transparent-png.png"
+        }
+        this.props.navigation.navigate('ShowImage', { uri: uri });
     }
     render() {
         return (
@@ -35,19 +38,17 @@ class CustomDrawerContent extends Component {
                         <View style={{ flex: 1 }}>
                             <DrawerContentScrollView {...this.props}>
                                 <View style={{ paddingLeft: 10 }}>
-
                                     <TouchableOpacity
-                                        onPress={this.changedp}>
+                                        onPress={() => this.showdp(data.profilePic)}>
                                         {(data.profilePic == '') ?
-                                            <Avatar.Image size={80} source={require('../../../assets/messi.png')} /> :
-                                            <Avatar.Image size={80} source={{ uri: data.profilePic }} />
+                                            <Avatar.Image size={150} source={require('../../../assets/images.png')} /> :
+                                            <Avatar.Image size={150} source={{ uri: data.profilePic }} />
                                         }
-                                        <Paragraph style={{ fontWeight: "bold" }}>{fullname}</Paragraph>
-                                        <Caption>{data.email}</Caption>
-                                        <Caption>ChisankhuGadhi 4</Caption>
-                                        <Caption>{address.district}</Caption>
                                     </TouchableOpacity>
-                                    <Button onPress={() => console.log(data)}>Press</Button>
+                                    <Paragraph style={{ fontWeight: "bold" }}>{fullname}</Paragraph>
+                                    <Caption>{data.email}</Caption>
+
+
                                 </View>
                                 <Divider
                                     style={{ backgroundColor: "black", margin: 10, height: 1 }}
@@ -95,11 +96,20 @@ export default class Mains extends Component {
                         }}
                     />
                     <Stack.Screen
-                        name="Feedback"
-                        component={Feedback}
+                        name="MyRooms"
+                        component={MyRooms}
                         options={{
                             drawerIcon: ({ color, size }) => (
-                                <Icon name="comment-dots" color={color} size={size} />
+                                <Icon name="info-circle" color={color} size={size} />
+                            ),
+                        }}
+                    />
+                    <Stack.Screen
+                        name="MyPosts"
+                        component={MyPosts}
+                        options={{
+                            drawerIcon: ({ color, size }) => (
+                                <Icon name="newspaper" color={color} size={size} />
                             ),
                         }}
                     />
@@ -112,15 +122,7 @@ export default class Mains extends Component {
                             ),
                         }}
                     />
-                    <Stack.Screen
-                        name="RateUs"
-                        component={RateUs}
-                        options={{
-                            drawerIcon: ({ color, size }) => (
-                                <Icon name="star" color={color} size={size} />
-                            ),
-                        }}
-                    />
+
                     <Stack.Screen
                         name="SignOut"
                         component={Exit}

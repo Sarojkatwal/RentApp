@@ -1,29 +1,33 @@
 import React, { Component } from "react";
-import { View, FlatList, StyleSheet, Button, ActivityIndicator } from 'react-native';
-import { getStuff } from '../api';
+import { View, FlatList, StyleSheet, ActivityIndicator } from 'react-native';
 import Stufflistitem from '../components/Stufflistitem';
-import Stuffdetail from './Stuffdetail'
-import { fetchRoomforloggedInUser } from '../../../../../../Firebase/api'
-import firebase from '../../../../../../Firebase/Firebase'
+import { fetchRoomforloggedInUser } from '../../../../../Firebase/api'
+import firebase from '../../../../../Firebase/Firebase'
 
 class Stufflist extends Component {
     constructor(props) {
         super(props)
     }
     state = {
-        stuff: []
+        stuff: [],
+        loaded: false,
     }
     componentDidMount = () => {
         this.updateStuff()
     }
+
     updateStuff = async () => {
         this.setState({
-            stuff: []
+            stuff: [],
+            loaded: false
         }, () => {
             const uid = firebase.auth().currentUser.uid
             fetchRoomforloggedInUser(uid, true, this.saveResult)
                 .then((data) => {
-                    //console.log(data)
+                    this.setState({
+                        ...this.state,
+                        loaded: true
+                    })
                 })
         })
     };
@@ -35,10 +39,10 @@ class Stufflist extends Component {
     }
     onListItemPress = stuff => {
         global.Show = false
-        this.props.navigation.navigate('Details', { stuff, mode: 'O' });
+        this.props.navigation.navigate('Details', { stuff, mode: 'mroom' });
     };
     renderItem = ({ item }) => (
-        <Stufflistitem key={item.key} item={item} onPress={this.onListItemPress} />
+        <Stufflistitem key={item.key} item={item} udata={this.props.udata} onPress={this.onListItemPress} />
     );
     renderSeparator = () => {
         return (
@@ -54,23 +58,17 @@ class Stufflist extends Component {
     render() {
         //  console.log(this.state.stuff.length)
         return (
-            <>
-                <Button title='Add Rooms'
-                    onPress={() => this.props.navigation.navigate('Add')} />
-                <View style={styles.container}>
-
-                    {this.state.stuff.length !== 0 ?
-                        <FlatList
-                            data={this.state.stuff}
-                            renderItem={this.renderItem}
-                            numColumns={1}
-                            keyExtractor={(stuff, index) => `${stuff.key}${index}`}
-                            refreshing={false}
-                            onRefresh={this.updateStuff}
-                        /> :
-                        <ActivityIndicator size={30} />}
-                </View>
-            </>
+            <View style={styles.container}>
+                {this.state.loaded ? <FlatList
+                    data={this.state.stuff}
+                    renderItem={this.renderItem}
+                    numColumns={1}
+                    keyExtractor={(stuff, index) => `${stuff.key}${index}`}
+                    refreshing={false}
+                    onRefresh={this.updateStuff}
+                /> :
+                    <ActivityIndicator size={30} />}
+            </View>
         );
     }
 }

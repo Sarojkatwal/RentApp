@@ -118,6 +118,9 @@ class LogIn extends React.Component {
         })
     }
   };
+  forgotPass = () => {
+
+  }
 
   render() {
     const colors = {
@@ -220,7 +223,7 @@ class LogIn extends React.Component {
               </Text>
               </Animatable.View>
             )}
-            <TouchableOpacity>
+            <TouchableOpacity onPress={this.forgotPass}>
               <Text style={{ color: "#009387", marginTop: 15 }}>
                 Forgot password?
             </Text>

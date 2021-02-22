@@ -55,7 +55,6 @@ export class ChangeDp extends Component {
                     <Appbar style={{ backgroundColor: 'green' }}>
                         <Appbar.BackAction onPress={() => this.props.navigation.goBack()} />
                         <Appbar.Content title="ChangeDp" />
-                        <Appbar.Action icon="dots-vertical" />
                     </Appbar>
                     <View>
                         <Button onPress={this._pickImage}>Pick an image</Button>

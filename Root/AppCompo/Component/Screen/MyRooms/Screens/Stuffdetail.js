@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { Image, ScrollView, StyleSheet, Text, View, Picker } from 'react-native';
+import { Image, ScrollView, StyleSheet, Text, View, TouchableOpacity } from 'react-native';
 import StarRating from 'react-native-star-rating';
 import {
     Card,
@@ -15,25 +15,33 @@ import {
     List,
     Provider,
     Portal,
-    Modal,
-    TextInput
+    Modal
 } from "react-native-paper";
 
-class Editdetails extends Component {
-    constructor(props) {
-        super(props)
-        global.show = false
-    }
+class Stuffdetail extends Component {
     state = {
         a: 700,
-        visible: false,
-        rated: false,
-        rating: 0,
-        roomtype: 1,
-        price: 4000,
-        negotiable: 1,
-        location: 'Bashundhara,athmandu',
-        description: ""
+        starcount: 0,
+        price: "",
+        type: 0,
+        location: "",
+        description: "",
+        img: [],
+        noofpic: 0,
+    }
+    componentDidMount = () => {
+        //console.log(this.props.stuff)
+        if (this.props.stuff.roomData !== undefined) {
+            this.setState({
+                ...this.state,
+                price: this.props.stuff.roomData.price,
+                type: this.props.stuff.roomData.roomType,
+                location: this.props.stuff.roomData.location.name,
+                description: this.props.stuff.roomData.roomDescription,
+                img: this.props.stuff.roomimg,
+                noofpic: this.props.stuff.roomimg.length
+            })
+        }
     }
     handleclick = (x) => {
         x ? (this.state.a != 700 &&
@@ -42,35 +50,34 @@ class Editdetails extends Component {
             })
         )
             :
-            (this.state.a != 705 &&
+            (this.state.a != 700 + this.state.noofpic - 1 &&
                 this.setState({
                     a: this.state.a + 1
                 })
             )
     }
-    componentDidMount = () => {
-        this.x = setInterval(this.visible, 100)
-    }
-    visible = () => {
-        if (!this.props.navigation.isFocused() && this.props.navigation.canGoBack()) {
-            clearInterval(this.x);
-            //console.log(this.props.navigation.isFocused())
-            //console.log(this.props.route)
-            //this.props.navigation.goBack()
-        }
-    }
-    componentWillUnmount = () => {
-        clearInterval(this.x)
-    }
     render() {
+        const { stuff } = this.props;
+        var Rtype = ""
+        if (this.state.type == 1) {
+            Rtype = "Single Room"
+        }
+        else if (this.state.type == 2) {
+            Rtype = "Double Room"
+        }
+        else {
+            Rtype = "Flat"
+        }
         return (
             <>
                 < ScrollView >
                     <Card>
-                        <Card.Cover source={{ uri: "https://picsum.photos/" + this.state.a }} style={styles.images} />
+                        <TouchableOpacity onPress={() => this.props.navigation.push('ShowImage', { uri: this.state.img[this.state.a - 700] })}>
+                            <Card.Cover source={{ uri: this.state.img[this.state.a - 700] }} style={styles.images} />
+                        </TouchableOpacity>
                         <Card.Title
-                            title="Some Phtos"
-                            subtitle={`PhotoNo ${this.state.a}`}
+                            title="Some Photos"
+                            subtitle={`PhotoNo ${this.state.a - 699}`}
                             titleStyle={{
                                 alignSelf: 'center'
                             }}
@@ -82,15 +89,17 @@ class Editdetails extends Component {
                                     style={{
                                         top: -60,
                                         left: -20,
+                                        zIndex: 1
                                     }
                                     }
                                     onPress={() => this.handleclick(true)}
                                 />}
                             right={(props) =>
-                                <IconButton {...props} size={40} color={this.state.a == 705 ? 'grey' : 'white'} icon="skip-next-circle"
+                                <IconButton {...props} size={40} color={this.state.a == 700 + this.state.noofpic - 1 ? 'grey' : 'white'} icon="skip-next-circle"
                                     style={{
                                         top: -60,
-                                        right: -5
+                                        right: -5,
+                                        zIndex: 1
                                     }
                                     }
                                     onPress={() => this.handleclick(false)}
@@ -102,52 +111,39 @@ class Editdetails extends Component {
                             <View style={styles.a1}>
                                 <View style={styles.a2}>
                                     <Title>Price:</Title>
-                                    <TextInput
-                                        style={styles.textInput}
-                                        mode="outlined"
-                                        keyboardType='numeric'
-                                        //label={this.state.price}
-                                        onChangeText={(price) => this.setState({ price })}
-                                        value={`${this.state.price}`}
-                                        maxLength={10}  //setting limit of input
-                                    />
+                                    <Caption>Rs. {this.state.price}</Caption>
                                 </View>
                             </View>
                             <View style={styles.a1}>
                                 <View style={styles.a2}>
                                     <Title>Type:</Title>
-                                    <Picker style={styles.pickerStyle}
-                                        mode='dropdown'
-                                        selectedValue={this.state.roomtype}
-                                        onValueChange={(itemValue, itemPosition) =>
-                                            this.setState({ roomtype: itemValue })}
-                                    >
-                                        <Picker.Item label="Single" value={1} />
-                                        <Picker.Item label="Double" value={2} />
-                                        <Picker.Item label="Flat" value={3} />
-                                    </Picker>
+                                    <Caption>{Rtype}</Caption>
                                 </View>
                             </View>
                             <View style={styles.a1}>
                                 <View style={styles.a2}>
                                     <Title>Negotiable:</Title>
-                                    <Picker style={styles.pickerStyle}
-                                        mode='dropdown'
-                                        selectedValue={this.state.negotiable}
-                                        onValueChange={(itemValue, itemPosition) =>
-                                            this.setState({ negotiable: itemValue })}
-                                    >
-                                        <Picker.Item label="Yes" value={1} />
-                                        <Picker.Item label="No" value={2} />
-                                    </Picker>
+                                    <Caption>Yes</Caption>
                                 </View>
                             </View>
                             <View style={styles.a1}>
                                 <View style={styles.a2}>
                                     <Title>Location:</Title>
-                                    <Caption>ashundhara,Kathmandu</Caption>
+                                    <Caption>{this.state.location}</Caption>
                                 </View>
                             </View>
+                            <View style={styles.a1}>
+                                <View style={styles.a2}>
+                                    <Title>Rating:</Title>
+                                    <StarRating
+                                        disabled={true}
+                                        maxStars={5}
+                                        rating={this.state.starcount}
+                                        selectedStar={(starcount) => this.setState({ starcount })}
+                                    />
+                                </View>
+                            </View>
+
                             <List.Accordion title="Description"
                                 titleStyle={{
                                     fontSize: 20,
@@ -155,19 +151,19 @@ class Editdetails extends Component {
                                     fontWeight: 'bold'
                                 }}
                             >
-                                <TextInput
-                                    onChangeText={(description) => this.setState({ description })}
-                                    value={this.state.description}
-                                    multiline={true}
-                                    numberOfLines={5}
-                                />
+                                <Text style={styles.textfordesc}>
+                                    {this.state.description}
+                                </Text>
+
                             </List.Accordion>
                             <View style={styles.a1}>
                                 <View style={styles.a2}>
                                     <Button mode='contained'
-                                    > Done</Button>
+                                        color="red"
+                                    > Delete Room</Button>
                                     <Button mode='contained'
-                                    > Delete</Button>
+                                        onPress={() => this.props.navigation.navigate('Editdetails')}
+                                    > Edit data</Button>
                                 </View>
                             </View>
                         </Card.Content>
@@ -178,7 +174,7 @@ class Editdetails extends Component {
     }
 }
 
-export default Editdetails;
+export default Stuffdetail;
 const styles = StyleSheet.create({
     container: {
         flex: 1,
@@ -192,16 +188,6 @@ const styles = StyleSheet.create({
         margin: 12,
         fontSize: 16,
     },
-    profile: {
-        position: 'absolute',
-        zIndex: 1,
-        right: 0,
-        bottom: 0,
-        margin: 10,
-        backgroundColor: 'transparent',
-        borderColor: 'grey',
-        borderWidth: 1
-    },
     description: {
         margin: 10,
     },
@@ -213,14 +199,5 @@ const styles = StyleSheet.create({
     a2: {
         flexDirection: "row",
         justifyContent: "space-between",
-    },
-    pickerStyle: {
-
-        width: "50%",
-        color: '#344953',
-    },
-    textInput: {
-        height: 40,
-        width: "50%",
     }
 });

@@ -27,7 +27,7 @@ class Editdetails extends Component {
         roomtype: 1,
         price: 4000,
         negotiable: 1,
-        location: 'Bashundhara,Kathmandu',
+        location: 'Bashundhara,Kathmand',
         description: ""
     }
     handleclick = (x) => {
@@ -50,7 +50,7 @@ class Editdetails extends Component {
                     <Card>
                         <Card.Cover source={{ uri: "https://picsum.photos/" + this.state.a }} style={styles.images} />
                         <Card.Title
-                            title="Some Photos"
+                            title="Some hotos"
                             subtitle={`PhotoNo ${this.state.a}`}
                             titleStyle={{
                                 alignSelf: 'center'
@@ -126,7 +126,7 @@ class Editdetails extends Component {
                             <View style={styles.a1}>
                                 <View style={styles.a2}>
                                     <Title>Location:</Title>
-                                    <Caption>Bashundhara,Kathmandu</Caption>
+                                    <Caption>Bashundhara,athmandu</Caption>
                                 </View>
                             </View>
                             <List.Accordion title="Description"

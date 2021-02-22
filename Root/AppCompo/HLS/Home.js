@@ -21,7 +21,7 @@ class Home extends React.Component {
           <Animatable.Image
             animation="bounceIn"
             duraton="1500"
-            source={require("../../../assets/messi.png")}
+            source={require("../../../assets/r1.png")}
             style={styles.logo}
             resizeMode="stretch"
           />

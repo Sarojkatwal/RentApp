@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import { Image, View, Platform, Text, StyleSheet } from 'react-native';
-import { List, Avatar, Appbar, Button } from "react-native-paper";
+import { List, Badge, Appbar, Button } from "react-native-paper";
 
 export class Settinghome extends Component {
     render() {
