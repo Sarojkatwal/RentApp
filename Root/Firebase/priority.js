@@ -39,7 +39,7 @@ function rating(d, r, x) {
   return Math.pow(r / Math.pow(d / 100, d / 10000), power(r)) * x;
 }
 
-function priority(Room) {
-  return Room.priority.price_rating + Room.priority.distance_rating;
+function sum_priority(priority) {
+  return priority.price_rating + priority.distance_rating;
 }
-export { calculate_ratings, priority };
+export { calculate_ratings, sum_priority };

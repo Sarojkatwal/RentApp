@@ -1,0 +1,319 @@
+import firebase from "./Firebase";
+import { calculate_ratings, priority } from "./priority";
+import { FireSQL } from "firesql";
+import { isViewed } from "./isViewed";
+
+const fireSQL = new FireSQL(firebase.firestore(), { includeId: true });
+const startSearch = async (uid, tmode = true) => {
+  
+  var Post;
+  var otherPost;
+  if (tmode) {
+    Post = "tenantPost";
+    otherPost = "ownerPost";
+  } else {
+    Post = "ownerPost";
+    otherPost = "tenantPost";
+  }
+
+  var sql_init = `SELECT * FROM ` + Post + ` WHERE authorId = "` + uid + `"`;
+  await fireSQL.query(sql_init).then((documents) => {
+    documents.forEach((document) => {
+      if (!window.myRooms.includes(document)) {
+        window.myRooms.push(document);
+      }
+    });
+  });
+  await callForEachRoom(tmode, otherPost,uid);
+};
+
+const callForEachRoom = async (tmode, otherPost,uid) => {
+  const DIST_FACTOR = 0.051;
+
+  for (let counter = 0; counter < window.myRooms.length; counter++) {
+    var matchedRoom = [];
+    const Room_Location = {
+      latitude: window.myRooms[counter].roomData.location.latitude,
+      longitude: window.myRooms[counter].roomData.location.longitude,
+    };
+
+    const latitude_threshold_for_T_greaterthan_O =
+      Room_Location.latitude + DIST_FACTOR;
+    const latitude_threshold_for_T_lessthan_O =
+      Room_Location.latitude - DIST_FACTOR;
+    const longitude_threshold_for_T_greaterthan_O =
+      Room_Location.longitude + DIST_FACTOR;
+    const longitude_threshold_for_T_lessthan_O =
+      Room_Location.longitude - DIST_FACTOR;
+
+    var sql1 =
+      "SELECT * FROM " +
+      otherPost +
+      " WHERE (`roomData.location.latitude`<" +
+      latitude_threshold_for_T_greaterthan_O +
+      " AND `roomData.location.latitude`>" +
+      Room_Location.latitude +
+      ") OR ";
+    var sql2 =
+      "(`roomData.location.latitude`<" +
+      Room_Location.latitude +
+      " AND `roomData.location.latitude`>" +
+      latitude_threshold_for_T_lessthan_O +
+      ") ";
+
+    await fireSQL.query(sql1 + sql2).then((documents) => {
+      documents.forEach((document) => {
+        matchedRoom.push(document);
+      });
+    });
+    for (let c = 0; c < matchedRoom.length; c++) {
+      if (
+        (matchedRoom[c].roomData.location.longitude < Room_Location.longitude &&
+          matchedRoom[c].roomData.location.longitude >
+            longitude_threshold_for_T_lessthan_O) ||
+        (matchedRoom[c].roomData.location.longitude > Room_Location.longitude &&
+          matchedRoom[c].roomData.location.longitude <
+            longitude_threshold_for_T_greaterthan_O)
+      ) {
+        console.log(matchedRoom[c].__name__);
+
+        const isAlreadyViewed = async () => {
+          var newFlag1 = true;
+          var newFlag2 = !(await isViewed(
+            matchedRoom[c].__name__,
+            uid,
+            !tmode
+          )); //is already viewd
+          if (tmode) {
+            for (let ij = 0; ij < window.Roomt.length; ij++) {
+              if (window.Roomt[ij].name == matchedRoom[c].__name__) {
+                //if name is already present newflag=false
+                newFlag1 = false;
+                break;
+              }
+            }
+          } else {
+            for (let ij = 0; ij < window.Roomo.length; ij++) {
+              if (window.Roomo[ij].name == matchedRoom[c].__name__) {
+                //if name is already present newflag=false
+                newFlag1 = false;
+                break;
+              }
+            }
+          }
+          const stri = newFlag2 && newFlag1 ? "new " : " old ";
+          console.log("the room " + matchedRoom[c].__name__ + " is " + stri);
+
+          return newFlag2 && newFlag1;
+        };
+        const newFlag=await isAlreadyViewed()
+
+
+
+        if (newFlag == true) {
+          var T_rating = calculate_ratings(
+            matchedRoom[c].roomData,
+            window.myRooms[counter].roomData
+          );
+          var full_room = {
+            name: matchedRoom[c].__name__,
+            Roominfo: matchedRoom[c].roomData,
+            priority: T_rating,
+          };
+          var new_array = []; //just for sorting
+          var flag = false; //just for sorting
+          var i = 0; //for sorting
+          if (tmode) {
+            while (i < window.Roomt.length) {
+              if (
+                priority(full_room) < priority(window.Roomt[i]) ||
+                flag == true
+              ) {
+                new_array.push(window.Roomt[i]);
+                i++;
+              } else {
+                new_array.push(full_room);
+                flag = true;
+              }
+            }
+            if (flag == false) {
+              new_array.push(full_room);
+            }
+            window.Roomt = new_array;
+          } else {
+            while (i < window.Roomo.length) {
+              if (
+                priority(full_room) < priority(window.Roomo[i]) ||
+                flag == true
+              ) {
+                new_array.push(window.Roomo[i]);
+                i++;
+              } else {
+                new_array.push(full_room);
+                flag = true;
+              }
+            }
+            if (flag == false) {
+              new_array.push(full_room);
+            }
+            window.Roomo = new_array;
+          }
+        }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+      }
+    }
+  }
+};
+
+export { startSearch };
+const isAlreadyViewed = async () => {
+                var newFlag1 = true;
+                var newFlag2 = !(await isViewed(T.__name__, uid, !tmode)); //is already viewd
+                if (tmode) {
+                  for (let ij = 0; ij < global.Roomt.length; ij++) {
+                    if (global.Roomt[ij].name == T.__name__) {
+                      //if name is already present newflag=false
+                      newFlag1 = false;
+                      break;
+                    }
+                  }
+                } else {
+                  for (let ij = 0; ij < global.Roomo.length; ij++) {
+                    if (global.Roomo[ij].name == T.__name__) {
+                      //if name is already present newflag=false
+                      newFlag1 = false;
+                      break;
+                    }
+                  }
+                }
+
+                return newFlag2 && newFlag1;
+              };
+
+              await isAlreadyViewed().then((newFlag) => {
+                if (newFlag == true) {
+                  var T_rating = calculate_ratings(T.roomData, Room.roomData);
+                  var full_room = {
+                    name: T.__name__,
+                    Roominfo: T.roomData,
+                    priority: T_rating,
+                  };
+                  var new_array = []; //just for sorting
+                  var flag = false; //just for sorting
+                  var i = 0; //for sorting
+                  if (tmode) {
+                    while (i < global.Roomt.length) {
+                      if (
+                        priority(full_room) < priority(global.Roomt[i]) ||
+                        flag == true
+                      ) {
+                        new_array.push(global.Roomt[i]);
+                        i++;
+                      } else {
+                        new_array.push(full_room);
+                        flag = true;
+                      }
+                    }
+                    if (flag == false) {
+                      new_array.push(full_room);
+                    }
+                    global.Roomt = new_array;
+                  } else {
+                    while (i < global.Roomo.length) {
+                      if (
+                        priority(full_room) < priority(global.Roomo[i]) ||
+                        flag == true
+                      ) {
+                        new_array.push(global.Roomo[i]);
+                        i++;
+                      } else {
+                        new_array.push(full_room);
+                        flag = true;
+                      }
+                    }
+                    if (flag == false) {
+                      new_array.push(full_room);
+                    }
+                    global.Roomo = new_array;
+                  }
+                }
+              });
+
+
+
+              login.just
+      searchMatchingRoom(res.user.uid,tmode).then(()=>
+          {
+            if(tmode)
+            {
+              
+              console.log('initially number of room found '+global.Roomt.length)
+              var ids = global.Roomt.map(function(obj){
+                return obj.roomInfo.__name__;
+            })
+            console.log('ids ')
+            console.log(ids)
+            
+              global.Roomt = global.Roomt.filter(function(item, pos) {
+                return ids.indexOf(item.roomInfo.__name) == pos;
+            })
+            console.log('after filetering duplicates global.roomt')
+            for(let i=0;i<global.Roomt.length;i++){console.log(global.Roomt[i].roomInfo.roomData.priority)}
+              function compare(a, b) {
+                a_priority=priority(a.roomData)
+                b_priority=priority(b.roomData)
+                if (a_priority > b_priority) return 1;
+                if (b_priority > a_priority) return -1;
+              
+                return 0;
+              }
+             
+              global.Roomt.sort(compare);
+              
+              console.log('after sorting number of room found '+global.Roomt.length)
+              for(let i=0;i<global.Roomt.length;i++){console.log(global.Roomt[i].roomInfo.roomData.priority)}
+              
+              
+            }
+            else
+            {
+              var ids = global.Roomo.map(function(obj){
+                return obj.roomInfo.__name__;
+            })
+            
+              global.Roomo = global.Roomt.filter(function(item, pos) {
+                return ids.indexOf(item.roomInfo.__name) == pos;
+            })
+              function compare(a, b) {
+                a_priority=priority(a.roomData)
+                b_priority=priority(b.roomData)
+                if (a_priority > b_priority) return 1;
+                if (b_priority > a_priority) return -1;
+              
+                return 0;
+              }
+              
+              global.Roomo.sort(compare);
+  
+              console.log('number of room found '+global.Roomo.length)
+              
+            }
+
+            
+          })
+          

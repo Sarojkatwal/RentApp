@@ -65,8 +65,12 @@ const getUsersData = (uid, func) => {
 }
 
 const signout = () => {
-    firebase.auth().signOut().then((x) =>
-        console.log(x)
+    firebase.auth().signOut().then(() =>
+    {
+      
+       
+    }
+   
     )
 }
 const getLoggedUser = (onValueGet) => {

@@ -1,6 +1,6 @@
 import firebase from './Firebase'
 
-import { saveUsersData } from './api'
+
 var storage = firebase.storage()
 
 
@@ -22,7 +22,8 @@ const uploadProfile = (imageUri) => {
                 storageRef.getDownloadURL().then((downloadURL) => {
                     //console.log('profile pic uploaded at ' + downloadURL);
                     try {
-                        saveUsersData(uid, { profilePic: downloadURL }, true)
+                        
+                        firebase.firestore().collection('users').doc(uid).set({profilePic:downloadURL},{merge:true})
                     }
                     catch (err) {
                         console.log(err)

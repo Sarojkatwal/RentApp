@@ -8,14 +8,17 @@ import {
   StyleSheet,
   StatusBar,
   Alert,
-  ActivityIndicator
+  ActivityIndicator,
 } from "react-native";
-import { Provider, Dialog, Portal } from 'react-native-paper'
+import { Provider, Dialog, Portal } from "react-native-paper";
 import * as Animatable from "react-native-animatable";
 import { LinearGradient } from "expo-linear-gradient";
 import FontAwesome from "react-native-vector-icons/FontAwesome";
 import Feather from "react-native-vector-icons/Feather";
-import { signIn } from '../../Firebase/api'
+import { signIn } from "../../Firebase/api";
+//import {searchMatchingRoom} from '../../Firebase/searchMatchingRoom'
+import { startSearch } from "../../Firebase/match";
+import { sum_priority } from "../../Firebase/priority";
 
 class LogIn extends React.Component {
   state = {
@@ -100,22 +103,44 @@ class LogIn extends React.Component {
       ...this.state,
       isValidUserf: this.state.isValidUser,
       isValidPasswordf: this.state.isValidPassword,
-    })
+    });
     if (this.state.isValidPassword && this.state.isValidUser) {
       this.setState({
         ...this.state,
-        visible: true
-      })
-      signIn(this.state.username, this.state.password)
-        .then((res) => {
-          if (res == undefined) {
-            this.setState({
-              ...this.state,
-              visible: false
-            })
-            Alert.alert('No such username and password found')
-          }
-        })
+        visible: true,
+      });
+      signIn(this.state.username, this.state.password).then((res) => {
+        if (res == undefined) {
+          this.setState({
+            ...this.state,
+            visible: false,
+          });
+          Alert.alert("No such username and password found");
+        }
+
+        var tmode = true;
+
+        startSearch(
+          res.user.uid,
+          () => {
+            console.log("the length of room found is " + global.Roomt.length);
+
+            var ids = global.Roomt.map(function (obj) {
+              return obj.roomInformation.__name__;
+            });
+            console.log("ids ");
+            console.log(ids);
+
+            global.Roomt = global.Roomt.filter(function (item, pos) {
+              return ids.indexOf(item.roomInformation.__name__) == pos;
+            });
+            console.log("after filetering duplicates global.roomt no of room ");
+            console.log(global.Roomt);
+            
+          },
+          true
+        );
+      });
     }
   };
 
@@ -149,7 +174,7 @@ class LogIn extends React.Component {
               ]}
             >
               Username
-          </Text>
+            </Text>
             <View style={styles.action}>
               <FontAwesome name="user-o" color={colors.text} size={20} />
               <TextInput
@@ -163,7 +188,7 @@ class LogIn extends React.Component {
                 ]}
                 autoCapitalize="none"
                 onChangeText={(val) => this.textInputChange(val)}
-              //onEndEditing={(e) => this.handleValidUser(e.nativeEvent.text)}
+                //onEndEditing={(e) => this.handleValidUser(e.nativeEvent.text)}
               />
               {this.state.check_textInputChange ? (
                 <Animatable.View animation="bounceIn">
@@ -173,9 +198,7 @@ class LogIn extends React.Component {
             </View>
             {this.state.isValidUserf ? null : (
               <Animatable.View animation="fadeInLeft" duration={500}>
-                <Text style={styles.errorMsg}>
-                  Username must not be empty.
-              </Text>
+                <Text style={styles.errorMsg}>Username must not be empty.</Text>
               </Animatable.View>
             )}
 
@@ -189,7 +212,7 @@ class LogIn extends React.Component {
               ]}
             >
               Password
-          </Text>
+            </Text>
             <View style={styles.action}>
               <Feather name="lock" color={colors.text} size={20} />
               <TextInput
@@ -209,27 +232,22 @@ class LogIn extends React.Component {
                 {this.state.secureTextEntry ? (
                   <Feather name="eye-off" color="grey" size={20} />
                 ) : (
-                    <Feather name="eye" color="green" size={20} />
-                  )}
+                  <Feather name="eye" color="green" size={20} />
+                )}
               </TouchableOpacity>
             </View>
             {this.state.isValidPasswordf ? null : (
               <Animatable.View animation="fadeInLeft" duration={500}>
-                <Text style={styles.errorMsg}>
-                  Password must not be empty.
-              </Text>
+                <Text style={styles.errorMsg}>Password must not be empty.</Text>
               </Animatable.View>
             )}
             <TouchableOpacity>
               <Text style={{ color: "#009387", marginTop: 15 }}>
                 Forgot password?
-            </Text>
+              </Text>
             </TouchableOpacity>
             <View style={styles.button}>
-              <TouchableOpacity
-                style={styles.LogIn}
-                onPress={this.loginHandle}
-              >
+              <TouchableOpacity style={styles.LogIn} onPress={this.loginHandle}>
                 <LinearGradient
                   colors={["#08d4c4", "#01ab9d"]}
                   style={styles.LogIn}
@@ -243,7 +261,7 @@ class LogIn extends React.Component {
                     ]}
                   >
                     Log In
-                </Text>
+                  </Text>
                 </LinearGradient>
               </TouchableOpacity>
 
@@ -267,24 +285,28 @@ class LogIn extends React.Component {
                   ]}
                 >
                   Sign Up
-              </Text>
+                </Text>
               </TouchableOpacity>
             </View>
           </Animatable.View>
           <Portal>
-            <Dialog visible={this.state.visible} dismissable={false}
-              onDismiss={() => this.setState({
-                ...this.state,
-                visible: false
-              })}
+            <Dialog
+              visible={this.state.visible}
+              dismissable={false}
+              onDismiss={() =>
+                this.setState({
+                  ...this.state,
+                  visible: false,
+                })
+              }
               style={{
-                backgroundColor: 'skyblue',
+                backgroundColor: "skyblue",
                 borderRadius: 30,
               }}
             >
               <Dialog.Title>Loading</Dialog.Title>
               <Dialog.Content>
-                <ActivityIndicator size='large' />
+                <ActivityIndicator size="large" />
               </Dialog.Content>
             </Dialog>
           </Portal>

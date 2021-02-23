@@ -2,6 +2,7 @@ import React from "react";
 import { NavigationContainer } from "@react-navigation/native";
 import LogInSignUp from './Root/AppCompo/LogInSignUp'
 import { getLoggedUser } from './Root/Firebase/api'
+
 import './Root/Firebase/err'
 //import Mmapp from './Root/map'
 
@@ -10,7 +11,10 @@ class App extends React.Component {
     user: null,
   };
   componentDidMount = () => {
-    getLoggedUser((user) => { this.setState({ user }) })
+    getLoggedUser((user) => { 
+      this.setState({ user }) 
+       
+      })
   }
 
   render() {

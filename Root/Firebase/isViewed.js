@@ -3,7 +3,7 @@ const isViewed = async (postId, userId, postMadeByOwner) => {
     var post;
 
     post = postMadeByOwner ? 'ownerPost' : 'tenantPost'
-    firebase.firestore().collection(post).doc(postId).collection('viewedBy').onSnapshot((documents) => {
+    firebase.firestore().collection(post).doc(postId).collection('viewedBy').get().then((documents) => {
 
         documents.forEach((document) => {
             if (document.viewedBy == userId) {

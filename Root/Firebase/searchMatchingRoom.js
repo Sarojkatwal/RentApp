@@ -1,136 +1,110 @@
-import firebase from './Firebase'
-import { calculate_ratings, priority } from "./priority";
-import { FireSQL } from "firesql";
+// import firebase from "./Firebase";
 
-const fireSQL = new FireSQL(firebase.firestore());
-global.Room_priority1 = [];
-global.Room_priority2 = [];
+// import { FireSQL } from "firesql";
+// import { isViewed } from "./isViewed";
 
-//the three priorities are price_rating,distance_rating and .....
+// import { calculate_ratings, priority } from "./priority";
+// import { call } from "react-native-reanimated";
 
-last_fetched = new Date();
-async function searchMatchingRoom(uid, isSearchingForTenant = true, onPush) {
-  var time_ref = new Date();
+// const fireSQL = new FireSQL(firebase.firestore(), { includeId: true });
 
-  var Post;
-  var otherPost;
-  if (isSearchingForTenant) {
-    Post = "tenantPost";
-    otherPost = "ownerPost";
-  } else {
-    Post = "ownerPost";
-    otherPost = "tenantPost";
-  }
 
-  const DIST_FACTOR = 0.051;
+// //the three priorities are price_rating,distance_rating and .....
+// global.Roomt = [];
+// global.Roomo = [];
+// const searchMatchingRoom = (uid, tmode = true) => {
+//   return new Promise(async(resolve, reject) => {
+//     console.log("search matching room called ");
 
-  var sql_init = `SELECT * FROM ` + Post + ` WHERE authorId = "` + uid + `"`;
+//     var Post;
+//     var otherPost;
+//     if (tmode) {
+//       Post = "tenantPost";
+//       otherPost = "ownerPost";
+//     } else {
+//       Post = "ownerPost";
+//       otherPost = "tenantPost";
+//     }
 
-  fireSQL.query(sql_init).then((documents) => {
-    if (global.Room_priority1.length != 0) {
-      //global.global.Room_priority2 = global.global.Room_priority1;
-      //global.global.Room_priority1=[];
-      global.Room_priority2 = [];
-      global.Room_priority1.forEach((Room, index) => {
-        if (Room.viewed) {
-          global.Room_priority2.push(Room);
-          global.Room_priority1.splice(index, index + 1);//delete Room from priority 1 if viewed by the user
-        }
-      });
-    }
-    documents.forEach((Room) => {
-      const Room_Location = {
-        latitude: Room.roomData.location.latitude,
-        longitude: Room.roomData.location.longitude,
-      };
+//     const DIST_FACTOR = 0.051;
 
-      const latitude_threshold_for_T_greaterthan_O =
-        Room_Location.latitude + DIST_FACTOR;
-      const latitude_threshold_for_T_lessthan_O =
-        Room_Location.latitude - DIST_FACTOR;
-      const longitude_threshold_for_T_greaterthan_O =
-        Room_Location.longitude + DIST_FACTOR;
-      const longitude_threshold_for_T_lessthan_O =
-        Room_Location.longitude - DIST_FACTOR;
+//     var sql_init = `SELECT * FROM ` + Post + ` WHERE authorId = "` + uid + `"`;
 
-      var sql1 =
-        "SELECT * FROM " +
-        otherPost +
-        " WHERE (`location.latitude`<" +
-        latitude_threshold_for_T_greaterthan_O +
-        " AND `location.latitude`>" +
-        Room_Location.latitude +
-        ") OR ";
-      var sql2 =
-        "(`location.latitude`<" +
-        Room_Location.latitude +
-        " AND `location.latitude`>" +
-        latitude_threshold_for_T_lessthan_O +
-        ") ";
+//     await fireSQL.query(sql_init).then(async (documents) => {
+//       const call_1=async()=>
+//       {
+//         documents.forEach(async (Room, index) =>
+//        {
+//         const Room_Location = {
+//           latitude: Room.roomData.location.latitude,
+//           longitude: Room.roomData.location.longitude,
+//         };
 
-      fireSQL.query(sql1 + sql2).then((documents) => {
-        //console.log(documents)
-        function returnPromise() {
-          return new Promise((resolve, reject) => {
-            documents.forEach((T) => {
-              if (
-                (T.location.longitude < Room_Location.longitude &&
-                  T.location.longitude >
-                    longitude_threshold_for_T_lessthan_O) ||
-                (T.location.longitude > Room_Location.longitude &&
-                  T.location.longitude <
-                    longitude_threshold_for_T_greaterthan_O)
-                // &&  T.createdAt > last_fetched
-              ) {
-                
-                var T_rating=calculate_ratings(T,Room)
-                var full_room={
-                  Roominfo: T,
-                  priority: T_rating,
-                  viewed: false,
-                }
-                var new_array = [];//just for sorting
-                var flag = false;//just for sorting
-                var i = 0;//for sorting
-                while (i < global.Room_priority1.length) {
-                  if (
-                    priority(full_room) < priority(global.Room_priority1[i]) ||
-                    flag == true
-                  ) {
-                    new_array.push(global.Room_priority1[i]);
-                    i++;
-                  } else {
-                    new_array.push(full_room);
-                    flag = true;
-                  }
-                }
-                if (flag == false) {
-                  new_array.push(full_room);
-                }
-                global.Room_priority1 = new_array;
+//         const latitude_threshold_for_T_greaterthan_O =
+//           Room_Location.latitude + DIST_FACTOR;
+//         const latitude_threshold_for_T_lessthan_O =
+//           Room_Location.latitude - DIST_FACTOR;
+//         const longitude_threshold_for_T_greaterthan_O =
+//           Room_Location.longitude + DIST_FACTOR;
+//         const longitude_threshold_for_T_lessthan_O =
+//           Room_Location.longitude - DIST_FACTOR;
+
+//         var sql1 =
+//           "SELECT * FROM " +
+//           otherPost +
+//           " WHERE (`roomData.location.latitude`<" +
+//           latitude_threshold_for_T_greaterthan_O +
+//           " AND `roomData.location.latitude`>" +
+//           Room_Location.latitude +
+//           ") OR ";
+//         var sql2 =
+//           "(`roomData.location.latitude`<" +
+//           Room_Location.latitude +
+//           " AND `roomData.location.latitude`>" +
+//           latitude_threshold_for_T_lessthan_O +
+//           ") ";
+
+//         const call_2=async()=>
+//         {
+//           await fireSQL.query(sql1 + sql2).then(async (documentst) => {
+//             documentst.forEach(async (T, tindex) => {
+              
+//               if (
+//                 (T.roomData.location.longitude < Room_Location.longitude &&
+//                   T.roomData.location.longitude >
+//                     longitude_threshold_for_T_lessthan_O) ||
+//                 (T.roomData.location.longitude > Room_Location.longitude &&
+//                   T.roomData.location.longitude <
+//                     longitude_threshold_for_T_greaterthan_O)
+//               ) {
+//                 var priorit=await calculate_ratings(T.roomData,Room.roomData)
+//                console.log("priority ofroom "+priorit.distance_rating)
+//                 console.log(T.__name__);
+//                const v=isViewed(T.__name__,uid,!tmode)
+//                //console.log('view',view)
+               
+//                //,viewed:view
+//                var myRoom=
+//                {roomInfo:T,priority:priorit,view:v}
+//               global.Roomt.push(myRoom)
                 
                 
-              }
-            });
-          });
-        }
-
-        async function call()
-        {
-          
-          returnPromise();
-          
-          
-          onPush();
-
-        }
-        
-        call();
-      });
-    });
-  });
+//               }
   
-  last_fetched = time_ref;
-}
+              
+             
+//             });
+//           })
 
-export { searchMatchingRoom };
+//         };
+//        await call_2()
+//       })
+//       }
+
+//       await call_1()
+//       resolve()
+//     })
+//   });
+// };
+
+// export { searchMatchingRoom };
