@@ -95,8 +95,8 @@ const startSearch = (uid, onPush, tmode = true) => {
             rooms.forEach((room) => {
               var priority_ = calculate_ratings(Room.roomData, room.roomData);
 
-              // var v=await isViewed(room.__name__,uid,tmode)
-              var v = false;
+              var v=isViewed(room.__name__,uid,tmode)
+              
               var full_room = {
                 roomInformation: room,
                 ratings: priority_,
@@ -128,8 +128,8 @@ const startSearch = (uid, onPush, tmode = true) => {
             rooms.forEach((room) => {
               var priority_ = calculate_ratings(Room.roomData, room.roomData);
 
-              // var v=await isViewed(room.__name__,uid,tmode)
-              var v = false;
+              var v=isViewed(room.__name__,uid,tmode)
+              
 
               var full_room = {
                 roomInformation: room,

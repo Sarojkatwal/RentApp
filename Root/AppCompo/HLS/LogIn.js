@@ -17,8 +17,10 @@ import FontAwesome from "react-native-vector-icons/FontAwesome";
 import Feather from "react-native-vector-icons/Feather";
 import { signIn } from "../../Firebase/api";
 //import {searchMatchingRoom} from '../../Firebase/searchMatchingRoom'
+import {save_likeNotifications} from '../../Firebase/notify' 
 import { startSearch } from "../../Firebase/match";
 import { sum_priority } from "../../Firebase/priority";
+import {registerForPushNotifications} from '../../Firebase/pushnotification'
 
 class LogIn extends React.Component {
   state = {
@@ -120,26 +122,27 @@ class LogIn extends React.Component {
 
         var tmode = true;
 
-        startSearch(
-          res.user.uid,
-          () => {
-            console.log("the length of room found is " + global.Roomt.length);
+        // startSearch(
+        //   res.user.uid,
+        //   () => {
+        //     console.log("the length of room found is " + global.Roomt.length);
 
-            var ids = global.Roomt.map(function (obj) {
-              return obj.roomInformation.__name__;
-            });
-            console.log("ids ");
-            console.log(ids);
-
-            global.Roomt = global.Roomt.filter(function (item, pos) {
-              return ids.indexOf(item.roomInformation.__name__) == pos;
-            });
-            console.log("after filetering duplicates global.roomt no of room ");
-            console.log(global.Roomt);
+        //     var ids = global.Roomt.map(function (obj) { //fitering duplicates 
+        //       return obj.roomInformation.__name__;
+        //     });
             
-          },
-          true
-        );
+        //     global.Roomt = global.Roomt.filter(function (item, pos) {
+        //       return ids.indexOf(item.roomInformation.__name__) == pos;
+        //     });
+        //     console.log("after filetering duplicates global.roomt no of room ");
+        //     console.log(global.Roomt);
+            
+        //   },
+        //   true
+        // );
+       // save_likeNotifications(res.user.uid,"Yz6yJmRaR0ljCIDMhsXf",true)
+registerForPushNotifications(res.user.uid)
+        
       });
     }
   };

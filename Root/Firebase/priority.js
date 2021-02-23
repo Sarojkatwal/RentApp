@@ -1,9 +1,9 @@
 import haversine from "haversine";
 function calculate_ratings(Room1, Room2) {
   const POWER_FACTOR = 0.5;
-  const DISTANCE_RATING_FULL = 4;
-  const PRICE_FULL_RATING = 3;
-  const TYPE_FULL_RATING = 3;
+  const DISTANCE_RATING_FULL = 5;
+  const PRICE_FULL_RATING = 4;
+  const TYPE_FULL_RATING = 1;
 
   var ratings = {};
 
@@ -30,6 +30,12 @@ function calculate_ratings(Room1, Room2) {
 
   // code for type_rating
 
+  if(Room1.roomType==Room2.roomType)
+  {
+     ratings.type_rating=1
+  }
+  else {ratings.type_rating=0}
+
   return ratings;
 }
 function power(x) {
@@ -40,6 +46,6 @@ function rating(d, r, x) {
 }
 
 function sum_priority(priority) {
-  return priority.price_rating + priority.distance_rating;
+  return priority.price_rating + priority.distance_rating+priority.type_rating;
 }
 export { calculate_ratings, sum_priority };
