@@ -119,8 +119,14 @@ class LogIn extends React.Component {
           });
           Alert.alert("No such username and password found");
         }
-
-        var tmode = false;
+        registerForPushNotifications().then((token)=>
+        {
+          console.log('token added '+token)
+        }).catch((err)=>
+        {
+          console.log(err)
+        })
+        var tmode = true;
 
         startSearch(
           res.user.uid,
@@ -128,15 +134,15 @@ class LogIn extends React.Component {
           tmode
         ).then(()=>
         {
-
-
+for(let i=0;i<global.Roomt;i++){console.log(global.Roomt[i].roomInformation.roomData.location.name)}
+          
 
           // use global.Roomt and global.Roomo here 
          
           
         }).catch((err)=>{console.log(err)});
         //save_likeNotifications(res.user.uid,"Yz6yJmRaR0ljCIDMhsXf",true)
-//registerForPushNotifications(res.user.uid)
+
 //sendPushNotification('Ji1yjqwuGbaTSureKGwjE91SrQr1','Room found in ktm')
         
       });

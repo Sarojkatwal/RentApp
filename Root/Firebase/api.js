@@ -1,5 +1,6 @@
 import firebase from './Firebase'
 import { uploadRoom } from './storage'
+import {deletePushToken} from './pushnotification'
 
 const saveUsersData = (uid, userData, ismerge = true) => {
     firebase.firestore().collection('users').doc(uid).
@@ -65,13 +66,18 @@ const getUsersData = (uid, func) => {
 }
 
 const signout = () => {
-    firebase.auth().signOut().then(() =>
-    {
-      
+    global.Roomt=[]
+          global.Roomo=[]
+          
+    deletePushToken().then((msg)=>{console.log(msg)
+        firebase.auth().signOut().then(() =>
+        {
+          
+           
+        }
        
-    }
-   
-    )
+        )}).catch((err)=>console.log(err))
+    
 }
 const getLoggedUser = (onValueGet) => {
     firebase.auth().onAuthStateChanged((user) => {
