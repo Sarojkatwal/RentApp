@@ -77,13 +77,13 @@ const increaseLikeCount = async (postId, omode) => {
   });
 };
 
-const create_matchingRoomNotifications = (
+const create_matchingRoomNotifications = (//jun post match garxa tesko type ho omode chai 
   roomId,
   roomMatchedToUserId,
   ratings,
-  omode = true
+  ownerPost = true
 ) => {
-  var post = omode;
+  var post = ownerPost ? 'ownerPost':'tenantPost';
   firebase
     .firestore()
     .collection(post)
@@ -106,7 +106,7 @@ const create_matchingRoomNotifications = (
     });
 };
 
-async function getMatchingNotifications(userId) {
+function getMatchingNotifications(userId) {
   const data = [];
   return new Promise((resolve,reject)=>
   {
@@ -115,11 +115,11 @@ async function getMatchingNotifications(userId) {
     .collection("match_notifications_omode")
     .where("matchedTo", "==", userId)
     
-    .orderBy("rating", "desc")
+    .orderBy("rating", "desc").limit(20)
     .get()
     .then((documents) => {
       documents.forEach((document) => [data.push(document)]);
-    resolve(data)
+      resolve(data)
     }).catch((err)=>
     {
       reject(err)
@@ -133,4 +133,6 @@ export {
   increaseLikeCount,
   save_likeNotifications,
   create_matchingRoomNotifications,
+  getMatchingNotifications,
+  getLikeNotifications
 };
