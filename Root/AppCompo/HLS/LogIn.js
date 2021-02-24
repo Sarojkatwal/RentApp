@@ -20,7 +20,7 @@ import { signIn } from "../../Firebase/api";
 import {save_likeNotifications} from '../../Firebase/notify' 
 import { startSearch } from "../../Firebase/match";
 import { sum_priority } from "../../Firebase/priority";
-import {registerForPushNotifications} from '../../Firebase/pushnotification'
+import {registerForPushNotifications,sendPushNotification} from '../../Firebase/pushnotification'
 
 class LogIn extends React.Component {
   state = {
@@ -120,28 +120,51 @@ class LogIn extends React.Component {
           Alert.alert("No such username and password found");
         }
 
-        var tmode = true;
+        var tmode = false;
 
-        // startSearch(
-        //   res.user.uid,
-        //   () => {
-        //     console.log("the length of room found is " + global.Roomt.length);
-
-        //     var ids = global.Roomt.map(function (obj) { //fitering duplicates 
-        //       return obj.roomInformation.__name__;
-        //     });
+        startSearch(
+          res.user.uid,
+          
+          tmode
+        ).then(()=>
+        {
+          if(tmode)
+          {
             
-        //     global.Roomt = global.Roomt.filter(function (item, pos) {
-        //       return ids.indexOf(item.roomInformation.__name__) == pos;
-        //     });
-        //     console.log("after filetering duplicates global.roomt no of room ");
-        //     console.log(global.Roomt);
+              console.log("the length of room found is " + global.Roomt.length);
+  
+              var ids = global.Roomt.map(function (obj) { //fitering duplicates 
+                return obj.roomInformation.__name__;
+              });
+              
+              global.Roomt = global.Roomt.filter(function (item, pos) {
+                return ids.indexOf(item.roomInformation.__name__) == pos;
+              });
+              console.log("after filetering duplicates global.roomt no of room ");
+              console.log(global.Roomt);
+              
             
-        //   },
-        //   true
-        // );
-       // save_likeNotifications(res.user.uid,"Yz6yJmRaR0ljCIDMhsXf",true)
-registerForPushNotifications(res.user.uid)
+          }
+          else{
+            
+              console.log("the length of room found is " + global.Roomo.length);
+  
+              var ids = global.Roomo.map(function (obj) { //fitering duplicates 
+                return obj.roomInformation.__name__;
+              });
+              
+              global.Roomo = global.Roomo.filter(function (item, pos) {
+                return ids.indexOf(item.roomInformation.__name__) == pos;
+              });
+              console.log("after filetering duplicates global.roomt no of room ");
+              console.log(global.Roomo);
+              
+            
+          }
+        }).catch((err)=>{console.log(err)});
+        //save_likeNotifications(res.user.uid,"Yz6yJmRaR0ljCIDMhsXf",true)
+//registerForPushNotifications(res.user.uid)
+//sendPushNotification('Ji1yjqwuGbaTSureKGwjE91SrQr1','Room found in ktm')
         
       });
     }

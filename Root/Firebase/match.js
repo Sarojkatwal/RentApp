@@ -26,8 +26,10 @@ const getMyRoom = (uid, Post) => {
       });
   });
 };
-const startSearch = (uid, onPush, tmode = true) => {
-  const DIST_FACTOR = 0.051;
+const startSearch = (uid, tmode = true) => {
+return new Promise((resolvef,rejectf)=>
+{
+  const DIST_FACTOR = 0.031;
   var Post;
   var otherPost;
   if (tmode) {
@@ -40,10 +42,13 @@ const startSearch = (uid, onPush, tmode = true) => {
   getMyRoom(uid, Post, tmode)
     .then((userDocuments) => {
       userDocuments.forEach((Room) => {
+        console.log('your room is ')
+        console.log(Room.roomData.location.name)
         const Room_Location = {
           latitude: Room.roomData.location.latitude,
           longitude: Room.roomData.location.longitude,
         };
+
         const latitude_threshold_for_T_greaterthan_O =
           Room_Location.latitude + DIST_FACTOR;
         const latitude_threshold_for_T_lessthan_O =
@@ -53,24 +58,32 @@ const startSearch = (uid, onPush, tmode = true) => {
         const longitude_threshold_for_T_lessthan_O =
           Room_Location.longitude - DIST_FACTOR;
 
-        var sql1 =
+        // var sql1 =
+        //   "SELECT * FROM " +
+        //   otherPost +
+        //   " WHERE (`roomData.location.latitude`<" +
+        //   latitude_threshold_for_T_greaterthan_O +
+        //   " AND `roomData.location.latitude`>" +
+        //   Room_Location.latitude +
+        //   ") OR ";
+        // var sql2 =
+        //   "(`roomData.location.latitude`<" +
+        //   Room_Location.latitude +
+        //   " AND `roomData.location.latitude`>" +
+        //   latitude_threshold_for_T_lessthan_O +
+        //   ") ";
+          var sql1 =
           "SELECT * FROM " +
           otherPost +
           " WHERE (`roomData.location.latitude`<" +
           latitude_threshold_for_T_greaterthan_O +
           " AND `roomData.location.latitude`>" +
-          Room_Location.latitude +
-          ") OR ";
-        var sql2 =
-          "(`roomData.location.latitude`<" +
-          Room_Location.latitude +
-          " AND `roomData.location.latitude`>" +
           latitude_threshold_for_T_lessthan_O +
-          ") ";
+          ")";
         const getForEachRoom = () => {
           return new Promise((res, rej) => {
             fireSQL
-              .query(sql1 + sql2)
+              .query(sql1 )
               .then((Rooms) => {
                 res(Rooms);
               })
@@ -80,27 +93,33 @@ const startSearch = (uid, onPush, tmode = true) => {
           });
         };
         getForEachRoom().then(async (rooms) => {
+          console.log('before filtering the longitude rooms found are ')
+          console.log(rooms.length)
           rooms = await rooms.filter((T) => {
             return (
-              (T.roomData.location.longitude < Room_Location.longitude &&
-                T.roomData.location.longitude >
-                  longitude_threshold_for_T_lessthan_O) ||
-              (T.roomData.location.longitude > Room_Location.longitude &&
-                T.roomData.location.longitude <
-                  longitude_threshold_for_T_greaterthan_O)
+              // (T.roomData.location.longitude < Room_Location.longitude &&
+              //   T.roomData.location.longitude >
+              //     longitude_threshold_for_T_lessthan_O) ||
+              // (T.roomData.location.longitude > Room_Location.longitude &&
+              //   T.roomData.location.longitude <
+              //     longitude_threshold_for_T_greaterthan_O)
+              (T.roomData.location.longitude < longitude_threshold_for_T_greaterthan_O &&
+                  T.roomData.location.longitude >
+                     longitude_threshold_for_T_lessthan_O)
             );
           });
-
+console.log('after filtering the longitude')
+rooms.forEach((room)=>{console.log(room.roomData.location.name)})
           if (tmode) {
             rooms.forEach((room) => {
               var priority_ = calculate_ratings(Room.roomData, room.roomData);
 
-              var v=isViewed(room.__name__,uid,tmode)
+              //var v=isViewed(room.__name__,uid,tmode)
               
               var full_room = {
                 roomInformation: room,
                 ratings: priority_,
-                view: v,
+                view: false,
               };
 
               var new_array = []; //just for sorting
@@ -123,18 +142,19 @@ const startSearch = (uid, onPush, tmode = true) => {
                 new_array.push(full_room);
               }
               global.Roomt = new_array;
+              resolvef()
             });
           } else {
             rooms.forEach((room) => {
               var priority_ = calculate_ratings(Room.roomData, room.roomData);
 
-              var v=isViewed(room.__name__,uid,tmode)
+              //var v=isViewed(room.__name__,uid,tmode)
               
 
               var full_room = {
                 roomInformation: room,
                 ratings: priority_,
-                view: v,
+                view: false,
               };
               var new_array = []; //just for sorting
               var flag = false; //just for sorting
@@ -156,17 +176,21 @@ const startSearch = (uid, onPush, tmode = true) => {
                 new_array.push(full_room);
               }
               global.Roomo = new_array;
+              resolvef()
             });
           }
         });
       });
     })
     .catch((err) => {
-      console.log("error getting my room ,the error is ", err);
+      rejectf(err);
     });
 
-  setTimeout(() => {
-    onPush();
-  }, 5000);
-};
+ 
+
+
+})
+
+
+  };
 export { startSearch };
