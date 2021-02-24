@@ -25,37 +25,33 @@ export class FillDetails extends Component {
         firstname: '',
         lastname: '',
         gender: 'M',
-        province: 'Province',
+        zone: 'zone',
         district: 'District',
-        localLevel: 'Locallevel',
-        wardno: '',
+        phoneno: '',
         ge: false,
         pe: false,
         de: false,
-        le: false,
-        we: false
     }
     componentDidMount = () => {
-        console.log(dist.bagmati)
+        // console.log(dist.bagmati)
     }
     submitdata = () => {
-        userdata = {
+        const userdata = {
             name: {
                 firstName: this.state.firstname,
                 lastName: this.state.lastname,
             },
             gender: this.state.gender,
+            phoneNo: this.state.phoneno,
             address:
             {
-                province: this.state.province,
+                zone: this.state.zone,
                 district: this.state.district,
-                localLevel: this.state.localLevel,
-                wardno: this.state.wardno
             },
         }
-        const { firstname, lastname, province, district, ...others } = this.state
-        if (firstname != '' && lastname != '' && province != 'Province' && district != 'District') {
-            uid = firebase.auth().currentUser.uid
+        const { firstname, lastname, zone, district, phoneno, ...others } = this.state
+        if (firstname !== '' && lastname !== '' && phoneno !== '' && zone !== 'zone' && district !== 'District') {
+            const uid = firebase.auth().currentUser.uid
             saveUsersData(uid, userdata)
         }
         else {
@@ -71,10 +67,10 @@ export class FillDetails extends Component {
             <RadioButton.Item key={key} label={`${key + 1}.${data[0].toUpperCase() + data.slice(1)}`} value={data} color='red' />
         )
         var district = []
-        if (this.state.province != 'Province') {
+        if (this.state.zone != 'zone') {
             const districts = []
-            for (var x in dist[this.state.province]) {
-                districts.push(dist[this.state.province][x].district)
+            for (var x in dist[this.state.zone]) {
+                districts.push(dist[this.state.zone][x].district)
             }
             district = districts.map((data, key) =>
                 <RadioButton.Item key={key} label={`${key + 1}.${data[0].toUpperCase() + data.slice(1)}`} value={data} color='red' />
@@ -101,6 +97,15 @@ export class FillDetails extends Component {
                                 mode="outlined"
                                 onChangeText={(lastname) => this.setState({ lastname })}
                                 value={`${this.state.lastname}`}
+                            />
+                        </View>
+                        <View style={styles.a1}>
+                            <Title>Phone No:</Title>
+                            <TextInput
+                                style={styles.textInput}
+                                mode="outlined"
+                                onChangeText={(phoneno) => this.setState({ phoneno })}
+                                value={`${this.state.phoneno}`}
                             />
                         </View>
                         <View style={styles.a1}>
@@ -137,12 +142,12 @@ export class FillDetails extends Component {
                             </Dialog>
                         </Portal>
                         <View style={styles.a1}>
-                            <Title>Province:</Title>
+                            <Title>Zone:</Title>
                             <TouchableOpacity style={styles.TouchableOpacity}
                                 onPress={() => this.setState({ pe: true })}>
 
                                 <View style={styles.tview}>
-                                    <Caption style={styles.ttext}>{this.state.province.toUpperCase()}</Caption>
+                                    <Caption style={styles.ttext}>{this.state.zone.toUpperCase()}</Caption>
                                     <Feather name="chevron-down" color="black" size={20} />
                                 </View>
                             </TouchableOpacity>
@@ -152,12 +157,12 @@ export class FillDetails extends Component {
                                 onDismiss={() => this.setState({ pe: false })}
                                 style={styles.scrollviewStyle}
                             >
-                                <Dialog.Title>Select Province</Dialog.Title>
+                                <Dialog.Title>Select zone</Dialog.Title>
                                 <ScrollView>
                                     <Dialog.Content>
                                         <RadioButton.Group
-                                            onValueChange={(x) => this.setState({ province: x })}
-                                            value={this.state.province}
+                                            onValueChange={(x) => this.setState({ zone: x })}
+                                            value={this.state.zone}
                                         >
                                             {zone}
                                         </RadioButton.Group>
@@ -176,7 +181,7 @@ export class FillDetails extends Component {
                             <Title>District:</Title>
                             <TouchableOpacity style={styles.TouchableOpacity}
                                 onPress={() => {
-                                    if (this.state.province != 'Province') {
+                                    if (this.state.zone != 'zone') {
                                         this.setState({ de: true })
                                     }
                                 }}>
@@ -209,40 +214,7 @@ export class FillDetails extends Component {
                                 </Dialog.Actions>
                             </Dialog>
                         </Portal>
-                        <View style={styles.a1}>
-                            <Title>localLevel</Title>
-                            <TouchableOpacity style={styles.TouchableOpacity}
-                                onPress={() => this.setState({ ve: true })}>
 
-                                <View style={styles.tview}>
-                                    <Caption style={styles.ttext}>{this.state.locallevel}</Caption>
-                                    <Feather name="chevron-down" color="black" size={20} />
-                                </View>
-                            </TouchableOpacity>
-                        </View>
-                        <Portal>
-                            <Dialog visible={this.state.le} dismissable={false}
-                                onDismiss={() => this.setState({ le: false })}
-                                style={styles.scrollviewStyle}
-                            >
-                                <Dialog.Title>Sel</Dialog.Title>
-                                <ScrollView>
-                                    <Dialog.Content>
-                                        <RadioButton.Group
-                                            onValueChange={(x) => this.setState({ localLevel: x })}
-                                            value={this.state.localLevel}
-                                        >
-                                            <RadioButton.Item label="Single Room" value={1} color='red' />
-                                            <RadioButton.Item label="Double Room" value={2} color='red' />
-                                            <RadioButton.Item label="Flat" value={3} color='red' />
-                                        </RadioButton.Group>
-                                    </Dialog.Content>
-                                </ScrollView>
-                                <Dialog.Actions>
-                                    <Button onPress={() => this.setState({ le: false })}>Done</Button>
-                                </Dialog.Actions>
-                            </Dialog>
-                        </Portal>
                         <View style={{
                             marginTop: 40,
                             marginBottom: 20
@@ -267,6 +239,8 @@ const styles = StyleSheet.create({
         flex: 1,
         paddingVertical: 10,
         margin: '5%',
+        borderColor: 'green',
+        borderWidth: 5,
         marginVertical: windowHeight / 20,
         backgroundColor: 'skyblue',
         paddingHorizontal: 10,

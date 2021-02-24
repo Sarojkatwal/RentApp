@@ -15,6 +15,7 @@ class Stufflist extends Component {
     }
     componentDidMount = () => {
         this.updateStuff()
+        console.log("ok=", global.Roomt)
     }
     updateStuff = async () => {
         this.setState({
