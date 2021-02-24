@@ -128,39 +128,12 @@ class LogIn extends React.Component {
           tmode
         ).then(()=>
         {
-          if(tmode)
-          {
-            
-              console.log("the length of room found is " + global.Roomt.length);
-  
-              var ids = global.Roomt.map(function (obj) { //fitering duplicates 
-                return obj.roomInformation.__name__;
-              });
-              
-              global.Roomt = global.Roomt.filter(function (item, pos) {
-                return ids.indexOf(item.roomInformation.__name__) == pos;
-              });
-              console.log("after filetering duplicates global.roomt no of room ");
-              console.log(global.Roomt);
-              
-            
-          }
-          else{
-            
-              console.log("the length of room found is " + global.Roomo.length);
-  
-              var ids = global.Roomo.map(function (obj) { //fitering duplicates 
-                return obj.roomInformation.__name__;
-              });
-              
-              global.Roomo = global.Roomo.filter(function (item, pos) {
-                return ids.indexOf(item.roomInformation.__name__) == pos;
-              });
-              console.log("after filetering duplicates global.roomt no of room ");
-              console.log(global.Roomo);
-              
-            
-          }
+
+
+
+          // use global.Roomt and global.Roomo here 
+         
+          
         }).catch((err)=>{console.log(err)});
         //save_likeNotifications(res.user.uid,"Yz6yJmRaR0ljCIDMhsXf",true)
 //registerForPushNotifications(res.user.uid)

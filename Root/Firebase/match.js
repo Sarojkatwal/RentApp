@@ -142,6 +142,13 @@ rooms.forEach((room)=>{console.log(room.roomData.location.name)})
                 new_array.push(full_room);
               }
               global.Roomt = new_array;
+              var ids = global.Roomt.map(function (obj) { //fitering duplicates 
+                return obj.roomInformation.__name__;
+              });
+              
+              global.Roomt = global.Roomt.filter(function (item, pos) {
+                return ids.indexOf(item.roomInformation.__name__) == pos;
+              });
               resolvef()
             });
           } else {
@@ -176,6 +183,13 @@ rooms.forEach((room)=>{console.log(room.roomData.location.name)})
                 new_array.push(full_room);
               }
               global.Roomo = new_array;
+              var ids = global.Roomo.map(function (obj) { //fitering duplicates 
+                return obj.roomInformation.__name__;
+              });
+              
+              global.Roomo = global.Roomo.filter(function (item, pos) {
+                return ids.indexOf(item.roomInformation.__name__) == pos;
+              });
               resolvef()
             });
           }
