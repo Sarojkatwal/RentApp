@@ -1,6 +1,6 @@
 import firebase from './Firebase'
 
-import { saveUsersData } from './api'
+
 var storage = firebase.storage()
 
 
@@ -22,7 +22,8 @@ const uploadProfile = (imageUri) => {
                 storageRef.getDownloadURL().then((downloadURL) => {
                     //console.log('profile pic uploaded at ' + downloadURL);
                     try {
-                        saveUsersData(uid, { profilePic: downloadURL }, true)
+                        //saveUsersData(uid, { profilePic: downloadURL }, true)
+                        firebase.firestore().collection('users').doc(uid).set({ profilePic: downloadURL }, { merge: true })
                     }
                     catch (err) {
                         console.log(err)
@@ -35,7 +36,7 @@ const uploadProfile = (imageUri) => {
 }
 
 const uploadRoom = async (imageUris, postId) => {
-    console.log("congratulation i am inside uploadroom")
+    //console.log("congratulation i am inside uploadroom")
 
     for (var j = 0; j < imageUris.length; j++) {
         const response = await fetch(imageUris[j]);

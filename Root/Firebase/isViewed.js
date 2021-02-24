@@ -3,7 +3,7 @@ const isViewed = async (postId, userId, postMadeByOwner) => {
     var post;
 
     post = postMadeByOwner ? 'ownerPost' : 'tenantPost'
-    firebase.firestore().collection(post).doc(postId).collection('viewedBy').onSnapshot((documents) => {
+    await firebase.firestore().collection(post).doc(postId).collection('viewedBy').get().then((documents) => {
 
         documents.forEach((document) => {
             if (document.viewedBy == userId) {
@@ -12,13 +12,14 @@ const isViewed = async (postId, userId, postMadeByOwner) => {
 
             }
         })
-        return false
+
     })
+    return false
 }
 
 
 //whenever a post is rendered in user's feed make it viewed by calling makeViewed.
-const makeViewed = async (postId, userId, postMadeByOwner) => {
+const makeViewed = (postId, userId, postMadeByOwner) => {
     var post;
 
     post = postMadeByOwner ? 'ownerPost' : 'tenantPost'

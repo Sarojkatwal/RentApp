@@ -6,14 +6,13 @@ export class Help extends Component {
     render() {
         return (
             <>
-                <Appbar>
+                <Appbar style={{ backgroundColor: 'green' }}>
                     <Appbar.BackAction onPress={() => this.props.navigation.goBack()} />
-                    <Appbar.Content title="Title" subtitle="Subtitle" />
-                    <Appbar.Action icon="magnify" />
-                    <Appbar.Action icon="dots-vertical" />
+                    <Appbar.Content title="Help" />
+
                 </Appbar>
                 <View>
-                    <Button title="Sign Out" />
+                    <Text>Help</Text>
                 </View>
             </>
         );

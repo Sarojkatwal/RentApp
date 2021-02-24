@@ -11,11 +11,27 @@ class Stufflist extends Component {
     state = {
         stuff: [],
         loaded: false,
+        refresh: true
     }
-    componentDidMount = () => {
-        this.updateStuff()
+    componentDidMount() {
+        const { navigation } = this.props;
+        //this.updateStuff()
+        this.focusListener = navigation.addListener("focus", () => {
+            if (this.state.refresh) {
+                this.updateStuff()
+            }
+        });
+    }
+    componentWillUnmount() {
+        this.focusListener();
     }
 
+    doRefresh = (data) => {
+        this.setState({
+            ...this.state,
+            refresh: data
+        })
+    }
     updateStuff = async () => {
         this.setState({
             stuff: [],
@@ -38,8 +54,10 @@ class Stufflist extends Component {
         })
     }
     onListItemPress = stuff => {
-        global.Show = false
-        this.props.navigation.navigate('Details', { stuff, mode: 'mroom' });
+        this.setState({
+            ...this.state,
+            refresh: false
+        }, () => this.props.navigation.navigate('Details', { stuff, mode: 'mroom', doRefresh: this.doRefresh }))
     };
     renderItem = ({ item }) => (
         <Stufflistitem key={item.key} item={item} udata={this.props.udata} onPress={this.onListItemPress} />

@@ -160,9 +160,6 @@ class Stuffdetail extends Component {
                                 <View style={styles.a2}>
                                     <Button mode='contained'
                                     > Call</Button>
-                                    <Button mode='contained'
-                                        onPress={() => this.props.navigation.navigate('Editdetails')}
-                                    > Edit data</Button>
                                 </View>
                             </View>
                         </Card.Content>
@@ -198,5 +195,6 @@ const styles = StyleSheet.create({
     a2: {
         flexDirection: "row",
         justifyContent: "space-between",
+        alignItems: 'center'
     }
 });

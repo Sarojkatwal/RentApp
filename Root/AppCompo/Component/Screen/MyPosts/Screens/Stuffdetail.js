@@ -32,15 +32,16 @@ class Stuffdetail extends Component {
         if (this.props.stuff !== undefined) {
             this.setState({
                 ...this.state,
-                price: this.props.stuff.price,
-                type: this.props.stuff.roomType,
-                location: this.props.stuff.location,
-                dateCreated: new Date(this.props.stuff.dateCreated).toLocaleString()
+                price: this.props.stuff.roomData.price,
+                type: this.props.stuff.roomData.roomType,
+                location: this.props.stuff.roomData.location,
+                dateCreated: new Date(this.props.stuff.roomData.dateCreated).toLocaleString()
             })
         }
     }
     deletePost = () => {
         deleteTenantPost(this.props.stuff.key)
+        this.props.route.params.doRefresh({ refresh: true })
         this.props.navigation.goBack()
     }
     render() {

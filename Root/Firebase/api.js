@@ -65,8 +65,13 @@ const getUsersData = (uid, func) => {
 }
 
 const signout = () => {
-    firebase.auth().signOut().then((x) =>
-        console.log(x)
+    firebase.auth().signOut().then(() => {
+
+        global.Roomt = []
+        global.Roomo = []
+
+    }
+
     )
 }
 const getLoggedUser = (onValueGet) => {
@@ -80,9 +85,10 @@ const getLoggedUser = (onValueGet) => {
     })
 
 }
+
 const saveTenantPost = async (uid, roomData, ismerge = true) => {
     firebase.firestore().collection('tenantPost')
-        .add({ authorId: uid, ...roomData })
+        .add({ authorId: uid, roomData })
         .catch((err) => { console.log(err) })
 }
 //
@@ -192,7 +198,6 @@ const deleteTenantPost = (id) => {
         .then(() => {
             alert("Done")
         }).catch((err) => { throw err; })
-
 }
 
 export { saveUsersData, signIn, signUp, getUsersData, signout }

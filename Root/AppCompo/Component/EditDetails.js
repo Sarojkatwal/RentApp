@@ -1,6 +1,7 @@
 import React, { Component } from "react";
-import { ScrollView, StyleSheet, Text, View, Picker } from 'react-native';
+import { Alert, StyleSheet, Text, View, Picker } from 'react-native';
 import {
+    Appbar,
     Card,
     Title,
     IconButton,
@@ -17,144 +18,123 @@ import {
     Modal,
     TextInput
 } from "react-native-paper";
-
+import { saveUsersData } from '../../Firebase/api'
+import firebase from '../../Firebase/Firebase'
 class Editdetails extends Component {
     state = {
-        a: 700,
         visible: false,
-        rated: false,
-        rating: 0,
-        roomtype: 1,
-        price: 4000,
-        negotiable: 1,
-        location: 'Bashundhara,Kathmand',
+        roomtype: 0,
+        price: "",
+        location: '',
         description: ""
     }
-    handleclick = (x) => {
-        x ? (this.state.a != 700 &&
+    componentDidMount = () => {
+        if (this.props.roomData !== undefined) {
             this.setState({
-                a: this.state.a - 1
+                ...this.state,
+                price: this.props.roomData.price,
+                roomtype: this.props.roomData.roomType,
+                description: this.props.roomData.roomDescription,
+                location: this.props.roomData.location.name
             })
-        )
-            :
-            (this.state.a != 705 &&
-                this.setState({
-                    a: this.state.a + 1
-                })
-            )
+        }
+
+
     }
+    submitData = () => {
+        const uid = this.props.keys
+        const roomdata = {
+            price: this.state.price,
+            roomType: this.state.roomtype,
+            roomDescription: this.state.description,
+            location: this.props.roomData.location
+        }
+        //console.log(uid)
+
+        firebase.firestore().collection('ownerPost').doc(uid).
+            set({ roomData: roomdata }, { merge: true })
+            .then(() => {
+                alert("Done")
+            }).then(() => this.props.navigation.goBack())
+            .catch((err) => console.log('Error is here'))
+    }
+    createButtonAlert = () =>
+        Alert.alert(
+            "Alert!!!!!!!",
+            "Do you really want to submit?",
+            [
+                {
+                    text: "Submit",
+                    onPress: this.submitData
+                },
+                {
+                    text: "Cancel",
+                    style: "cancel"
+                },
+            ],
+            { cancelable: false }
+        );
     render() {
         return (
-            <>
-                < ScrollView >
-                    <Card>
-                        <Card.Cover source={{ uri: "https://picsum.photos/" + this.state.a }} style={styles.images} />
-                        <Card.Title
-                            title="Some hotos"
-                            subtitle={`PhotoNo ${this.state.a}`}
-                            titleStyle={{
-                                alignSelf: 'center'
-                            }}
-                            subtitleStyle={{
-                                alignSelf: 'center'
-                            }}
-                            left={(props) =>
-                                <IconButton {...props} size={40} color={this.state.a == 700 ? 'grey' : 'white'} icon="skip-previous-circle"
-                                    style={{
-                                        top: -60,
-                                        left: -20,
-                                    }
-                                    }
-                                    onPress={() => this.handleclick(true)}
-                                />}
-                            right={(props) =>
-                                <IconButton {...props} size={40} color={this.state.a == 705 ? 'grey' : 'white'} icon="skip-next-circle"
-                                    style={{
-                                        top: -60,
-                                        right: -5
-                                    }
-                                    }
-                                    onPress={() => this.handleclick(false)}
-                                />}
+            <Card.Content>
+                <View style={styles.a1}>
+                    <View style={styles.a2}>
+                        <Title>Price:</Title>
+                        <TextInput
+                            style={styles.textInput}
+                            mode="outlined"
+                            keyboardType='numeric'
+                            //label={this.state.price}
+                            onChangeText={(price) => this.setState({ price })}
+                            value={this.state.price}
+                            maxLength={10}  //setting limit of input
                         />
-                        <Divider />
-                        <Card.Content>
+                    </View>
+                </View>
+                <View style={styles.a1}>
+                    <View style={styles.a2}>
+                        <Title>Type:</Title>
+                        <Picker style={styles.pickerStyle}
+                            mode='dropdown'
+                            selectedValue={this.state.roomtype}
+                            onValueChange={(itemValue, itemPosition) =>
+                                this.setState({ roomtype: itemValue })}
+                        >
+                            <Picker.Item label="Single" value={1} />
+                            <Picker.Item label="Double" value={2} />
+                            <Picker.Item label="Flat" value={3} />
+                        </Picker>
+                    </View>
+                </View>
 
-                            <View style={styles.a1}>
-                                <View style={styles.a2}>
-                                    <Title>Price:</Title>
-                                    <TextInput
-                                        style={styles.textInput}
-                                        mode="outlined"
-                                        keyboardType='numeric'
-                                        //label={this.state.price}
-                                        onChangeText={(price) => this.setState({ price })}
-                                        value={`${this.state.price}`}
-                                        maxLength={10}  //setting limit of input
-                                    />
-                                </View>
-                            </View>
-                            <View style={styles.a1}>
-                                <View style={styles.a2}>
-                                    <Title>Type:</Title>
-                                    <Picker style={styles.pickerStyle}
-                                        mode='dropdown'
-                                        selectedValue={this.state.roomtype}
-                                        onValueChange={(itemValue, itemPosition) =>
-                                            this.setState({ roomtype: itemValue })}
-                                    >
-                                        <Picker.Item label="Single" value={1} />
-                                        <Picker.Item label="Double" value={2} />
-                                        <Picker.Item label="Flat" value={3} />
-                                    </Picker>
-                                </View>
-                            </View>
-                            <View style={styles.a1}>
-                                <View style={styles.a2}>
-                                    <Title>Negotiable:</Title>
-                                    <Picker style={styles.pickerStyle}
-                                        mode='dropdown'
-                                        selectedValue={this.state.negotiable}
-                                        onValueChange={(itemValue, itemPosition) =>
-                                            this.setState({ negotiable: itemValue })}
-                                    >
-                                        <Picker.Item label="Yes" value={1} />
-                                        <Picker.Item label="No" value={2} />
-                                    </Picker>
-                                </View>
-                            </View>
-                            <View style={styles.a1}>
-                                <View style={styles.a2}>
-                                    <Title>Location:</Title>
-                                    <Caption>Bashundhara,athmandu</Caption>
-                                </View>
-                            </View>
-                            <List.Accordion title="Description"
-                                titleStyle={{
-                                    fontSize: 20,
-                                    left: -15,
-                                    fontWeight: 'bold'
-                                }}
-                            >
-                                <TextInput
-                                    onChangeText={(description) => this.setState({ description })}
-                                    value={this.state.description}
-                                    multiline={true}
-                                    numberOfLines={5}
-                                />
-                            </List.Accordion>
-                            <View style={styles.a1}>
-                                <View style={styles.a2}>
-                                    <Button mode='contained'
-                                    > Done</Button>
-                                    <Button mode='contained'
-                                    > Delete</Button>
-                                </View>
-                            </View>
-                        </Card.Content>
-                    </Card>
-                </ScrollView >
-            </>
+                <View style={styles.a1}>
+                    <View style={styles.a2}>
+                        <Title>Location:</Title>
+                        <Caption>{this.state.location}</Caption>
+                    </View>
+                </View>
+                <List.Accordion title="Description"
+                    titleStyle={{
+                        fontSize: 20,
+                        left: -15,
+                        fontWeight: 'bold'
+                    }}
+                >
+                    <TextInput
+                        onChangeText={(description) => this.setState({ description })}
+                        value={this.state.description}
+                        multiline={true}
+                        numberOfLines={5}
+                    />
+                </List.Accordion>
+                <View style={styles.a1}>
+                    <View style={{ marginTop: 15, marginBottom: 10 }}>
+                        <Button mode='contained' onPress={this.createButtonAlert}
+                        > Submit Change</Button>
+                    </View>
+                </View>
+            </Card.Content>
+
         );
     }
 }
@@ -190,10 +170,12 @@ const styles = StyleSheet.create({
         flex: 1,
         flexDirection: "column",
         justifyContent: "flex-end",
+
     },
     a2: {
         flexDirection: "row",
         justifyContent: "space-between",
+        alignItems: 'center'
     },
     pickerStyle: {
 

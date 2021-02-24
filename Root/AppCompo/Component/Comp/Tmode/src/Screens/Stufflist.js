@@ -1,11 +1,12 @@
 import React, { Component } from "react";
 import { View, FlatList, StyleSheet, Image, Button } from 'react-native';
 import { FAB, Banner } from 'react-native-paper'
-import { getStuff } from '../api';
+//import { getStuff } from '../api';
 import Stufflistitem from '../components/Stufflistitem';
 
 class Stufflist extends Component {
     state = {
+        visible: true,
         stuff: [],
     }
     componentDidMount = () => {
@@ -13,7 +14,7 @@ class Stufflist extends Component {
     }
     updateStuff = async () => {
         this.setState({
-            stuff: getStuff()
+            stuff: []
         });
     };
     onListItemPress = stuff => {
@@ -39,29 +40,6 @@ class Stufflist extends Component {
                 {this.props.route.params == undefined &&
                     (
                         <>
-                            <Banner
-                                visible={this.state.visible}
-                                actions={[
-                                    {
-                                        label: 'Hide it',
-                                        onPress: () => this.setState({ visible: false }),
-                                    },
-
-                                ]}
-                                icon={({ size }) => (
-                                    <Image
-                                        source={{
-                                            uri: 'https://avatars3.githubusercontent.com/u/17571969?s=400&v=4',
-                                        }}
-                                        style={{
-                                            width: size,
-                                            height: size,
-                                        }}
-                                    />
-                                )}
-                            >
-                                You can search for a room clicking on add button at the bottom of the page
-                </Banner>
                             <FAB
                                 style={styles.fab}
                                 icon="plus"

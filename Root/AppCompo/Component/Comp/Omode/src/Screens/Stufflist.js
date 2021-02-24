@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import { View, FlatList, StyleSheet, Button, ActivityIndicator } from 'react-native';
-import { getStuff } from '../api';
+import { FAB, Banner } from 'react-native-paper'
 import Stufflistitem from '../components/Stufflistitem';
 import Stuffdetail from './Stuffdetail'
 import { fetchRoomforloggedInUser } from '../../../../../../Firebase/api'
@@ -55,8 +55,14 @@ class Stufflist extends Component {
         //  console.log(this.state.stuff.length)
         return (
             <>
-                <Button title='Add Rooms'
-                    onPress={() => this.props.navigation.navigate('Add')} />
+                <FAB
+                    style={styles.fab}
+                    icon="plus"
+                    animated={true}
+                    onPress={() =>
+                        this.props.navigation.navigate('Add')
+                    }
+                />
                 <View style={styles.container}>
 
                     {this.state.stuff.length !== 0 ?
@@ -81,4 +87,11 @@ const styles = StyleSheet.create({
         flex: 1,
         justifyContent: 'center'
     },
+    fab: {
+        position: 'absolute',
+        bottom: 0,
+        left: 0,
+        margin: 15,
+        zIndex: 1
+    }
 });

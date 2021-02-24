@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { Image, ScrollView, StyleSheet, Text, View, TouchableOpacity } from 'react-native';
+import { Image, ScrollView, StyleSheet, Text, View, TouchableOpacity, Alert } from 'react-native';
 import StarRating from 'react-native-star-rating';
 import {
     Card,
@@ -11,13 +11,14 @@ import {
     Caption,
     Button,
     Divider,
-    Avatar,
+    Switch,
     List,
     Provider,
     Portal,
     Modal
 } from "react-native-paper";
-
+import Editdetails from '../../../EditDetails'
+import firebase from '../../../../../Firebase/Firebase'
 class Stuffdetail extends Component {
     state = {
         a: 700,
@@ -28,6 +29,7 @@ class Stuffdetail extends Component {
         description: "",
         img: [],
         noofpic: 0,
+        isSwitchOn: false
     }
     componentDidMount = () => {
         //console.log(this.props.stuff)
@@ -56,6 +58,41 @@ class Stuffdetail extends Component {
                 })
             )
     }
+    createAlert = () =>
+        Alert.alert(
+            "Alert!!!!!!!",
+            "Do you really want to delete this room?",
+            [
+                {
+                    text: "Delete",
+                    onPress: this.deleteCollection
+                },
+                {
+                    text: "Cancel",
+                    style: "cancel"
+                },
+            ],
+            { cancelable: false }
+        );
+    deleteRoom = () => {
+        const id = this.props.stuff.key
+        firebase.firestore().collection('ownerPost').doc(id).delete()
+            .then(() => {
+                this.state.deleteCollection()
+            }).then(() => this.props.navigation.goBack())
+            .catch((err) => { throw err; })
+    }
+
+    deleteCollection = async (batchSize = this.state.noofpic) => {
+        const id = this.props.stuff.key
+        firebase.firestore().collection('ownerPost').doc(id).collection("roomImg").delete()
+            .then(() => {
+                this.state.deleteCollection()
+            }).then(() => this.props.navigation.goBack())
+            .catch((err) => { throw err; })
+    }
+
+
     render() {
         const { stuff } = this.props;
         var Rtype = ""
@@ -71,43 +108,59 @@ class Stuffdetail extends Component {
         return (
             <>
                 < ScrollView >
-                    <Card>
-                        <TouchableOpacity onPress={() => this.props.navigation.push('ShowImage', { uri: this.state.img[this.state.a - 700] })}>
-                            <Card.Cover source={{ uri: this.state.img[this.state.a - 700] }} style={styles.images} />
-                        </TouchableOpacity>
-                        <Card.Title
-                            title="Some Photos"
-                            subtitle={`PhotoNo ${this.state.a - 699}`}
-                            titleStyle={{
-                                alignSelf: 'center'
-                            }}
-                            subtitleStyle={{
-                                alignSelf: 'center'
-                            }}
-                            left={(props) =>
-                                <IconButton {...props} size={40} color={this.state.a == 700 ? 'grey' : 'white'} icon="skip-previous-circle"
-                                    style={{
-                                        top: -60,
-                                        left: -20,
-                                        zIndex: 1
-                                    }
-                                    }
-                                    onPress={() => this.handleclick(true)}
-                                />}
-                            right={(props) =>
-                                <IconButton {...props} size={40} color={this.state.a == 700 + this.state.noofpic - 1 ? 'grey' : 'white'} icon="skip-next-circle"
-                                    style={{
-                                        top: -60,
-                                        right: -5,
-                                        zIndex: 1
-                                    }
-                                    }
-                                    onPress={() => this.handleclick(false)}
-                                />}
-                        />
-                        <Divider />
-                        <Card.Content>
 
+                    <Card>
+                        <View>
+                            <TouchableOpacity onPress={() => this.props.navigation.push('ShowImage', { uri: this.state.img[this.state.a - 700] })}>
+                                <Card.Cover source={{ uri: this.state.img[this.state.a - 700] }} style={styles.images} />
+                            </TouchableOpacity>
+                            <Card.Title
+                                title="Some Photos"
+                                subtitle={`PhotoNo ${this.state.a - 699}`}
+                                titleStyle={{
+                                    alignSelf: 'center'
+                                }}
+                                subtitleStyle={{
+                                    alignSelf: 'center'
+                                }}
+                                left={(props) =>
+                                    <IconButton {...props} size={40} color={this.state.a == 700 ? 'grey' : 'white'} icon="skip-previous-circle"
+                                        style={{
+                                            top: -60,
+                                            left: -20,
+                                            zIndex: 1
+                                        }
+                                        }
+                                        onPress={() => this.handleclick(true)}
+                                    />}
+                                right={(props) =>
+                                    <IconButton {...props} size={40} color={this.state.a == 700 + this.state.noofpic - 1 ? 'grey' : 'white'} icon="skip-next-circle"
+                                        style={{
+                                            top: -60,
+                                            right: -5,
+                                            zIndex: 1
+                                        }
+                                        }
+                                        onPress={() => this.handleclick(false)}
+                                    />}
+                            />
+                            <View style={{
+                                position: 'absolute',
+                                bottom: 0,
+                                right: 0,
+                                zIndex: 1,
+                                //flexDirection: 'row'
+
+                            }}>
+                                <Caption>Edit mode</Caption>
+                                <Switch value={this.state.isSwitchOn} onValueChange={() => this.setState({
+                                    ...this.state,
+                                    isSwitchOn: !this.state.isSwitchOn
+                                })} />
+                            </View>
+                        </View>
+                        <Divider />
+                        {!this.state.isSwitchOn ? <Card.Content>
                             <View style={styles.a1}>
                                 <View style={styles.a2}>
                                     <Title>Price:</Title>
@@ -120,12 +173,7 @@ class Stuffdetail extends Component {
                                     <Caption>{Rtype}</Caption>
                                 </View>
                             </View>
-                            <View style={styles.a1}>
-                                <View style={styles.a2}>
-                                    <Title>Negotiable:</Title>
-                                    <Caption>Yes</Caption>
-                                </View>
-                            </View>
+
                             <View style={styles.a1}>
                                 <View style={styles.a2}>
                                     <Title>Location:</Title>
@@ -160,13 +208,12 @@ class Stuffdetail extends Component {
                                 <View style={styles.a2}>
                                     <Button mode='contained'
                                         color="red"
+                                        onPress={this.createAlert}
                                     > Delete Room</Button>
-                                    <Button mode='contained'
-                                        onPress={() => this.props.navigation.navigate('Editdetails')}
-                                    > Edit data</Button>
+
                                 </View>
                             </View>
-                        </Card.Content>
+                        </Card.Content> : <Editdetails {...this.props} keys={this.props.stuff.key} roomData={this.props.stuff.roomData}></Editdetails>}
                     </Card>
                 </ScrollView >
             </>
@@ -199,5 +246,6 @@ const styles = StyleSheet.create({
     a2: {
         flexDirection: "row",
         justifyContent: "space-between",
+        alignItems: 'center'
     }
 });

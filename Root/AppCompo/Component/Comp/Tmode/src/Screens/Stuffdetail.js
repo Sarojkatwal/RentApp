@@ -43,11 +43,6 @@ class Stuffdetail extends Component {
             <>
                 < ScrollView >
                     <Card>
-                        <Avatar.Image size={50}
-                            style={styles.profile}
-                            source={require('../../../../../../../assets/messi.png')}
-                        />
-
                         <TouchableOpacity onPress={() => this.props.navigation.push('ShowImage', { uri: "https://picsum.photos/" + this.state.a })}>
                             <Card.Cover source={{ uri: "https://picsum.photos/" + this.state.a }} style={styles.images} />
                         </TouchableOpacity>

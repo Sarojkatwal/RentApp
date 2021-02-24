@@ -21,7 +21,7 @@ class Stufflistitem extends Component {
                         onPress(item);
                     }}>
                     <View >
-                        <Text style={styles.text} numberOfLines={1}>{`${item.sn}.   ${item.location.name}`}</Text>
+                        <Text style={styles.text} numberOfLines={1}>{`${item.sn}.   ${item.roomData.location.name}`}</Text>
                     </View>
                 </TouchableOpacity>
             </View >
