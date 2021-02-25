@@ -177,10 +177,16 @@ class Stuffdetail extends Component {
                             <View style={styles.a1}>
                                 <View style={styles.a2}>
                                     <Title>Location:</Title>
-                                    <Caption>{this.state.location}</Caption>
+                                    <TouchableOpacity onPress={() =>
+                                        this.props.navigation.navigate('ShowMap', { location: this.props.stuff.roomData.location })}>
+                                        <Caption>
+                                            {this.state.location}
+                                        </Caption>
+                                    </TouchableOpacity>
+
                                 </View>
                             </View>
-                            <View style={styles.a1}>
+                            {/* <View style={styles.a1}>
                                 <View style={styles.a2}>
                                     <Title>Rating:</Title>
                                     <StarRating
@@ -190,7 +196,7 @@ class Stuffdetail extends Component {
                                         selectedStar={(starcount) => this.setState({ starcount })}
                                     />
                                 </View>
-                            </View>
+                            </View> */}
 
                             <List.Accordion title="Description"
                                 titleStyle={{

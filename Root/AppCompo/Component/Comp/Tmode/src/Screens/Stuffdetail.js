@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { TouchableOpacity, ScrollView, StyleSheet, Text, View } from 'react-native';
+import { Image, ScrollView, StyleSheet, Text, View, TouchableOpacity, Alert } from 'react-native';
 import StarRating from 'react-native-star-rating';
 import {
     Card,
@@ -17,12 +17,61 @@ import {
     Portal,
     Modal
 } from "react-native-paper";
-
+import call from 'react-native-phone-call';
 class Stuffdetail extends Component {
     state = {
         a: 700,
-        rated: false,
-        rating: 0
+        starcount: 0,
+        price: "",
+        type: 0,
+        location: "",
+        description: "",
+        img: [],
+        noofpic: 0,
+    }
+    componentDidMount = () => {
+        //console.log(this.props.stuff)
+        if (this.props.stuff.roomInformation.roomData !== undefined) {
+            this.setState({
+                ...this.state,
+                price: this.props.stuff.roomInformation.roomData.price,
+                type: this.props.stuff.roomInformation.roomData.roomType,
+                location: this.props.stuff.roomInformation.roomData.location.name,
+                description: this.props.stuff.roomInformation.roomData.roomDescription,
+                img: this.props.stuff.roominfo,
+                noofpic: this.props.stuff.roominfo.length
+            })
+        }
+    }
+
+    createAlert = () =>
+        Alert.alert(
+            "Alert!!!!!!!",
+            "Do you  want to call to the room owner?",
+            [
+                {
+                    text: "Call",
+                    onPress: () => this.doCall(this.props.stuff.userinfo.phoneNo)
+                },
+                {
+                    text: "Cancel",
+                    style: "cancel"
+                },
+            ],
+            { cancelable: false }
+        );
+
+    doCall = (val) => {
+        if (val.length !== 10) {
+            alert('No correct phone number available!!');
+            return;
+        }
+        const args = {
+            number: val,
+            prompt: true,
+        };
+        // Make a call
+        call(args).catch(console.error);
     }
     handleclick = (x) => {
         x ? (this.state.a != 700 &&
@@ -31,7 +80,7 @@ class Stuffdetail extends Component {
             })
         )
             :
-            (this.state.a != 705 &&
+            (this.state.a != 700 + this.state.noofpic - 1 &&
                 this.setState({
                     a: this.state.a + 1
                 })
@@ -39,16 +88,26 @@ class Stuffdetail extends Component {
     }
     render() {
         const { stuff } = this.props;
+        var Rtype = ""
+        if (this.state.type == 1) {
+            Rtype = "Single Room"
+        }
+        else if (this.state.type == 2) {
+            Rtype = "Double Room"
+        }
+        else {
+            Rtype = "Flat"
+        }
         return (
             <>
                 < ScrollView >
                     <Card>
-                        <TouchableOpacity onPress={() => this.props.navigation.push('ShowImage', { uri: "https://picsum.photos/" + this.state.a })}>
-                            <Card.Cover source={{ uri: "https://picsum.photos/" + this.state.a }} style={styles.images} />
+                        <TouchableOpacity onPress={() => this.props.navigation.push('ShowImage', { uri: this.state.img[this.state.a - 700] })}>
+                            <Card.Cover source={{ uri: this.state.img[this.state.a - 700] }} style={styles.images} />
                         </TouchableOpacity>
                         <Card.Title
                             title="Some Photos"
-                            subtitle={`PhotoNo ${this.state.a}`}
+                            subtitle={`PhotoNo ${this.state.a - 699}`}
                             titleStyle={{
                                 alignSelf: 'center'
                             }}
@@ -60,15 +119,17 @@ class Stuffdetail extends Component {
                                     style={{
                                         top: -60,
                                         left: -20,
+                                        zIndex: 1
                                     }
                                     }
                                     onPress={() => this.handleclick(true)}
                                 />}
                             right={(props) =>
-                                <IconButton {...props} size={40} color={this.state.a == 705 ? 'grey' : 'white'} icon="skip-next-circle"
+                                <IconButton {...props} size={40} color={this.state.a == 700 + this.state.noofpic - 1 ? 'grey' : 'white'} icon="skip-next-circle"
                                     style={{
                                         top: -60,
-                                        right: -5
+                                        right: -5,
+                                        zIndex: 1
                                     }
                                     }
                                     onPress={() => this.handleclick(false)}
@@ -80,13 +141,13 @@ class Stuffdetail extends Component {
                             <View style={styles.a1}>
                                 <View style={styles.a2}>
                                     <Title>Price:</Title>
-                                    <Caption>Rs5000</Caption>
+                                    <Caption>Rs. {this.state.price}</Caption>
                                 </View>
                             </View>
                             <View style={styles.a1}>
                                 <View style={styles.a2}>
                                     <Title>Type:</Title>
-                                    <Caption>Single</Caption>
+                                    <Caption>{Rtype}</Caption>
                                 </View>
                             </View>
                             <View style={styles.a1}>
@@ -98,32 +159,26 @@ class Stuffdetail extends Component {
                             <View style={styles.a1}>
                                 <View style={styles.a2}>
                                     <Title>Location:</Title>
-                                    <Caption>Bashundhara,Kathmandu</Caption>
+                                    <TouchableOpacity onPress={() =>
+                                        this.props.navigation.navigate('ShowMap', { location: this.props.stuff.roomInformation.roomData.location })}>
+                                        <Caption>
+                                            {this.state.location}
+                                        </Caption>
+                                    </TouchableOpacity>
                                 </View>
                             </View>
-                            <View style={styles.a1}>
-                                {!this.state.rated ?
-                                    <View style={styles.a2}>
-                                        <Title>Rate:</Title>
-                                        <StarRating
-                                            disabled={false}
-                                            maxStars={5}
-                                            rating={this.state.rating}
-                                            selectedStar={(rating) => this.setState({
-                                                rating: rating,
-                                                rated: true
-                                            })}
-                                        />
-                                    </View> :
-                                    <View style={styles.a2}>
-                                        <Title>Rating:</Title>
-                                        <StarRating
-                                            disabled={true}
-                                            maxStars={5}
-                                            rating={this.state.rating}
-                                        />
-                                    </View>}
-                            </View>
+                            {/* <View style={styles.a1}>
+                                <View style={styles.a2}>
+                                    <Title>Rating:</Title>
+                                    <StarRating
+                                        disabled={true}
+                                        maxStars={5}
+                                        rating={this.state.starcount}
+                                        selectedStar={(starcount) => this.setState({ starcount })}
+                                    />
+                                </View>
+                            </View> */}
+
                             <List.Accordion title="Description"
                                 titleStyle={{
                                     fontSize: 20,
@@ -132,13 +187,13 @@ class Stuffdetail extends Component {
                                 }}
                             >
                                 <Text style={styles.textfordesc}>
-                                    {stuff.description}
+                                    {this.state.description}
                                 </Text>
-
                             </List.Accordion>
                             <View style={styles.a1}>
                                 <View style={styles.a2}>
                                     <Button mode='contained'
+                                        onPress={this.createAlert}
                                     > Call</Button>
                                 </View>
                             </View>
@@ -164,16 +219,6 @@ const styles = StyleSheet.create({
         margin: 12,
         fontSize: 16,
     },
-    profile: {
-        position: 'absolute',
-        zIndex: 1,
-        right: 0,
-        bottom: 0,
-        margin: 10,
-        backgroundColor: 'transparent',
-        borderColor: 'grey',
-        borderWidth: 1
-    },
     description: {
         margin: 10,
     },
@@ -185,5 +230,6 @@ const styles = StyleSheet.create({
     a2: {
         flexDirection: "row",
         justifyContent: "space-between",
+        alignItems: 'center'
     }
 });

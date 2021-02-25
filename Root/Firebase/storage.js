@@ -6,6 +6,7 @@ var storage = firebase.storage()
 
 const uploadProfile = (imageUri) => {
     const uid = firebase.auth().currentUser.uid
+    console.log("Hello")
     if (imageUri) {
         var storageRef = storage.ref('images/profile/' + uid);
         storageRef.put(imageUri).on(firebase.storage.TaskEvent.STATE_CHANGED,
@@ -17,7 +18,7 @@ const uploadProfile = (imageUri) => {
                     console.log("Success");
                 }
             }, (err) => {
-                console.log('Image upload error : ' + err.toString())
+                console.log(err.code)
             }, () => {
                 storageRef.getDownloadURL().then((downloadURL) => {
                     //console.log('profile pic uploaded at ' + downloadURL);
@@ -26,12 +27,10 @@ const uploadProfile = (imageUri) => {
                         firebase.firestore().collection('users').doc(uid).set({ profilePic: downloadURL }, { merge: true })
                     }
                     catch (err) {
-                        console.log(err)
+                        console.log("Err go")
                     }
-
-                })
+                });
             })
-
     }
 }
 

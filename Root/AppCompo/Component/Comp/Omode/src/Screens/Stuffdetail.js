@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { Image, ScrollView, StyleSheet, Text, View, TouchableOpacity } from 'react-native';
+import { Image, ScrollView, StyleSheet, Text, View, TouchableOpacity, Alert } from 'react-native';
 import StarRating from 'react-native-star-rating';
 import {
     Card,
@@ -7,7 +7,7 @@ import {
     IconButton,
     Paragraph,
     Headline,
-    Subheading,
+    Dialog,
     Caption,
     Button,
     Divider,
@@ -17,7 +17,7 @@ import {
     Portal,
     Modal
 } from "react-native-paper";
-
+import call from 'react-native-phone-call';
 class Stuffdetail extends Component {
     state = {
         a: 700,
@@ -31,31 +31,46 @@ class Stuffdetail extends Component {
     }
     componentDidMount = () => {
         //console.log(this.props.stuff)
-        if (this.props.stuff.roomData !== undefined) {
+        if (this.props.stuff.roomInformation.roomData !== undefined) {
             this.setState({
                 ...this.state,
-                price: this.props.stuff.roomData.price,
-                type: this.props.stuff.roomData.roomType,
-                location: this.props.stuff.roomData.location.name,
-                description: this.props.stuff.roomData.roomDescription,
-                img: this.props.stuff.roomimg,
-                noofpic: this.props.stuff.roomimg.length
+                price: this.props.stuff.roomInformation.roomData.price,
+                type: this.props.stuff.roomInformation.roomData.roomType,
+                location: this.props.stuff.roomInformation.roomData.location,
+                dateCreated: new Date(this.props.stuff.roomInformation.roomData.dateCreated).toLocaleString()
             })
         }
+
     }
-    handleclick = (x) => {
-        x ? (this.state.a != 700 &&
-            this.setState({
-                a: this.state.a - 1
-            })
-        )
-            :
-            (this.state.a != 700 + this.state.noofpic - 1 &&
-                this.setState({
-                    a: this.state.a + 1
-                })
-            )
+    createAlert = () =>
+        Alert.alert(
+            "Alert!!!!!!!",
+            "Do you  want to call to the post owner?",
+            [
+                {
+                    text: "Call",
+                    onPress: () => this.doCall(this.props.stuff.userinfo.phoneNo)
+                },
+                {
+                    text: "Cancel",
+                    style: "cancel"
+                },
+            ],
+            { cancelable: false }
+        );
+    doCall = (val) => {
+        if (val.length !== 10) {
+            alert('No correct phone number available!!');
+            return;
+        }
+        const args = {
+            number: val,
+            prompt: true,
+        };
+        // Make a call
+        call(args).catch(console.error);
     }
+
     render() {
         const { stuff } = this.props;
         var Rtype = ""
@@ -70,101 +85,70 @@ class Stuffdetail extends Component {
         }
         return (
             <>
-                < ScrollView >
-                    <Card>
-                        <TouchableOpacity onPress={() => this.props.navigation.push('ShowImage', { uri: this.state.img[this.state.a - 700] })}>
-                            <Card.Cover source={{ uri: this.state.img[this.state.a - 700] }} style={styles.images} />
-                        </TouchableOpacity>
-                        <Card.Title
-                            title="Some Photos"
-                            subtitle={`PhotoNo ${this.state.a - 699}`}
-                            titleStyle={{
-                                alignSelf: 'center'
-                            }}
-                            subtitleStyle={{
-                                alignSelf: 'center'
-                            }}
-                            left={(props) =>
-                                <IconButton {...props} size={40} color={this.state.a == 700 ? 'grey' : 'white'} icon="skip-previous-circle"
-                                    style={{
-                                        top: -60,
-                                        left: -20,
-                                        zIndex: 1
-                                    }
-                                    }
-                                    onPress={() => this.handleclick(true)}
-                                />}
-                            right={(props) =>
-                                <IconButton {...props} size={40} color={this.state.a == 700 + this.state.noofpic - 1 ? 'grey' : 'white'} icon="skip-next-circle"
-                                    style={{
-                                        top: -60,
-                                        right: -5,
-                                        zIndex: 1
-                                    }
-                                    }
-                                    onPress={() => this.handleclick(false)}
-                                />}
-                        />
-                        <Divider />
-                        <Card.Content>
+                <Provider>
+                    < ScrollView >
+                        <View style={styles.container}>
+                            <Card>
+                                <Card.Content>
+                                    <TouchableOpacity onPress={() =>
+                                        this.props.navigation.push('ShowProfile',
+                                            { userdata: this.props.stuff.userinfo })}>
+                                        <Avatar.Image style={styles.images}
+                                            size={150} source={{
+                                                uri: this.props.stuff.userinfo.profilePic
+                                            }} />
+                                    </TouchableOpacity>
+                                    <View style={styles.a1}>
+                                        <View style={styles.a2}>
+                                            <Title>Price:</Title>
+                                            <Caption>Rs. {this.state.price}</Caption>
+                                        </View>
+                                    </View>
+                                    <View style={styles.a1}>
+                                        <View style={styles.a2}>
+                                            <Title>Type:</Title>
+                                            <Caption>{Rtype}</Caption>
+                                        </View>
+                                    </View>
+                                    <View style={styles.a1}>
+                                        <View style={styles.a2}>
+                                            <Title>Latitude:</Title>
+                                            <Caption>{this.state.location.latitude}</Caption>
+                                        </View>
+                                    </View>
+                                    <View style={styles.a1}>
+                                        <View style={styles.a2}>
+                                            <Title>Longitude:</Title>
+                                            <Caption>{this.state.location.longitude}</Caption>
+                                        </View>
+                                    </View>
+                                    <View style={styles.a1}>
+                                        <View style={styles.a2}>
+                                            <Title>Place:</Title>
+                                            <TouchableOpacity onPress={() =>
+                                                this.props.navigation.navigate('ShowMap', { location: this.state.location })}>
+                                                <Caption>
+                                                    {this.state.location.name}
+                                                </Caption>
+                                            </TouchableOpacity>
+                                        </View>
+                                    </View>
+                                    <View style={styles.a1}>
+                                        <View style={styles.a2}>
+                                            <Title>Created At:</Title>
+                                            <Caption>{this.state.dateCreated}</Caption>
+                                        </View>
+                                    </View>
 
-                            <View style={styles.a1}>
-                                <View style={styles.a2}>
-                                    <Title>Price:</Title>
-                                    <Caption>Rs. {this.state.price}</Caption>
-                                </View>
-                            </View>
-                            <View style={styles.a1}>
-                                <View style={styles.a2}>
-                                    <Title>Type:</Title>
-                                    <Caption>{Rtype}</Caption>
-                                </View>
-                            </View>
-                            <View style={styles.a1}>
-                                <View style={styles.a2}>
-                                    <Title>Negotiable:</Title>
-                                    <Caption>Yes</Caption>
-                                </View>
-                            </View>
-                            <View style={styles.a1}>
-                                <View style={styles.a2}>
-                                    <Title>Location:</Title>
-                                    <Caption>{this.state.location}</Caption>
-                                </View>
-                            </View>
-                            <View style={styles.a1}>
-                                <View style={styles.a2}>
-                                    <Title>Rating:</Title>
-                                    <StarRating
-                                        disabled={true}
-                                        maxStars={5}
-                                        rating={this.state.starcount}
-                                        selectedStar={(starcount) => this.setState({ starcount })}
-                                    />
-                                </View>
-                            </View>
-
-                            <List.Accordion title="Description"
-                                titleStyle={{
-                                    fontSize: 20,
-                                    left: -15,
-                                    fontWeight: 'bold'
-                                }}
-                            >
-                                <Text style={styles.textfordesc}>
-                                    {this.state.description}
-                                </Text>
-
-                            </List.Accordion>
-                            <View style={styles.a1}>
-                                <View style={styles.a2}>
-                                    <Button mode='contained'
-                                    > Call</Button>
-                                </View>
-                            </View>
-                        </Card.Content>
-                    </Card>
-                </ScrollView >
+                                    <View style={{ marginTop: 20 }}>
+                                        <Button mode='contained' onPress={this.createAlert}
+                                        > Call</Button>
+                                    </View>
+                                </Card.Content>
+                            </Card>
+                        </View>
+                    </ScrollView >
+                </Provider>
             </>
         );
     }
@@ -176,9 +160,7 @@ const styles = StyleSheet.create({
         flex: 1,
     },
     images: {
-        marginTop: 1,
-        height: 273,
-        width: '100%',
+        alignSelf: 'center',
     },
     textfordesc: {
         margin: 12,

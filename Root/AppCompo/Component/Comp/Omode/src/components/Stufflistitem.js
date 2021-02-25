@@ -9,37 +9,51 @@ import {
 } from 'react-native';
 import Feather from "react-native-vector-icons/Feather";
 import { Badge, IconButton, Avatar } from 'react-native-paper'
+import { getPpandPhoneno } from '../../../../../../Firebase/api'
 
 const windowWidth = Dimensions.get('window').width;
 class Stufflistitem extends Component {
     state = {
-        clicked: false
+        clicked: false,
+        userinfo: {}
     }
-    componentDidMount = () => console.log()
+    componentDidMount = async () => {
+        const y = await getPpandPhoneno(this.props.item.roomInformation.authorId)
+        this.setState({
+            ...this.state,
+            userinfo: y
+        })
+    }
     render() {
         const { item, onPress } = this.props;
         return (
             <View style={styles.stuff}>
                 <TouchableOpacity
                     onPress={() => {
-                        onPress(item);
+                        const m = { ...item, roomInformation: item.roomInformation, userinfo: this.state.userinfo }
+                        onPress(m);
                     }}>
                     <Image
-                        source={{ uri: item.roomimg[0] }}
+                        source={{ uri: this.state.userinfo.profilePic }}
                         style={styles.image}
                         resizeMode="contain"
                     />
                     <View >
-                        <Text style={styles.text} numberOfLines={1}>{item.roomData.location.name}</Text>
-                        <Text style={styles.text}>{`Rs. ${item.roomData.price}`}</Text>
+                        <Text style={styles.text} numberOfLines={1}>{item.roomInformation.roomData.location.name}</Text>
+                        <Text style={styles.text}>{`Rs. ${item.roomInformation.roomData.price}`}</Text>
                     </View>
                 </TouchableOpacity>
-                <Badge style={styles.reco}>My Rooms</Badge>
-                <Avatar.Image size={70}
-                    style={styles.profile}
-                    source={require('../../../../../../../assets/messi.png')}
-                    onPress={() => alert('')}
+                <IconButton icon={!this.state.clicked ? "heart-outline" : "cards-heart"}
+                    color={!this.state.clicked ? "red" : "red"}
+                    size={50}
+                    animated={true}
+                    onPress={() => this.setState({
+                        clicked: !this.state.clicked
+                    })}
+                    style={styles.heart}
                 />
+                <Badge style={styles.reco}> Posts</Badge>
+
             </View >
 
         );
@@ -75,6 +89,7 @@ const styles = StyleSheet.create({
         position: 'absolute',
         top: 0,
         left: 2,
+        backgroundColor: 'purple'
     },
     profile: {
         position: 'absolute',

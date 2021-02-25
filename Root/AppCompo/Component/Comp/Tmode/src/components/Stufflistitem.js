@@ -8,28 +8,48 @@ import {
     TouchableOpacity,
 } from 'react-native';
 import { Badge, IconButton, Avatar } from 'react-native-paper'
+import { getRoomimg } from '../../../../../../Firebase/api'
+import { getPpandPhoneno } from '../../../../../../Firebase/api'
 
 const windowWidth = Dimensions.get('window').width;
 class Stufflistitem extends Component {
     state = {
-        clicked: false
+        clicked: false,
+        roomimg: [],
+        userinfo: {}
+    }
+    componentDidMount = async () => {
+        const x = await getRoomimg("ownerPost", this.props.item.roomInformation.__name__)
+        this.setState({
+            ...this.state,
+            roomimg: x
+        })
+        const y = await getPpandPhoneno(this.props.item.roomInformation.authorId)
+        this.setState({
+            ...this.state,
+            userinfo: y
+        })
     }
     render() {
+
         const { item, onPress, recomm } = this.props;
         return (
             <View style={styles.stuff}>
+
                 <TouchableOpacity
                     onPress={() => {
-                        onPress(item);
+                        //onPress(item);
+                        const m = { ...item, roomInformation: item.roomInformation, userinfo: this.state.userinfo, roominfo: this.state.roomimg }
+                        onPress(m)
                     }}>
                     <Image
-                        source={{ uri: item.image }}
+                        source={{ uri: this.state.roomimg[0] }}
                         style={styles.image}
                         resizeMode="contain"
                     />
                     <View >
-                        <Text style={styles.text} numberOfLines={1}>{item.name}</Text>
-                        <Text style={styles.text}>{`$ ${item.price}`}</Text>
+                        <Text style={styles.text} numberOfLines={1}>{item.roomInformation.roomData.location.name}</Text>
+                        <Text style={styles.text}>{`Rs ${item.roomInformation.roomData.price}`}</Text>
                     </View>
                 </TouchableOpacity>
                 <IconButton icon={!this.state.clicked ? "heart-outline" : "cards-heart"}
@@ -42,11 +62,13 @@ class Stufflistitem extends Component {
                     style={styles.heart}
                 />
                 {recomm && <Badge style={styles.reco}>Recommended</Badge>}
-                <Avatar.Image size={70}
-                    style={styles.profile}
-                    source={require('../../../../../../../assets/messi.png')}
-                    onPress={() => alert('')}
-                />
+
+                <TouchableOpacity onPress={() => this.props.navigation.navigate('ShowProfile', { userdata: this.state.userinfo })}
+                    style={{ position: 'absolute', bottom: 0, right: 4, zIndex: 1 }}>
+                    <Avatar.Image size={70}
+                        source={{ uri: this.state.userinfo.profilePic }}
+                    />
+                </TouchableOpacity>
             </View >
 
         );
@@ -84,7 +106,6 @@ const styles = StyleSheet.create({
         left: 2,
     },
     profile: {
-        position: 'absolute',
         zIndex: 1,
         right: 0,
         bottom: 2,

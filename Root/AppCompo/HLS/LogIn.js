@@ -15,11 +15,11 @@ import * as Animatable from "react-native-animatable";
 import { LinearGradient } from "expo-linear-gradient";
 import FontAwesome from "react-native-vector-icons/FontAwesome";
 import Feather from "react-native-vector-icons/Feather";
-//import { save_likeNotifications } from '../../Firebase/notify'
+import { save_likeNotifications, getLikeNotifications } from '../../Firebase/notify'
 import { signIn } from '../../Firebase/api'
 import { startSearch } from '../../Firebase/match'
 import { sum_priority } from '../../Firebase/priority'
-//import { registerForPushNotifications, sendPushNotification } from '../../Firebase/pushnotification'
+import { registerForPushNotifications, sendPushNotification } from '../../Firebase/pushnotification'
 class LogIn extends React.Component {
   state = {
     username: "",
@@ -120,19 +120,26 @@ class LogIn extends React.Component {
           }
 
 
-          var tmode = false;
+          var tmode = true;
 
-          startSearch(
-            res.user.uid,
-
-            tmode
-          ).then(() => {
+          startSearch(res.user.uid, tmode).then(() => {
             // use global.Roomt and global.Roomo here 
           }).catch((err) => { console.log(err) });
-          //save_likeNotifications(res.user.uid,"Yz6yJmRaR0ljCIDMhsXf",true)
-          //registerForPushNotifications(res.user.uid)
-          //sendPushNotification('Ji1yjqwuGbaTSureKGwjE91SrQr1','Room found in ktm')
+
+
+          registerForPushNotifications().then((token) => {
+            console.log('token added ' + token)
+          }).catch((err) => {
+            console.log(err)
+          })
+          getLikeNotifications(res.user.uid).then((notifications) => {
+            notifications.forEach((notification) => {
+              console.log(notification)
+            })
+          })
+
         })
+
     }
   };
   forgotPass = () => {

@@ -21,11 +21,9 @@ const Stack = createDrawerNavigator();
 import UserContext from '../../context'
 
 class CustomDrawerContent extends Component {
-    showdp = (uri) => {
-        if (uri.length === 0) {
-            uri = "https://www.kindpng.com/picc/m/130-1300217_user-icon-member-icon-png-transparent-png.png"
-        }
-        this.props.navigation.navigate('ShowImage', { uri: uri });
+    showdp = (data) => {
+
+        this.props.navigation.navigate('ShowProfile', { userdata: data });
     }
     render() {
         return (
@@ -39,7 +37,7 @@ class CustomDrawerContent extends Component {
                             <DrawerContentScrollView {...this.props}>
                                 <View style={{ paddingLeft: 10 }}>
                                     <TouchableOpacity
-                                        onPress={() => this.showdp(data.profilePic)}>
+                                        onPress={() => this.showdp(data)}>
                                         {(data.profilePic == '') ?
                                             <Avatar.Image size={150} source={require('../../../assets/images.png')} /> :
                                             <Avatar.Image size={150} source={{ uri: data.profilePic }} />

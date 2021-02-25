@@ -140,7 +140,7 @@ export default class MMap extends Component {
                 style={{
                     flex: 1,
                 }}>
-                <StatusBar translucent={false} />
+                <StatusBar backgroundColor='green' translucent={false} />
                 <View style={styles.MainContainer}>
                     {x.latitude == 0 && x.longitude == 0 ? (
                         <ActivityIndicator

@@ -24,7 +24,7 @@ const signUp = async (username, password) => {
             localLevel: '',
             wardno: ''
         },
-        profilePic: ''
+        profilePic: 'https://www.kindpng.com/picc/m/130-1300217_user-icon-member-icon-png-transparent-png.png'
 
     }
     firebase.auth()
@@ -88,13 +88,13 @@ const getLoggedUser = (onValueGet) => {
 
 const saveTenantPost = async (uid, roomData, ismerge = true) => {
     firebase.firestore().collection('tenantPost')
-        .add({ authorId: uid, roomData })
+        .add({ authorId: uid, roomData, like_count: 0 })
         .catch((err) => { console.log(err) })
 }
 //
 const saveOwnerRoom = async (uid, images, roomData, ismerge = true) => {
     firebase.firestore().collection('ownerPost').
-        add({ authorId: uid, roomData }).then((document) => {
+        add({ authorId: uid, roomData, like_count: 0 }).then((document) => {
 
             uploadRoom(images, document.id)
         })
@@ -144,7 +144,7 @@ const fetchRoomforloggedInUser = (uid, isOwner, saveResult) => {
 
     }
 }
-getRoomimg = async (post, iid) => {
+const getRoomimg = async (post, iid) => {
     const ImgRoom = [];
     //console.log("Document data:", doc.id);
     return firebase.firestore().collection(post).doc(iid).collection("roomImg").get()
@@ -166,6 +166,20 @@ getRoomimg = async (post, iid) => {
 
 }
 
+const getPpandPhoneno = async (uid) => {
+    return firebase.firestore().collection('users').doc(uid).get()
+        .then((doc) => {
+            //return doc.data()
+            if (!doc.exists) {
+                console.log('No such document!');
+            } else {
+                return doc.data()
+            }
+
+            // console.log("DATA=", doc.data())
+        })
+        .catch((err) => { throw err; })
+}
 
 const fetchPostforloggedInUser = (uid, saveResult) => {
     return firebase.firestore().collection('tenantPost')
@@ -200,5 +214,5 @@ const deleteTenantPost = (id) => {
         }).catch((err) => { throw err; })
 }
 
-export { saveUsersData, signIn, signUp, getUsersData, signout }
+export { saveUsersData, signIn, signUp, getUsersData, signout, getRoomimg, getPpandPhoneno }
 export { getLoggedUser, saveTenantPost, saveOwnerRoom, fetchRoomforloggedInUser, fetchPostforloggedInUser, deleteTenantPost }

@@ -16,7 +16,7 @@ function calculate_ratings(Room1, Room2) {
       DISTANCE_RATING_FULL /
       Math.pow(haversine_distance * MULTIPLICATION_FACTOR, POWER_FACTOR);
   }
-  
+
   const d = Math.abs(Room1.price - Room2.price);
   var r;
   if (d > 100) {
@@ -30,12 +30,11 @@ function calculate_ratings(Room1, Room2) {
 
   // code for type_rating
 
-  if(Room1.roomType==Room2.roomType)
-  {
-     ratings.type_rating=1
+  if (Room1.roomType == Room2.roomType) {
+    ratings.type_rating = 1
   }
-  else {ratings.type_rating=0}
-
+  else { ratings.type_rating = 0 }
+  rating.distance = haversine_distance
   return ratings;
 }
 function power(x) {
@@ -46,6 +45,6 @@ function rating(d, r, x) {
 }
 
 function sum_priority(priority) {
-  return priority.price_rating + priority.distance_rating+priority.type_rating;
+  return priority.price_rating + priority.distance_rating + priority.type_rating;
 }
 export { calculate_ratings, sum_priority };

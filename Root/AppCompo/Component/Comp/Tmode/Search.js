@@ -182,7 +182,7 @@ class Search extends Component {
                         }}
                         onPress={this.searchRooms}
 
-                    >Find Room</Button>
+                    >Save Post</Button>
                 </View>
 
             </Provider>

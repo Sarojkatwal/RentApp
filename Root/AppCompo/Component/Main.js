@@ -8,6 +8,9 @@ import Editdetails from './EditDetails'
 import ShowImage from './showImage'
 import Mains from './Mains'
 import Mmapp from './map'
+import ShowMap from './showMap'
+import ShowProfile from './showProfile'
+import ShowNotification from './showNotification'
 
 const Stack1 = createStackNavigator()
 
@@ -28,6 +31,9 @@ class Main extends Component {
                         <Stack1.Screen name="Editdetails" component={Editdetails} />
                         <Stack1.Screen name="Mmapp" component={Mmapp} />
                         <Stack1.Screen name="ShowImage" component={ShowImage} />
+                        <Stack1.Screen name="ShowMap" component={ShowMap} />
+                        <Stack1.Screen name="ShowProfile" component={ShowProfile} />
+                        <Stack1.Screen name="ShowNotification" component={ShowNotification} />
                     </>
                 }
             </Stack1.Navigator>

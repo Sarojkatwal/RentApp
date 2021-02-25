@@ -2,26 +2,35 @@ import React, { Component } from "react";
 import { View, FlatList, StyleSheet, Image, Button } from 'react-native';
 import { FAB, Banner } from 'react-native-paper'
 //import { getStuff } from '../api';
+import firebase from '../../../../../../Firebase/Firebase'
+import { startSearch } from '../../../../../../Firebase/match'
 import Stufflistitem from '../components/Stufflistitem';
 
 class Stufflist extends Component {
     state = {
         visible: true,
-        stuff: [],
+        stuff: global.Roomt,
     }
     componentDidMount = () => {
-        this.updateStuff()
+        // this.updateStuff()
     }
     updateStuff = async () => {
-        this.setState({
-            stuff: []
-        });
+        const tmode = true;
+        const uid = firebase.auth().currentUser.uid
+        startSearch(uid, tmode).then(() => {
+            // use global.Roomt and global.Roomo here 
+            //console.log("Global:=>", global.Roomt)
+            this.setState({
+                stuff: global.Roomt
+            });
+        }).catch((err) => { console.log(err) });
+
     };
     onListItemPress = stuff => {
         this.props.navigation.navigate('Details', { stuff, mode: 'T' });
     };
     renderItem = ({ item }) => (
-        <Stufflistitem key={item.key} item={item} onPress={this.onListItemPress} recomm={(this.props.route.params == undefined) ? true : false} />
+        <Stufflistitem key={item.key} item={item} {...this.props} onPress={this.onListItemPress} recomm={(this.props.route.params == undefined) ? true : false} />
     );
     renderSeparator = () => {
         return (

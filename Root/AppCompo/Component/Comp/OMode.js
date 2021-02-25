@@ -26,9 +26,7 @@ class OMode extends React.Component {
                     <Stack.Screen name="Add" component={Add} options={{
                         headerShown: false,
                     }} />
-                    {/* <Stack.Screen name="SelImages" component={SelImages} options={{
-                        headerShown: false
-                    }} />*/}
+
                 </Stack.Navigator>
             </>
         );

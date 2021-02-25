@@ -66,7 +66,12 @@ class Stuffdetail extends Component {
                                     <View style={styles.a1}>
                                         <View style={styles.a2}>
                                             <Title>Place:</Title>
-                                            <Caption>{this.state.location.name}</Caption>
+                                            <TouchableOpacity onPress={() =>
+                                                this.props.navigation.navigate('ShowMap', { location: this.state.location })}>
+                                                <Caption>
+                                                    {this.state.location.name}
+                                                </Caption>
+                                            </TouchableOpacity>
                                         </View>
                                     </View>
                                     <View style={styles.a1}>

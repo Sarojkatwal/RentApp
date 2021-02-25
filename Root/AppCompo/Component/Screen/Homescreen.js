@@ -19,16 +19,16 @@ export default function Homescreen({ navigation }) {
         ></IconButton>
         <Appbar.Content style={{ left: -10 }} title="Room Rental App" />
         <View style={styles.a1}>
-          <Appbar.Action
-            icon="magnify"
-            color="white"
-          //onPress={() => global.Show = !global.Show}
-          />
-          <Appbar.Action
-            icon="dots-vertical"
-            color="white"
-            onPress={() => alert("Hy")}
-          />
+          {true ? <Appbar.Action
+            icon="bell-ring"
+            color="red"
+            onPress={() => navigation.navigate('ShowNotification')}
+          /> :
+            <Appbar.Action
+              icon="bell-ring-outline"
+              color="white"
+              onPress={() => alert("Hy")}
+            />}
         </View>
       </Appbar>
       <Stack2.Navigator

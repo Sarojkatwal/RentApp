@@ -4,6 +4,9 @@ import LogInSignUp from './Root/AppCompo/LogInSignUp'
 import { getLoggedUser } from './Root/Firebase/api'
 import './Root/Firebase/err'
 //import Filldetails from './Root/AppCompo/Component/FillDetails'
+//import Apps from './Apple'
+
+
 class App extends React.Component {
   state = {
     user: null,
@@ -18,7 +21,6 @@ class App extends React.Component {
         <NavigationContainer>
           <LogInSignUp user={this.state.user} />
         </NavigationContainer>
-
       </>
     );
   }
