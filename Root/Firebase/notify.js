@@ -1,20 +1,22 @@
 import firebase from "./Firebase";
 
 const save_likeNotifications = (likedById, postId, omode = true) => {
-  var collectionName = "like_notification";
+  var collectionName = "like_notifications";
   var post = omode ? "tenantPost" : "ownerPost"; //if omode is on then liked post should be from tenant .this is not opposite
   firebase
     .firestore()
     .collection(post)
     .doc(postId)
     .get()
-    .then((document) => {
+    .then(async(document) => {
+var pos_of=await document.data().authorId
+console.log(pos_of)
       var notification = {
         likedBy: likedById,
         likedPost: postId,
-        postOf: document.data().authorId,
+        postOf: pos_of,
         postType: post,
-        isViewed: false,
+        
         postType: post,
         likedAt: firebase.firestore.FieldValue.serverTimestamp(),
       };
@@ -99,7 +101,7 @@ const create_matchingRoomNotifications = (//jun post match garxa tesko type ho o
           postOf: document.data().authorId,
           matchedTo: roomMatchedToUserId,
           postType: post,
-          isViewed: false,
+          
           rating: ratings,
           savedAt: firebase.firestore.FieldValue.serverTimestamp()
         });
@@ -112,10 +114,10 @@ function getMatchingNotifications(userId) {
   {
     firebase
     .firestore()
-    .collection("match_notifications_omode")
+    .collection("match_notifications")
     .where("matchedTo", "==", userId)
     
-    .orderBy("rating", "desc").limit(20)
+    .orderBy("savedAt").limit(20)
     .get()
     .then((documents) => {
       documents.forEach((document) => [data.push(document)]);

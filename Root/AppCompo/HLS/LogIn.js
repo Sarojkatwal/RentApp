@@ -17,7 +17,7 @@ import FontAwesome from "react-native-vector-icons/FontAwesome";
 import Feather from "react-native-vector-icons/Feather";
 import { signIn } from "../../Firebase/api";
 //import {searchMatchingRoom} from '../../Firebase/searchMatchingRoom'
-import {save_likeNotifications} from '../../Firebase/notify' 
+import {save_likeNotifications,getLikeNotifications} from '../../Firebase/notify' 
 import { startSearch } from "../../Firebase/match";
 import { sum_priority } from "../../Firebase/priority";
 import {registerForPushNotifications,sendPushNotification} from '../../Firebase/pushnotification'
@@ -128,21 +128,32 @@ class LogIn extends React.Component {
         })
         var tmode = true;
 
-        startSearch(
-          res.user.uid,
+//         startSearch(
+//           res.user.uid,
           
-          tmode
-        ).then(()=>
-        {
-for(let i=0;i<global.Roomt;i++){console.log(global.Roomt[i].roomInformation.roomData.location.name)}
+//           tmode
+//         ).then(()=>
+//         {
+// for(let i=0;i<global.Roomt;i++){console.log(global.Roomt[i].roomInformation.roomData.location.name)}
           
 
-          // use global.Roomt and global.Roomo here 
+//           // use global.Roomt and global.Roomo here 
          
           
-        }).catch((err)=>{console.log(err)});
-        //save_likeNotifications(res.user.uid,"Yz6yJmRaR0ljCIDMhsXf",true)
+//         }).catch((err)=>{console.log(err)});
+        // save_likeNotifications(res.user.uid,"bt41vP2irJvARNwXWcGj")
+        // save_likeNotifications(res.user.uid,"5onC201NhEQDkc0uVXux",false)
+        // save_likeNotifications(res.user.uid,"KrCznxls0biwW4CtzDbY",false)
+        // save_likeNotifications(res.user.uid,"zIuBomcMSHjvXiZmPyYb",false)
 
+getLikeNotifications(res.user.uid).then((notifications)=>
+{
+  notifications.forEach((notification)=>
+  {
+    console.log(notification)
+  })
+})
+        
 //sendPushNotification('Ji1yjqwuGbaTSureKGwjE91SrQr1','Room found in ktm')
         
       });
