@@ -170,6 +170,7 @@ export default class MMap extends Component {
                                 <TextInput
                                     style={styles.searchbar}
                                     placeholder="Search Address..."
+                                    autoFocus={true}
                                     value={this.state.text}
                                     onChangeText={(text) =>
                                         this.setState({

@@ -10,25 +10,39 @@ import {
 import { Badge, IconButton, Avatar } from 'react-native-paper'
 import { getRoomimg } from '../../../../../../Firebase/api'
 import { getPpandPhoneno } from '../../../../../../Firebase/api'
+import firebase from '../../../../../../Firebase/Firebase'
+import { save_likeNotifications } from '../../../../../../Firebase/notify'
+import { isViewed, makeViewed } from '../../../../../../Firebase/isViewed'
 
 const windowWidth = Dimensions.get('window').width;
 class Stufflistitem extends Component {
     state = {
-        clicked: false,
+        clicked: this.props.likedPost.includes(this.props.item.roomInformation.__name__),
         roomimg: [],
-        userinfo: {}
+        userinfo: {},
+        viewed: false
     }
     componentDidMount = async () => {
+        const uid = firebase.auth().currentUser.uid;
+        const pid = this.props.item.roomInformation.__name__;
         const x = await getRoomimg("ownerPost", this.props.item.roomInformation.__name__)
         this.setState({
             ...this.state,
             roomimg: x
         })
         const y = await getPpandPhoneno(this.props.item.roomInformation.authorId)
+        const z = await isViewed(pid, uid, true)
         this.setState({
             ...this.state,
-            userinfo: y
+            userinfo: y,
+            viewed: z
         })
+    }
+
+    saveNoti = () => {
+        const uid = firebase.auth().currentUser.uid;
+        const pid = this.props.item.roomInformation.__name__;
+        save_likeNotifications(uid, pid, false, this.state.clicked)
     }
     render() {
 
@@ -39,6 +53,11 @@ class Stufflistitem extends Component {
                 <TouchableOpacity
                     onPress={() => {
                         //onPress(item);
+                        const uid = firebase.auth().currentUser.uid;
+                        const pid = this.props.item.roomInformation.__name__;
+                        if (!this.state.viewed) {
+                            makeViewed(pid, uid, true)
+                        }
                         const m = { ...item, roomInformation: item.roomInformation, userinfo: this.state.userinfo, roominfo: this.state.roomimg }
                         onPress(m)
                     }}>
@@ -58,7 +77,7 @@ class Stufflistitem extends Component {
                     animated={true}
                     onPress={() => this.setState({
                         clicked: !this.state.clicked
-                    })}
+                    }, this.saveNoti)}
                     style={styles.heart}
                 />
                 {recomm && <Badge style={styles.reco}>Recommended</Badge>}

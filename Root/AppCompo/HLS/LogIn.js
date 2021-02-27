@@ -117,8 +117,8 @@ class LogIn extends React.Component {
               visible: false
             })
             Alert.alert('No such username and password found')
+            return;
           }
-
 
           var tmode = true;
 
@@ -131,11 +131,6 @@ class LogIn extends React.Component {
             console.log('token added ' + token)
           }).catch((err) => {
             console.log(err)
-          })
-          getLikeNotifications(res.user.uid).then((notifications) => {
-            notifications.forEach((notification) => {
-              console.log(notification)
-            })
           })
 
         })

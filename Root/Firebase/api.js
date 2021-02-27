@@ -1,5 +1,6 @@
 import firebase from './Firebase'
 import { uploadRoom } from './storage'
+import { deletePushToken } from './pushnotification'
 
 const saveUsersData = (uid, userData, ismerge = true) => {
     firebase.firestore().collection('users').doc(uid).
@@ -7,7 +8,7 @@ const saveUsersData = (uid, userData, ismerge = true) => {
         .catch((err) => console.log('Error is here'))
 }
 
-const signUp = async (username, password) => {
+const signUp = async (username, password, func) => {
     const userData = {
         email: username + '@rent.com',
         createdAt: new Date(),
@@ -19,15 +20,13 @@ const signUp = async (username, password) => {
         gender: '',
         address:
         {
-            province: '',
+            zone: '',
             district: '',
-            localLevel: '',
-            wardno: ''
         },
         profilePic: 'https://www.kindpng.com/picc/m/130-1300217_user-icon-member-icon-png-transparent-png.png'
 
     }
-    firebase.auth()
+    return firebase.auth()
         .createUserWithEmailAndPassword(username + "@rent.com", password)
         .then((res) => {
             saveUsersData(res.user.uid, userData)
@@ -35,14 +34,12 @@ const signUp = async (username, password) => {
         })
         .catch(error => {
             if (error.code === 'auth/email-already-in-use') {
-                return ('That email address is already in use!');
+                func('That email address is already in use!');
             }
-
             if (error.code === 'auth/invalid-email') {
-                return ('That email address is invalid!');
+                func('That email address is invalid!');
             }
-
-            console.error(error);
+            // console.error(error);
             return null
         })
 }
@@ -65,14 +62,15 @@ const getUsersData = (uid, func) => {
 }
 
 const signout = () => {
-    firebase.auth().signOut().then(() => {
+    global.Roomt = []
+    global.Roomo = []
 
-        global.Roomt = []
-        global.Roomo = []
+    deletePushToken().then((msg) => {
+        console.log(msg)
+        firebase.auth().signOut().then(() => {
 
-    }
-
-    )
+        })
+    }).catch((err) => console.log(err))
 }
 const getLoggedUser = (onValueGet) => {
     firebase.auth().onAuthStateChanged((user) => {
@@ -175,7 +173,6 @@ const getPpandPhoneno = async (uid) => {
             } else {
                 return doc.data()
             }
-
             // console.log("DATA=", doc.data())
         })
         .catch((err) => { throw err; })
@@ -206,6 +203,59 @@ const fetchPostforloggedInUser = (uid, saveResult) => {
 
 }
 
+const fetchGivenPost = async (post, uid, func) => {
+    return firebase.firestore().collection(post).doc(uid).get()
+        .then((doc) => {
+            //return doc.data()
+            if (!doc.exists) {
+                console.log('No such document!');
+            } else {
+                if (post == "ownerPost") {
+                    getRoomimg(post, uid).then((data) => {
+                        //console.log("DATA=", data)
+                        const roomData = {
+                            roomimg: data,
+                            ...doc.data()
+                        }
+                        func(roomData)
+                    })
+                }
+                else {
+                    func(doc.data())
+                }
+
+            }
+            // console.log("DATA=", doc.data())
+        })
+        .catch((err) => { throw err; })
+}
+
+const getLikedIdForUser = async (uid) => {
+    var likedId = [];
+    console.log("Hello")
+    return firebase
+        .firestore()
+        .collection("like_notifications")
+        .where("likedBy", "==", uid)
+        .orderBy("likedAt")
+        .limit(25)
+        .get()
+        .then((querSnanpshot) => {
+            querSnanpshot.forEach((doc1) => {
+                if (doc1.exists) {
+                    //console.log("Document data:", doc1.data().roomimg);
+                    likedId.push(doc1.data().likedPost)
+                } else {
+                    // doc.data() will be undefined in this case
+                    console.log("No such document!");
+                }
+            })
+        }).then(() => {
+            console.log("Return=", likedId)
+            return likedId
+        })
+        .catch((err) => { throw err; })
+}
 
 const deleteTenantPost = (id) => {
     firebase.firestore().collection('tenantPost').doc(id).delete()
@@ -214,5 +264,5 @@ const deleteTenantPost = (id) => {
         }).catch((err) => { throw err; })
 }
 
-export { saveUsersData, signIn, signUp, getUsersData, signout, getRoomimg, getPpandPhoneno }
+export { saveUsersData, signIn, signUp, getUsersData, signout, getRoomimg, getPpandPhoneno, fetchGivenPost, getLikedIdForUser }
 export { getLoggedUser, saveTenantPost, saveOwnerRoom, fetchRoomforloggedInUser, fetchPostforloggedInUser, deleteTenantPost }

@@ -40,7 +40,6 @@ class Stuffdetail extends Component {
                 dateCreated: new Date(this.props.stuff.roomInformation.roomData.dateCreated).toLocaleString()
             })
         }
-
     }
     createAlert = () =>
         Alert.alert(

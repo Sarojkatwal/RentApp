@@ -5,6 +5,8 @@ import Stuffdetail from '../Component/Comp/Omode/src/Screens/Stuffdetail'
 import StuffdetailT from '../Component/Comp/Tmode/src/Screens/Stuffdetail'
 import StuffdetailP from '../Component/Screen/MyPosts/Screens/Stuffdetail'
 import StuffdetailR from '../Component/Screen/MyRooms/Screens/Stuffdetail'
+import StuffdetalLikenoti from '../Component/Notifications/likeNotification/stuffdetail'
+import StuffdetailRoomnoti from '../Component/Notifications/roomNotification/stuffdetail'
 export default class Details extends Component {
     render() {
         const { stuff, mode } = this.props.route.params
@@ -23,7 +25,11 @@ export default class Details extends Component {
                     <Stuffdetail stuff={stuff} {...this.props} />
                     :
                     (mode === "mpost" ? <StuffdetailP stuff={stuff} {...this.props} /> : (mode === "mroom" ?
-                        <StuffdetailR stuff={stuff} {...this.props} /> : <StuffdetailT stuff={stuff} {...this.props} />))
+                        <StuffdetailR stuff={stuff} {...this.props} /> :
+                        (mode === "roomnoti" ? <StuffdetailRoomnoti stuff={stuff} {...this.props} /> :
+                            (mode === "likenoti" ? <StuffdetalLikenoti stuff={stuff} {...this.props} /> :
+                                <StuffdetailT stuff={stuff} {...this.props} />))
+                    ))
                 }
             </>
         );

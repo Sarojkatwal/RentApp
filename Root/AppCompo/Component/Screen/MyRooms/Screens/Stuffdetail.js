@@ -32,7 +32,7 @@ class Stuffdetail extends Component {
         isSwitchOn: false
     }
     componentDidMount = () => {
-        //console.log(this.props.stuff)
+        //console.log("Here>>>>>>>", this.props.stuff)
         if (this.props.stuff.roomData !== undefined) {
             this.setState({
                 ...this.state,

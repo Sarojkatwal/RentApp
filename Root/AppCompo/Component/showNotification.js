@@ -1,60 +1,14 @@
 import React, { Component } from "react";
-import { View, FlatList, StyleSheet, ActivityIndicator, ScrollView, TouchableOpacity, Text, Dimensions } from 'react-native';
+import { View, FlatList, StyleSheet, ActivityIndicator, ScrollView, TouchableOpacity, Text, Dimensions, SafeAreaView } from 'react-native';
 import { Button, Switch, Appbar, Title, Caption } from 'react-native-paper';
 import { fetchPostforloggedInUser } from '../../Firebase/api'
 import firebase from '../../Firebase/Firebase'
 import { getLikeNotifications } from '../../Firebase/notify'
 import { create_matchingRoomNotifications } from '../../Firebase/notify'
+import Stufflistitem from './Notifications/likeNotification/stuffitem'
+import Stufflistitem2 from './Notifications/roomNotification/stuffitem'
 
 const windowWidth = Dimensions.get('window').width;
-
-export class Stufflistitem extends Component {
-    render() {
-
-        const { item, onPress } = this.props;
-        const x = item.postType === "ownerPost" ? "room" : "post"
-        const time = new Date(item.likedAt).toLocaleString()
-        return (
-            <View style={styles.stuff}>
-                <TouchableOpacity
-                    onPress={() => {
-                        onPress(item);
-                    }}>
-                    <View >
-                        <Caption style={styles.text}>
-                            {`${item.likedBy} liked your ${x} ${item.likedPost} in ${time} `}
-                        </Caption>
-                    </View>
-                </TouchableOpacity>
-            </View >
-
-        );
-    }
-}
-export class Stufflistitem2 extends Component {
-    render() {
-
-        const { item, onPress } = this.props;
-        // const x = item.postType === "ownerPost" ? "room" : "post"
-        // const time = new Date(item.likedAt).toLocaleString()
-        return (
-            <View style={styles.stuff}>
-                <TouchableOpacity
-                    onPress={() => {
-                        onPress(item);
-                    }}>
-                    <View >
-                        <Caption style={styles.text}>
-                            {/* {`${item.likedBy} liked your ${x} ${item.likedPost} in ${time} `} */}
-                           The room you have searched is found.
-                        </Caption>
-                    </View>
-                </TouchableOpacity>
-            </View >
-
-        );
-    }
-}
 
 class showNotification extends Component {
 
@@ -65,14 +19,33 @@ class showNotification extends Component {
         loaded: false,
     }
     componentDidMount() {
+        this.updateStuff()
+    }
+    updateStuff = async () => {
         const { navigation } = this.props;
         const uid = firebase.auth().currentUser.uid;
+        this.setState({
+            like: true,
+            likenoti: [],
+            roomnoti: [],
+            loaded: false,
+        })
         getLikeNotifications(uid).then((notifications) => {
-            notifications.forEach((notification) => {
+            if (notifications.length === 0) {
                 this.setState({
-                    likenoti: [...this.state.likenoti, notification]
+                    ...this.state,
+                    loaded: true
                 })
-            })
+            }
+            else {
+                notifications.forEach((notification) => {
+                    console.log(notification)
+                    this.setState({
+                        likenoti: [...this.state.likenoti, notification],
+                        loaded: true
+                    })
+                })
+            }
         })
         // create_matchingRoomNotifications("use id here").then((rooms) => {
         //     rooms.forEach((room) => {
@@ -83,23 +56,6 @@ class showNotification extends Component {
         //     })
 
         // })
-    }
-
-
-    updateStuff = async () => {
-        this.setState({
-            stuff: [],
-            loaded: false,
-        }, () => {
-            const uid = firebase.auth().currentUser.uid
-            fetchPostforloggedInUser(uid, this.saveResult)
-                .then((data) => {
-                    this.setState({
-                        ...this.state,
-                        loaded: true
-                    })
-                })
-        })
     };
     saveResult = (data) => {
         this.setState({
@@ -107,17 +63,21 @@ class showNotification extends Component {
             stuff: [...this.state.stuff, data]
         })
     }
-    onListItemPress = stuff => {
-        //global.Show = false
+    onListItemPress1 = stuff => {
         this.setState({
             ...this.state,
-        }, () => this.props.navigation.navigate('Details', { stuff, mode: 'mpost' }))
+        }, () => this.props.navigation.navigate('Details', { stuff, mode: "likenoti" }))
+    };
+    onListItemPress2 = stuff => {
+        this.setState({
+            ...this.state,
+        }, () => this.props.navigation.navigate('Details', { stuff, mode: "roomnoti" }))
     };
     renderItem = ({ item }) => (
-        <Stufflistitem key={item.key} item={item} onPress={this.onListItemPress} />
+        <Stufflistitem key={item.key} item={item} onPress={this.onListItemPress1} />
     );
     renderItem2 = ({ item }) => (
-        <Stufflistitem2 key={item.key} item={item} onPress={this.onListItemPress} />
+        <Stufflistitem2 key={item.key} item={item} onPress={this.onListItemPress2} />
     );
     renderSeparator = () => {
         return (
@@ -148,7 +108,7 @@ class showNotification extends Component {
                 </Appbar>
 
                 {this.state.like ?
-                    <ScrollView>
+                    <SafeAreaView style={{ marginBottom: 50 }}>
                         <View style={styles.cntainer}>
                             {this.state.loaded ? <FlatList
                                 data={this.state.likenoti}
@@ -160,8 +120,8 @@ class showNotification extends Component {
                             /> :
                                 <ActivityIndicator size={30} />}
                         </View>
-                    </ScrollView> :
-                    <ScrollView>
+                    </SafeAreaView> :
+                    <SafeAreaView style={{ marginBottom: 50 }}>
                         <View style={styles.cntainer}>
                             {this.state.loaded ? <FlatList
                                 data={this.state.roomnoti}
@@ -173,7 +133,7 @@ class showNotification extends Component {
                             /> :
                                 <ActivityIndicator size={30} />}
                         </View>
-                    </ScrollView>
+                    </SafeAreaView>
                 }
             </>
         );

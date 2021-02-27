@@ -42,18 +42,30 @@ class ShowProfile extends Component {
                 gender: this.props.route.params.userdata.gender
             })
         }
+        else {
+            this.setState({
+                ...this.state,
+                name: this.props.userdata.name,
+                address: this.props.userdata.address,
+                pP: this.props.userdata.profilePic,
+                username: this.props.userdata.username,
+                phoneNo: this.props.userdata.phoneNo,
+                email: this.props.userdata.email,
+                gender: this.props.userdata.gender
+            })
+        }
     }
     render() {
         return (
             <>
-                <Appbar style={{
+                {this.props.route.params.userdata !== undefined && <Appbar style={{
                     backgroundColor: 'green'
                 }}>
                     <Appbar.BackAction onPress={() => {
                         this.props.navigation.goBack()
                     }} />
                     <Appbar.Content title="User Info." />
-                </Appbar>
+                </Appbar>}
                 < ScrollView >
                     <Card>
                         <View>

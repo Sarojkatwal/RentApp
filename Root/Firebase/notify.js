@@ -1,6 +1,6 @@
 import firebase from "./Firebase";
 
-const save_likeNotifications = (likedById, postId, omode = true) => {
+const save_likeNotifications = (likedById, postId, omode = true, del) => {
   var collectionName = "like_notifications";
   var post = omode ? "tenantPost" : "ownerPost"; //if omode is on then liked post should be from tenant .this is not opposite
   firebase
@@ -10,30 +10,37 @@ const save_likeNotifications = (likedById, postId, omode = true) => {
     .get()
     .then(async (document) => {
       var pos_of = await document.data().authorId
-      console.log(pos_of)
+      // console.log(pos_of)
       var notification = {
         likedBy: likedById,
         likedPost: postId,
         postOf: pos_of,
         postType: post,
-        postType: post,
         likedAt: new Date().getTime(),
       };
-      firebase
-        .firestore()
-        .collection(collectionName)
-        .add(notification)
-        .then((doc) => {
-          console.log(
-            "like notification added at " +
-            collectionName +
-            " with id " +
-            doc.id
-          );
-        })
-        .catch((err) => {
-          console.log("error occured while saving notification " + err);
-        });
+      if (del) {
+        firebase
+          .firestore()
+          .collection(collectionName)
+          .doc(`${postId}and${likedById}`)
+          .set(notification)
+          .then((doc) => {
+
+          })
+          .catch((err) => {
+            console.log("error occured while saving notification " + err);
+          });
+      }
+      else {
+        firebase
+          .firestore()
+          .collection(collectionName)
+          .doc(`${postId}and${likedById}`)
+          .delete()
+          .catch((err) => {
+            console.log("error occured while Deleting  " + err);
+          });
+      }
     })
     .catch((err) => {
       console.log("error occured while getting the author id " + err);
@@ -100,7 +107,7 @@ const create_matchingRoomNotifications = (//jun post match garxa tesko type ho o
           matchedTo: roomMatchedToUserId,
           postType: post,
           rating: ratings,
-          savedAt: firebase.firestore.FieldValue.serverTimestamp()
+          savedAt: new Date().getTime(),
         });
     });
 };

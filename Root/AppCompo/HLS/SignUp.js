@@ -19,7 +19,7 @@ import { LinearGradient } from "expo-linear-gradient";
 import FontAwesome from "react-native-vector-icons/FontAwesome";
 import Feather from "react-native-vector-icons/Feather";
 import { signUp } from '../../Firebase/api'
-
+import { registerForPushNotifications, sendPushNotification } from '../../Firebase/pushnotification'
 class SignUp extends React.Component {
   state = {
     username: "",
@@ -35,6 +35,30 @@ class SignUp extends React.Component {
     visible: false
   };
 
+  inputRef1 = React.createRef()
+  inputRef2 = React.createRef()
+
+  alertShow = (str) => {
+    return (
+      Alert.alert(
+        str,
+        '',
+        [
+          {
+            text: 'Ok',
+            onPress: () => {
+              this.setState({
+                ...this.state,
+                visible: false
+              })
+            },
+            style: 'cancel'
+          },
+        ],
+        { cancelable: false }
+      )
+    )
+  }
 
   textInputChange = (val) => {
     if (val.trim().length >= 4) {
@@ -94,15 +118,20 @@ class SignUp extends React.Component {
   };
   signUpHandle = () => {
     if (this.state.isValidUser && this.state.isValidPassword) {
-      if (this.state.password == this.state.confirm_password) {
+      if (this.state.password === this.state.confirm_password) {
         this.setState({
           ...this.state,
           visible: true
         })
-        signUp(this.state.username, this.state.password)
+        signUp(this.state.username, this.state.password, this.alertShow)
           .then((res) => {
+            registerForPushNotifications().then((token) => {
+              console.log('token added ' + token)
+            }).catch((err) => {
+              console.log(err)
+            })
             if (res) {
-              if (typeof (res) === 'string') {
+              if (typeof (res) == 'string') {
                 //console.log('resup:', res)
                 this.setState({
                   ...this.state,
@@ -110,13 +139,34 @@ class SignUp extends React.Component {
                 })
                 Alert.alert(res)
               }
-
             }
           })
       }
       else {
         Alert.alert('Password didnot match')
       }
+    }
+    else {
+      Alert.alert(
+        'Enter all the fields correctly!!!',
+        '',
+        [
+
+          {
+            text: 'Ok',
+            onPress: () => {
+              if (!this.state.isValidUser) {
+                this.inputRef1.current.focus()
+              }
+              else if (!this.state.isValidPassword) {
+                this.inputRef2.current.focus()
+              }
+            },
+            style: 'cancel'
+          },
+        ],
+        { cancelable: false }
+      );
     }
   }
   render() {
@@ -136,6 +186,7 @@ class SignUp extends React.Component {
                   placeholder="Your Username"
                   style={styles.textInput}
                   autoCapitalize="none"
+                  ref={this.inputRef1}
                   onChangeText={(val) => this.textInputChange(val)}
                 />
                 {this.state.check_textInputChange ? (
@@ -169,6 +220,7 @@ class SignUp extends React.Component {
                   placeholder="Your Password"
                   secureTextEntry={this.state.secureTextEntry ? true : false}
                   style={styles.textInput}
+                  ref={this.inputRef2}
                   autoCapitalize="none"
                   onChangeText={(val) => this.handlePasswordChange(val)}
                 />
