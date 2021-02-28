@@ -36,7 +36,7 @@ class Stuffdetail extends Component {
         authorId:null
     }
     componentDidMount = () => {
-        //console.log(this.props.stuff.matchedTo)
+        console.log(this.props.stuff.ratings)
         if (this.props.stuff.roomInformation.roomData !== undefined) {
             this.setState({
                 ...this.state,

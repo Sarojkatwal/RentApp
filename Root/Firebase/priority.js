@@ -17,13 +17,19 @@ function calculate_ratings(Room1, Room2) {
       Math.pow(haversine_distance * MULTIPLICATION_FACTOR, POWER_FACTOR);
   }
 
-  const d = Math.abs(Room1.price - Room2.price);
+  const d = Math.abs(parseFloat(Room1.price) - parseFloat(Room2.price));
+  
   var r;
   if (d > 1000) {
-    r = Room2.price / Room1.price;
-    r = Room1.price > Room2.price ? r : 1 / r;
+    
+    r=Room2.price/Room1.price
+    if(r>1)
+    {
+      r=1/r;
+    }
 
     ratings.price_rating = rating(d, r, PRICE_FULL_RATING);
+   
   } else {
     ratings.price_rating = PRICE_FULL_RATING;
   }
