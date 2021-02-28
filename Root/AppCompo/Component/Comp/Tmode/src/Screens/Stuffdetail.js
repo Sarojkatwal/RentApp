@@ -18,6 +18,9 @@ import {
     Modal
 } from "react-native-paper";
 import call from 'react-native-phone-call';
+import { sendPushNotification } from '../../../../../../Firebase/pushnotification'
+import firebase from '../../../../../../Firebase/Firebase'
+import { create_matchingRoomNotifications } from '../../../../../../Firebase/notify'
 class Stuffdetail extends Component {
     state = {
         a: 700,
@@ -28,9 +31,12 @@ class Stuffdetail extends Component {
         description: "",
         img: [],
         noofpic: 0,
+        distance: 0,
+        matchedTo: null,
+        authorId: null
     }
     componentDidMount = () => {
-        //console.log(this.props.stuff)
+        //console.log(this.props.stuff.matchedTo)
         if (this.props.stuff.roomInformation.roomData !== undefined) {
             this.setState({
                 ...this.state,
@@ -39,7 +45,8 @@ class Stuffdetail extends Component {
                 location: this.props.stuff.roomInformation.roomData.location.name,
                 description: this.props.stuff.roomInformation.roomData.roomDescription,
                 img: this.props.stuff.roominfo,
-                noofpic: this.props.stuff.roominfo.length
+                noofpic: this.props.stuff.roominfo.length,
+                authorId: this.props.stuff.roomInformation.authorId
             })
         }
     }
@@ -85,6 +92,17 @@ class Stuffdetail extends Component {
                     a: this.state.a + 1
                 })
             )
+    }
+    handleRequest = () => {
+        // console.log(this.props.stuff.roomInformation.authorId)
+        alert('sent notification')
+        const sendTo = this.props.stuff.roomInformation.authorId
+        // console.log("sending to "+sendTo)
+        const name = firebase.auth().currentUser.email.replace('@rent.com', '')
+
+        const msg = ' Your room in  ' + this.state.location + " has been requested  from  " + name
+        sendPushNotification(sendTo, msg)
+        create_matchingRoomNotifications(this.props.stuff.matchedToId, sendTo, 2, false)
     }
     render() {
         const { stuff } = this.props;
@@ -150,12 +168,7 @@ class Stuffdetail extends Component {
                                     <Caption>{Rtype}</Caption>
                                 </View>
                             </View>
-                            <View style={styles.a1}>
-                                <View style={styles.a2}>
-                                    <Title>Negotiable:</Title>
-                                    <Caption>Yes</Caption>
-                                </View>
-                            </View>
+
                             <View style={styles.a1}>
                                 <View style={styles.a2}>
                                     <Title>Location:</Title>
@@ -167,6 +180,22 @@ class Stuffdetail extends Component {
                                     </TouchableOpacity>
                                 </View>
                             </View>
+                            {(this.props.stuff.from == undefined) &&
+                                <>
+                                    <View style={styles.a1}>
+                                        <View style={styles.a2}>
+                                            <Title>Distance:</Title>
+                                            <Caption> {this.props.stuff.ratings.distance} km</Caption>
+                                        </View>
+                                    </View>
+                                    <View style={styles.a1}>
+                                        <View style={styles.a2}>
+                                            <Title>Matched To:</Title>
+                                            <Caption> {this.props.stuff.matchedTo} </Caption>
+                                        </View>
+                                    </View>
+                                </>
+                            }
                             {/* <View style={styles.a1}>
                                 <View style={styles.a2}>
                                     <Title>Rating:</Title>
@@ -195,6 +224,11 @@ class Stuffdetail extends Component {
                                     <Button mode='contained'
                                         onPress={this.createAlert}
                                     > Call</Button>
+                                    {(this.props.stuff.from == undefined) &&
+                                        <Button mode='contained'
+                                            onPress={this.handleRequest}
+                                        > Send Request</Button>}
+
                                 </View>
                             </View>
                         </Card.Content>

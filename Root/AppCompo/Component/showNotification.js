@@ -3,8 +3,8 @@ import { View, FlatList, StyleSheet, ActivityIndicator, ScrollView, TouchableOpa
 import { Button, Switch, Appbar, Title, Caption } from 'react-native-paper';
 import { fetchPostforloggedInUser } from '../../Firebase/api'
 import firebase from '../../Firebase/Firebase'
-import { getLikeNotifications } from '../../Firebase/notify'
-import { create_matchingRoomNotifications } from '../../Firebase/notify'
+import { getLikeNotifications,getMatchingNotifications } from '../../Firebase/notify'
+
 import Stufflistitem from './Notifications/likeNotification/stuffitem'
 import Stufflistitem2 from './Notifications/roomNotification/stuffitem'
 
@@ -16,7 +16,8 @@ class showNotification extends Component {
         like: true,
         likenoti: [],
         roomnoti: [],
-        loaded: false,
+        loaded1: false,
+        loaded2:false
     }
     componentDidMount() {
         this.updateStuff()
@@ -28,24 +29,45 @@ class showNotification extends Component {
             like: true,
             likenoti: [],
             roomnoti: [],
-            loaded: false,
+            loaded1: false
+            
         })
         getLikeNotifications(uid).then((notifications) => {
             if (notifications.length === 0) {
                 this.setState({
                     ...this.state,
-                    loaded: true
+                    loaded1: true
                 })
             }
             else {
                 notifications.forEach((notification) => {
-                    console.log(notification)
+                   // console.log(notification)
                     this.setState({
                         likenoti: [...this.state.likenoti, notification],
-                        loaded: true
+                        loaded1: true
                     })
                 })
             }
+        })
+        getMatchingNotifications(uid).then((notifications)=>
+        {
+          
+            if (notifications.length === 0) {
+                this.setState({
+                    ...this.state,
+                    loaded2: true
+                })
+            }
+            else {
+                notifications.forEach((notification) => {
+                    
+                    this.setState({
+                        roomnoti: [...this.state.roomnoti, notification],
+                        loaded2: true
+                    })
+                })
+            }
+            
         })
         // create_matchingRoomNotifications("use id here").then((rooms) => {
         //     rooms.forEach((room) => {
@@ -110,7 +132,7 @@ class showNotification extends Component {
                 {this.state.like ?
                     <SafeAreaView style={{ marginBottom: 50 }}>
                         <View style={styles.cntainer}>
-                            {this.state.loaded ? <FlatList
+                            {this.state.loaded1 ? <FlatList
                                 data={this.state.likenoti}
                                 renderItem={this.renderItem}
                                 numColumns={1}
@@ -123,7 +145,7 @@ class showNotification extends Component {
                     </SafeAreaView> :
                     <SafeAreaView style={{ marginBottom: 50 }}>
                         <View style={styles.cntainer}>
-                            {this.state.loaded ? <FlatList
+                            {this.state.loaded2 ? <FlatList
                                 data={this.state.roomnoti}
                                 renderItem={this.renderItem2}
                                 numColumns={1}

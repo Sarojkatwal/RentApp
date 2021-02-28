@@ -13,7 +13,7 @@ class Add extends PureComponent {
         location: {},
         photos: [],//whether visible for negotation on price
         visiblefordesc: false, //whether visible for description
-        value: 0,
+        value: "0",
         valuefortype: 0,
         valuefordesc: "",
         fromSubmit1: false,

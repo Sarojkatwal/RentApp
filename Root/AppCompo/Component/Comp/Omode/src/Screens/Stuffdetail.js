@@ -1,6 +1,8 @@
 import React, { Component } from "react";
 import { Image, ScrollView, StyleSheet, Text, View, TouchableOpacity, Alert } from 'react-native';
 import StarRating from 'react-native-star-rating';
+import {sendPushNotification} from '../../../../../../Firebase/pushnotification'
+import {create_matchingRoomNotifications} from '../../../../../../Firebase/notify'
 import {
     Card,
     Title,
@@ -28,16 +30,19 @@ class Stuffdetail extends Component {
         description: "",
         img: [],
         noofpic: 0,
+        distance:0,
+        matchedTo:null
     }
     componentDidMount = () => {
-        //console.log(this.props.stuff)
+       // console.log(this.props.stuff.matchedTo)
         if (this.props.stuff.roomInformation.roomData !== undefined) {
             this.setState({
                 ...this.state,
                 price: this.props.stuff.roomInformation.roomData.price,
                 type: this.props.stuff.roomInformation.roomData.roomType,
                 location: this.props.stuff.roomInformation.roomData.location,
-                dateCreated: new Date(this.props.stuff.roomInformation.roomData.dateCreated).toLocaleString()
+                dateCreated: new Date(this.props.stuff.roomInformation.roomData.dateCreated).toLocaleString(),
+
             })
         }
     }
@@ -69,8 +74,18 @@ class Stuffdetail extends Component {
         // Make a call
         call(args).catch(console.error);
     }
+    handleRequest=()=>
+    {
+        alert('sent notification')
+        const sendTo=this.props.stuff.roomInformation.authorId
+        const name=this.props.stuff.userinfo.username
+        const msg=' Your search for  ' + this.state.location.name + ' has been matched in location '+this.state.matchedTo +" from "+ name
+        sendPushNotification(sendTo,msg)
+        create_matchingRoomNotifications(this.props.stuff.matchedToId,sendTo,2)
+    }
 
     render() {
+        //console.log(this.props.stuff.userinfo.username)
         const { stuff } = this.props;
         var Rtype = ""
         if (this.state.type == 1) {
@@ -138,11 +153,33 @@ class Stuffdetail extends Component {
                                             <Caption>{this.state.dateCreated}</Caption>
                                         </View>
                                     </View>
-
-                                    <View style={{ marginTop: 20 }}>
+                                   {this.props.stuff.from ==undefined &&
+                                   <>
+                                    <View style={styles.a1}>
+                                        <View style={styles.a2}>
+                                            <Title>Matched To:</Title>
+                                            <Caption>{this.props.stuff.matchedTo}</Caption>
+                                        </View>
+                                    </View>
+                                    <View style={styles.a1}>
+                                        <View style={styles.a2}>
+                                            <Title>Distance:</Title>
+                                            <Caption>{this.props.stuff.ratings.distance}</Caption>
+                                        </View>
+                                    </View>
+                                   </>}
+                                    <View style={styles.a1}>
+                                        <View style={styles.a2}>
                                         <Button mode='contained' onPress={this.createAlert}
                                         > Call</Button>
+                                         {(this.props.stuff.from==undefined) &&
+                                        <Button mode='contained' onPress={this.handleRequest}
+                                        > Send Notification</Button>
+                                         }
+                                        </View>
+                                        
                                     </View>
+                                   
                                 </Card.Content>
                             </Card>
                         </View>

@@ -42,8 +42,8 @@ const startSearch = (uid, tmode = true) => {
       .then((userDocuments) => {
         if (userDocuments.length !== 0) {
           userDocuments.forEach((Room) => {
-            console.log('your room is ')
-            console.log(Room.roomData.location.name)
+            // console.log('your room is ')
+            // console.log(Room.roomData.location.name)
             const Room_Location = {
               latitude: Room.roomData.location.latitude,
               longitude: Room.roomData.location.longitude,
@@ -80,8 +80,8 @@ const startSearch = (uid, tmode = true) => {
               });
             };
             getForEachRoom().then(async (rooms) => {
-              console.log('before filtering the longitude rooms found are ')
-              console.log(rooms.length)
+              // console.log('before filtering the longitude rooms found are ')
+              //console.log(rooms.length)
               rooms = await rooms.filter((T) => {
                 return (
                   // (T.roomData.location.longitude < Room_Location.longitude &&
@@ -95,8 +95,8 @@ const startSearch = (uid, tmode = true) => {
                     longitude_threshold_for_T_lessthan_O)
                 );
               });
-              console.log('after filtering the longitude')
-              rooms.forEach((room) => { console.log(room.roomData.location.name) })
+              // console.log('after filtering the longitude')
+              //rooms.forEach((room) => { //console.log(room.roomData.location.name) })
               if (tmode) {
                 rooms.forEach((room) => {
                   var priority_ = calculate_ratings(Room.roomData, room.roomData);
@@ -104,6 +104,8 @@ const startSearch = (uid, tmode = true) => {
                   //var v=isViewed(room.__name__,uid,tmode)
 
                   var full_room = {
+                    matchedTo: Room.roomData.location.name,
+                    matchedToId: Room.__name__,
                     roomInformation: room,
                     ratings: priority_,
                     view: false,
@@ -146,6 +148,8 @@ const startSearch = (uid, tmode = true) => {
 
 
                   var full_room = {
+                    matchedTo: Room.roomData.location.name,
+                    matchedToId: Room.__name__,
                     roomInformation: room,
                     ratings: priority_,
                     view: false,
@@ -190,11 +194,7 @@ const startSearch = (uid, tmode = true) => {
         rejectf(err);
       });
 
-
-
-
   })
-
 
 };
 export { startSearch };

@@ -74,25 +74,33 @@ class Stuffdetail extends Component {
             ],
             { cancelable: false }
         );
-    deleteRoom = () => {
-        const id = this.props.stuff.key
-        firebase.firestore().collection('ownerPost').doc(id).delete()
-            .then(() => {
-                this.state.deleteCollection()
-            }).then(() => this.props.navigation.goBack())
-            .catch((err) => { throw err; })
-    }
-
-    deleteCollection = async (batchSize = this.state.noofpic) => {
-        const id = this.props.stuff.key
-        firebase.firestore().collection('ownerPost').doc(id).collection("roomImg").delete()
-            .then(() => {
-                this.state.deleteCollection()
-            }).then(() => this.props.navigation.goBack())
-            .catch((err) => { throw err; })
-    }
-
-
+    deleteRoom = async (batchSize = this.state.noofpic) => {
+        const id = this.props.stuff.key;
+        const ref = firebase
+            .firestore()
+            .collection("ownerPost")
+            .doc(id)
+            .collection("roomImg");
+        ref
+            .get()
+            .then((docs) => {
+                docs.forEach((doc) => {
+                    ref.doc(doc.id).delete();
+                });
+                firebase
+                    .firestore()
+                    .collection("ownerPost")
+                    .doc(id)
+                    .delete()
+                    .then(() => this.props.navigation.goBack())
+                    .catch((err) => {
+                        throw err;
+                    });
+            })
+            .catch((err) => {
+                throw err;
+            });
+    };
     render() {
         const { stuff } = this.props;
         var Rtype = ""

@@ -66,7 +66,7 @@ const signout = () => {
     global.Roomo = []
 
     deletePushToken().then((msg) => {
-        console.log(msg)
+        //  console.log(msg)
         firebase.auth().signOut().then(() => {
 
         })
@@ -232,7 +232,6 @@ const fetchGivenPost = async (post, uid, func) => {
 
 const getLikedIdForUser = async (uid) => {
     var likedId = [];
-    console.log("Hello")
     return firebase
         .firestore()
         .collection("like_notifications")
@@ -251,7 +250,7 @@ const getLikedIdForUser = async (uid) => {
                 }
             })
         }).then(() => {
-            console.log("Return=", likedId)
+            //console.log("Return=", likedId)
             return likedId
         })
         .catch((err) => { throw err; })

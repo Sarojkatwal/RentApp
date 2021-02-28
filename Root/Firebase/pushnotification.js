@@ -34,7 +34,7 @@ const sendPushNotification = (uid, message) => {
             body: message,
             data: { someData: "goes here" },
         };
-
+console.log(expoPushToken)
         await fetch("https://exp.host/--/api/v2/push/send", {
             method: "POST",
             headers: {
@@ -43,7 +43,7 @@ const sendPushNotification = (uid, message) => {
                 "Content-Type": "application/json",
             },
             body: JSON.stringify(msg),
-        });
+        })
     });
 };
 const getExpoPushToken = (uid) => {

@@ -19,6 +19,8 @@
     "@react-navigation/stack": "^5.9.0",
     "cross-fetch": "^3.0.6",
     "expo": "~38.0.8",
+    "expo-app-loading": "^1.0.1",
+    "expo-camera": "~8.3.1",
     "expo-constants": "~9.1.1",
     "expo-file-system": "~9.0.1",
     "expo-image-manipulator": "^8.2.1",
@@ -26,6 +28,7 @@
     "expo-image-picker-multiple": "^1.2.2",
     "expo-linear-gradient": "~8.2.1",
     "expo-media-library": "~8.2.1",
+    "expo-notifications": "~0.3.3",
     "expo-permissions": "~9.0.1",
     "expo-status-bar": "^1.0.2",
     "faker": "^5.1.0",
@@ -51,9 +54,7 @@
     "react-native-vector-icons": "^7.0.0",
     "react-native-web": "^0.15.0",
     "react-navigation-shared-element": "^5.0.0-alpha1",
-    "rn-fetch-blob": "^0.12.0",
-    "expo-camera": "~8.3.1",
-    "expo-notifications": "~0.3.3"
+    "rn-fetch-blob": "^0.12.0"
   },
   "devDependencies": {
     "@babel/core": "^7.8.6",

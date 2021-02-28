@@ -27,7 +27,7 @@ class Stufflistitem extends Component {
         //console.log("Props=", this.props.likedPost.includes(this.props.item.roomInformation.__name__))
         const y = await getPpandPhoneno(this.props.item.roomInformation.authorId)
         const z = await isViewed(pid, uid, false)
-        console.log("z=", z)
+       // console.log("z=", z)
         this.setState({
             ...this.state,
             userinfo: y,

@@ -9,7 +9,7 @@ class Search extends Component {
     state = {
         visiblefortype: false, //whether room type dialog is visible
         visible: false,//visible for maxprice dialog
-        value: 0,
+        value: "0",
         valuefortype: 0,
         location: {}
     }

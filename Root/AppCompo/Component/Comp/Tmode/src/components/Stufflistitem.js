@@ -13,6 +13,7 @@ import { getPpandPhoneno } from '../../../../../../Firebase/api'
 import firebase from '../../../../../../Firebase/Firebase'
 import { save_likeNotifications } from '../../../../../../Firebase/notify'
 import { isViewed, makeViewed } from '../../../../../../Firebase/isViewed'
+import { sum_priority } from '../../../../../../Firebase/priority'
 
 const windowWidth = Dimensions.get('window').width;
 class Stufflistitem extends Component {
@@ -47,6 +48,18 @@ class Stufflistitem extends Component {
     render() {
 
         const { item, onPress, recomm } = this.props;
+        // console.log("Room=", this.props.item)
+        const p = sum_priority(this.props.item.ratings)
+        var txt = "";
+        if (p >= 9.5) {
+            txt = "Highly Recommended"
+        }
+        else if (p >= 8) {
+            txt = "Recommended"
+        }
+        else {
+            txt = "You may like"
+        }
         return (
             <View style={styles.stuff}>
 
@@ -80,7 +93,7 @@ class Stufflistitem extends Component {
                     }, this.saveNoti)}
                     style={styles.heart}
                 />
-                {recomm && <Badge style={styles.reco}>Recommended</Badge>}
+                {recomm && <Badge style={styles.reco}>{txt}</Badge>}
 
                 <TouchableOpacity onPress={() => this.props.navigation.navigate('ShowProfile', { userdata: this.state.userinfo })}
                     style={{ position: 'absolute', bottom: 0, right: 4, zIndex: 1 }}>
