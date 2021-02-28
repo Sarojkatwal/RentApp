@@ -54,7 +54,7 @@ const getLikeNotifications = (uid) => {
       .firestore()
       .collection("like_notifications")
       .where("postOf", "==", uid)
-      .orderBy("likedAt")
+      .orderBy("likedAt","desc")
       .limit(25)
       .get()
       .then(
@@ -77,10 +77,10 @@ const increaseLikeCount = async (postId, omode) => {
     postref
       .set({ like_count: likes_count }, { merge: true })
       .then((doc) => {
-        console.log("liked count increased of " + doc.id);
+       // console.log("liked count increased of " + doc.id);
       })
       .catch((err) => {
-        console.log("error while increasing like count " + err);
+       // console.log("error while increasing like count " + err);
       });
   });
 };
@@ -91,6 +91,8 @@ const create_matchingRoomNotifications = (//jun post match garxa tesko type ho o
   ownerPost = true
 ) => {
   var post = ownerPost ? 'ownerPost' : 'tenantPost';
+  //console.log(`${roomMatchedToUserId}${roomId}`)
+  //console.log("the type of post is "+post)
   firebase
     .firestore()
     .collection(post)
@@ -98,12 +100,13 @@ const create_matchingRoomNotifications = (//jun post match garxa tesko type ho o
     .get()
     .then((document) => {
       var collectionName = "match_notifications";
+      var x=document.data().authorId;
       firebase
         .firestore()
         .collection(collectionName)
-        .add({
+        .doc(`${roomMatchedToUserId}${roomId}`).set({
           postId: roomId,
-          postOf: document.data().authorId,
+          postOf:x ,
           matchedTo: roomMatchedToUserId,
           postType: post,
           rating: ratings,
@@ -119,11 +122,12 @@ function getMatchingNotifications(userId) {
       .firestore()
       .collection("match_notifications")
       .where("matchedTo", "==", userId)
-
       .orderBy("savedAt").limit(20)
       .get()
       .then((documents) => {
-        documents.forEach((document) => [data.push(document)]);
+        documents.forEach((document) => [data.push(document.data())]);
+       // console.log("from inside ")
+       // console.log(data)
         resolve(data)
       }).catch((err) => {
         reject(err)

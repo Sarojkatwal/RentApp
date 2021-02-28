@@ -102,13 +102,15 @@ const startSearch = (uid, tmode = true) => {
                   var priority_ = calculate_ratings(Room.roomData, room.roomData);
 
                   //var v=isViewed(room.__name__,uid,tmode)
-
+                  
                   var full_room = {
+                    matchedTo:Room.roomData.location.name,
+                    matchedToId:Room.__name__,
                     roomInformation: room,
                     ratings: priority_,
                     view: false,
                   };
-
+                  
                   var new_array = []; //just for sorting
                   var flag = false; //just for sorting
                   var i = 0; //for sorting
@@ -146,6 +148,8 @@ const startSearch = (uid, tmode = true) => {
 
 
                   var full_room = {
+                    matchedTo:Room.roomData.location.name,
+                    matchedToId:Room.__name__,
                     roomInformation: room,
                     ratings: priority_,
                     view: false,

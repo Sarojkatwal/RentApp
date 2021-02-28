@@ -19,7 +19,7 @@ function calculate_ratings(Room1, Room2) {
 
   const d = Math.abs(Room1.price - Room2.price);
   var r;
-  if (d > 100) {
+  if (d > 1000) {
     r = Room2.price / Room1.price;
     r = Room1.price > Room2.price ? r : 1 / r;
 
@@ -34,7 +34,7 @@ function calculate_ratings(Room1, Room2) {
     ratings.type_rating = 1
   }
   else { ratings.type_rating = 0 }
-  rating.distance = haversine_distance
+  ratings.distance = haversine_distance
   return ratings;
 }
 function power(x) {
