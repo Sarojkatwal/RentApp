@@ -1,0 +1,19 @@
+npm install @react-navigation/native
+expo install react-native-gesture-handler react-native-reanimated react-native-screens react-native-safe-area-context @react-native-community/masked-view
+npm install @react-navigation/stack
+npm install @react-navigation/bottom-tabs
+npm install @react-navigation/drawer
+npm install @react-navigation/material-bottom-tabs react-native-paper
+npm install @react-navigation/material-top-tabs react-native-tab-view
+npm i react-native-animatable
+npm i react-native-vector-icons
+//npm i react-navigation-shared-element  react-native-shared-element
+expo install expo-linear-gradient
+npm install faker
+expo install expo-image-picker
+expo install expo-permissions
+npm install react-native-star-rating --save
+npm i react-native-customizable-radio-button
+ 
+ 
+ 

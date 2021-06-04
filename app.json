@@ -1,0 +1,24 @@
+{
+  "expo": {
+    "name": "Room Rental App",
+    "slug": "RoomRentalApp__",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/r1.png",
+    "splash": {
+      "image": "./assets/splash.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#ffffff"
+    },
+    "updates": {
+      "fallbackToCacheTimeout": 0
+    },
+    "assetBundlePatterns": [
+      "**/*"
+    ], 
+    "android": {
+      "package": "com.abc.rental",
+      "versionCode": 1
+    }
+  }
+}
